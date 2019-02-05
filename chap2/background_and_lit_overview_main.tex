@@ -1,38 +1,57 @@
-\chapter{Background \& Literature Overview}
-\textbf{In this section you need to explain all the theory required to understand your dissertation (i.e.\ the following chapters)}
-\section{Some Technique One}
-\index{Some Technique One|(}
-\blindtext
-\subsection{Some Sub-technique One}
-\blindtext
-\index{Some Technique One!Some Sub-technique One}
-\blindtext
-\subsubsection{Some Sub-sub-technique One}
-\blindtext
-\index{Some Technique One!Some Sub-sub-technique One}
-\blindtext
-\index{Some Technique One|)}
+\chapter{Literature Overview}
+Hypernymy identification and discovery are broadly split into pattern-based and distributional methods \citep{camacho2018semeval, Wang2017}.  The two classes need not be mutually exclusive and we will encounter hybrid methods which integrate features from both approaches, improving on the result achieved by employing each respective method independently  \citep{shwartz2016path, bernier2018crim}.  Despite being overshadowed by distributional methods in recent years, there has been renewed interest in pattern-based methods \citep{roller2018hearst}, a fact that underscores their continued relevance.
 
-\section{Some Technique Two}
-\index{Some Technique Two|(}
-\blindtext[2]
+\section{Pattern-Based Methods}
+Lexico-syntactic patterns frequently occurring in language encode the hypernymy semantic relationship between words bound to the patterns.  Such patterns are still referred to as Hearst patterns in tribute to the Marti Hearst's pioneering work on hypernym discovery more than 25 years ago \citep{hearst1992automatic}.
 
-Imagine some colourful description on Some Technique Three\index{Some Technique Three}.
+\subsection{Hearst Patterns}
+\citeauthor{hearst1992automatic} kick-started the chase for hypernyms when she proposed that the text corpus itself contained information about the language in which it was written \citep{hearst1992automatic}.  She observes that an unknown word within a text can be understood by the reader via word pattern co-occurrences that unambiguously entail the word to a familiar superordinate term \citep{hearst1992automatic}.  Consider the following sentence snippet:
 
-\blindtext[2]
-\index{Some Technique Two|)}
+\say{African birds such as turacos, trogons and nicators are…}
 
-\section{Evaluation Criteria}
-This section should contain information on the metrics and background used to evaluate your work.
-\section{Related Work}
-\textbf{In this section you need to explain (and reference) similar work in literature}.  Make sure to:
+The phrasing conveys a semantic \textbf{is-a} relationship between \textit{turacos, trogons and nicators} and the more generic term \textit{bird}.  The compound noun \textit{African bird} is a more specific type of bird and more general than a \textit{turaco} making it a hypernym of \textit{turaco} and hyponym of \textit{bird}.  Anyone reading this excerpt only needs to be familiar with the concept of \textit{bird} to acquire some knowledge of what a \textit{nicator} is.  In the absence of the [Y such as X] syntactic pattern, the sentence contains no other clues on what a \textit{trogon} could mean.  The pattern is also able to expose a co-hyponym relationship between \textit{turacos, trogons and nicators}, all them being a type of bird.  
+
+The variety of free text initially casts doubt on whether representative lexical constructs can be found at all.  Notwithstanding, armed with a few seed examples, Hearst was able to bootstrap a system to automatically acquire six high-quality patterns \citep{hearst1992automatic} from the Grolier’s Academic Encyclopedia digitised corpus \citep{grolier1990academic}:
 
 \begin{itemize}
- \item Give a systematic overview of papers with related/similar work
- \item Highlight similarities/differences to your work (perhaps in the form of a table)
+    \item X [,] and other Y
+    \item X [,] or other Y
+    \item Y [,] such as X
+    \item Y [,] including X
+    \item Y [,] especially X
+    \item Such Y as X
 \end{itemize}
 
-Note that this section may be sectioned based on the different aspects of your dissertation.  Some referenced text, as an example \citep{Arrighi2003, WithersMartinez2012, Ebejer2016}.
+To harvest the patterns, Hearst first collected a list of word-pairs for which the hypernymy relation holds and recorded the textual environment in which the words featured.  High frequency environments were considered predictive of hypernymy and were converted to generalised patterns.  The new patterns were subsequently used to find new seed word-pairs which further fuelled the cycle of pattern discovery \citep{hearst1992automatic}.  Although Hearst focused on English, lexico-syntactic patterns were also induced in a wide variety of languages: Spanish, French, Italian, Dutch \citep{faralli2018misa}; Swedish \citep{rydin2002building} in \citep{sahin2017}; Turkish \citep{sahin2016extraction} in \citep{sahin2017}; and Chinese \citep{Fu2014}.
+
+The pattern-based approach is not necessarily amenable to locate other semantic relations.  Hearst was not able to identify high-yield patterns that identify meronymy \citep{hearst1992automatic}, although more success was observed in languages other than English \citep{sahin2017}.  Hypernymy might be particularly suited to this technique due the classification nature of the relation.  This hypothesis also makes an encyclopedia an ideal corpus from which to extract hypernyms due to the high concentration of definitions within such a text.    This justifies Wikipedia as the corpus of choice in diverse tasks such as taxonomy learning \citep{bordea2016semeval} and linguistic resource construction \citep{Flati2016, Baroni2011}.  
+
+Lexico-syntactic patterns are not entirely resistant to the ambiguity of language.  \citeauthor{wu2012probase} provide several sample phrases where the application of Hearst patterns leads to incorrect hypernyms \citep{wu2012probase}.  \say{Animals other than dogs such as cats…} will result in \(hypernym(cat, dog)\) which is an obvious false positive \citep{wu2012probase}.  Consequently, pattern-based methods sacrifice precision for recall \citep{Wang2017, Snow2004, ritter2009anyway}.  This is exacerbated by the constraint that hyponyms must co-occur with their hypernyms within the scope of a sentence which is not always the case in general-purpose texts.  In the SemEval 2018 Shared Task 9 \citep{camacho2018semeval} English general-purpose corpus, most of the training pairs do not even feature in the same paragraph, much less in the same sentence \citep{bernier2018crim}.
+
+
+Despite these limitations, Hearst’s early attempt yielded results promising enough to inspire related work.  7,067 sentences contained the construct \textit{such as} contiguously out of the 8.6-million word corpus \citep{grolier1990academic}.  Within these sentences, 152 hypernymy relations were found that adhered to the experiment’s constraints, chiefly that hypernym and hyponymy terms were unmodified.  Similar to later research \citep{kozareva2010semi}, Hearst compares the results of her pattern-mining algorithm with the noun hierarchy featured in an early version of WordNet (1.1) \citep{Miller1995}, which at the time comprised 34,000 noun forms organised into approximately 26,000 \ac{synset}s.  Of the 152 relations, both words in the hyponym/hypernym word-pair were found in WordNet in 106 cases.  61 of these relations were also found to exist in WordNet.  
+
+Fittingly, Hearst was also the first to observe limitations to her approach.  Some mined hypernyms were overly generic (ex. the hypernym \textit{species} does not convey much about the hyponym other than it is a living organism).  In other cases, the context influenced the hypernym to make it too specific; for instance \textit{aircraft} was found to be a \textit{target} because of the military sense of the text in question \citep{hearst1992automatic}.
+
+\subsection{Extending Hearst with Probabilistic Methods}
+The examination of the pattern-based methods’ weaknesses was extended by \citeauthor{Wang2017} who note that the absence of “world knowledge” limited the precision of these methods \citep{Wang2017}.   They present other challenges inherent in Hearst Pattern parsing:
+\begin{itemize}
+    \item Since hypernym and hyponym words are nouns or noun phrases, several named entities will be excluded since they are not considered noun phrases.  For instance: \say{…classic movies such as Gone with the Wind…} where \textit{Gone with the Wind} is actually a proper noun and type of movie (as well as classic movie);
+    \item Named entities sometime feature the word \textit{and} in their name.  Examples include \textit{Proctor \textbf{and} Gamble}, \textit{Alf Mizzi \textbf{and} Sons Ltd.}, \textit{Plough \textbf{and} Anchor} etc. A pattern like \say{“…companies such as IBM, Nokia, Proctor and Gamble…} will consider \textit{Proctor} and \textit{Gamble} to be two different hyponym candidates;
+    \item Co-hyponym lists can contain mixed types.  For example: \say{…representatives in N America, Europe, the Middle East, Australia, Mexico, Brazil, Japan, China, and other countries…} features a mix of continents/regions and actual countries.  A literal interpretation of this pattern would result in \(hypernym(Europe, country)\) which is clearly wrong;
+\end{itemize}
+
+\citeauthor{Wang2017} mitigate the ambiguity inherent in pattern-mining by proposing an unsupervised, iterative process that refines the collection of harvested hypernym pairs together with a knowledge dictionary over several epochs, designed to improve both precision and recall \citep{Wang2017}.  The process is broken down into three sub-procedures.  
+
+The Hearst-like patterns are first applied on each sentence of an input corpus text.  Given that they adhere to some imposed constraints, noun phrases are added to a list of potential hypernyms and hyponyms respectively.  All combinations of compound noun phrases such as \textit{Proctor and Gamble} are considered (i.e. \textit{Proctor}, \textit{Gamble}, and \textit{Proctor and Gamble}).  This step generates a list of subordinate words and a list of potential hypernyms for every parsed sentence.  The latter list needs to be reduced to the single, most likely hypernym \citep{Wang2017}.
+
+In the second sub-procedure, conditional probability is used to choose the most likely hypernym from two or more potential superordinate words mined from a single sentence.  The algorithm measures the probability of each candidate word being a hypernym of the collected hyponyms by referring to the knowledge dictionary.  Note that the knowledge dictionary contains high confidence word-hypernym pairs.  The word recording the highest conditional probability $p(y_i | X_s)$, where $y_i$ $\in$ \(\{y_1,…y_n\}\) are candidate hypernyms and $X_s=\{x_1, …, x_m\}$ are collected hyponyms, is chosen as the most likely hypernym in the sentence.  The co-hyponyms in \(X_s\) are assumed to be independent and equally related to the hypernym \citep{wu2012probase}.
+
+The third sub-procedure takes on the mined co-hyponym list and estimates the validity of each of the captured hyponyms.  This step is needed to determine whether conjoined noun phrases (ex. \textit{Proctor and Gamble}) represent separate words or should be taken as an atomic entity.  Another objective of this step is to find the longest sequence of conjoined terms in which co-hyponymy applies, given sentences like \say{… representatives in N America, Europe, the Middle East, Mexico, Brazil, Japan and other countries …\}.  In the absence of world knowledge, this mix of continents, regions and actual countries could all be considered “country” subordinates based on the pure application of the Hearst pattern.  With the help of the knowledge dictionary, a similar probabilistic mechanism is employed here too, to determine the likelihood of each of these terms co-occurring with other already-discovered terms linked to the “country” hypernym [25].  
+The algorithm produces a set of hypernymy relations which make up the edges of a taxonomy.  The construction of the taxonomy itself falls outside the scope of this dissertation although it is worth noting that the probabilistic framework is extended to the taxonomy’s measure of uncertainty with respect to ambiguous information contained within it.  The algorithm was applied on a massive scale:  326 million sentences were extracted from a corpus composed of 1.7 billion web pages to induce 2.7 million distinct concepts; 16.2 million concept-instance pairs and 4.5 million concept-sub-concept pairs [25].  The result is Probase, a taxonomy comparable in complexity  - measured in terms of the taxonomy’s depth - to WordNet [3], YAGO [29], and Freebase [30] , but an order of magnitude larger.  Probase’s coverage is much wider than Freebase, the only taxonomy comparable in size in terms of concept-instance pairs, with Probase featuring highly-specific concepts such as “celebrity wedding dress designers” (fn: https://concept.research.microsoft.com/Home/Introduction).  The top ten Freebase concepts comprise 70% of its word-instance pairs while only 4.5 % of concept-instance pairs are contained in the top ten concepts of Probase.
+Camacho-Collados stated that taxonomies were hard to evaluate automatically [7] and Probase was no exception.  Evaluation was estimated manually by human judges who were asked to determine the correctness of 50 randomly selected concept-instance/sub-concept pairs drawn from 40 concepts across a multitude of domains.  The average precision (AP) measured was 92.8% although no inter-annotator agreement scores were provided.  The AP score was only bettered by YAGO [29] at 95%.  Wu et al. observe that YAGO is a Wikipedia-based framework which features cleaner sources than the 
+
+
 
 
 
