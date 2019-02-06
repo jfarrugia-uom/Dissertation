@@ -113,4 +113,89 @@ The weighted-average of the encoded dependency path vectors is computed prior to
 
 \citeauthor{shwartz2016path} compare their novel approach to \citeauthor{Snow2004}'s model \citep{Snow2004} we discussed in section \ref{Learning Patterns Automatically}. The authors train a logistic regression classifier on the 100,000 most information paths chosen using chi-squared feature selection.  On a random data split, the sparse model returns a precision of 0.843 compared to HypeNET’s 0.811 but the latter scores 0.716 recall, a 58\% improvement over \citeauthor{Snow2004}'s model.    
 
-%%Għidli ma’ min tagħmilha, u ngħidlek x’int
+\section{Distributional Model Overview}
+%% Need to find out how to type-set Maltese unicode characters
+\say{Ghidli ma’ min taghmilha, u nghidlek x’int} is a Maltese expression which means that the company a person keeps says a lot about that person.  The linguist J.M. Firth (1957) cast a similar sentiment to words, saying that a word’s neighbours can divulge much about that word.  This dictum is framed by the Distributional Hypothesis \citep{harris1954distributional} which states that words with similar meaning occur in similar contexts.  
+
+The Distributional Hypothesis is encapsulated in a \ac{VSM} (also referred to as distributional model), a matrix-type data structure which, at its simplest, captures the occurrences of \textit{row} events in \textit{column} contexts. The matrix’s structure in terms of what the rows and columns represent is a design decision and depends on the statistical semantic hypothesis the matrix is supposed to model.  We will briefly discuss the word-context and pair-pattern matrices, the two main types featured in the hypernymy discovery literature.  We also mention the term-document matrix, which we did not encounter in the literature review but which preceded the other two data structures and influenced their development.  The term-context feature is found at the intersection of row and column.  Features can either be expressed as raw frequencies (positive integers including 0) or can be mapped by a weighting function.  In the latter case the frequency value will be a real number.
+
+The objective of a vector space model \ac{VSM} is to convert discrete word symbols into points in higher-dimensional space \citep{turney2010frequency}.  The word symbol does not convey any meaning through its surface form; however, by projecting each word to a multi-dimensional vector, points that are close according to some distance metric will exhibit some form of semantic relatedness.  Conversely, words corresponding to points that are far apart will tend to be weakly related or entirely unrelated \citep{turney2010frequency}.
+
+We will discuss the matrix types in the following section.  We shall borrow the mathematical notation used in \citep{turney2010frequency} as follows:
+\begin{itemize}
+    \item $\textbf{X}$ will be our matrix which will be made up of $m$ rows and $n$ columns;
+    \item $\textbf{X} \in \mathbb{N}^{m \times n}$ if the frequency is unweighted or $\textbf{X} \in \mathbb{R}^{m \times n}$ if we are adopting a frequency weighting mechanism;
+    \item $\textbf{x}_{i:}$ will be a row-vector of $n$ elements representing a word $w_i$ in a vocabulary of terms, extracted from a corpus;
+    \item $\textbf{x}_{:j}$ will be a column-vector of $m$ elements representing a document, context or pattern depending on the matrix type;
+    \item $x_{ij}$ is a scalar value and measures the association between target word $w_i$ and context/pattern/document $c_j$
+\end{itemize}    
+
+Most of the elements of $\textbf{X}$ will be set to zero since a word cannot appear in all contexts and each context will correspond to a small percentage of the entire vocabulary.  Such a matrix is referred to as a sparse matrix, which contrasts with a dense matrix which has non-zero values in most of its elements.
+
+\subsection{Mapping Vector Space Models to Semantic Hypotheses}
+Word patterns can be statistically examined to understand how humans attribute meaning to the words \citep{turney2010frequency}.  Four main hypotheses were developed, supported by a corresponding mathematical matrix structure that allows each hypothesis to be explored empirically.
+
+\subsubsection{Bag of Words}
+According to the bag of words hypothesis \citep{salton1975vector}, we can represent a document in terms of the frequency distribution of the words that compose it.  The term-document matrix is the ideal structure to model this hypothesis.  X will be composed of a vocabulary of m words, extracted from n documents where each row $\textbf{x}_{i:}$ vector is a term word and each column vector $\textbf{x}_{:j}$ is a document.  Thus, the document is represented as a bag of words vector, where each dimension contains the frequency of a word $w_i$ in the document.  In the bag of words model, several aspects of language use are lost, including sequential word ordering, and syntactic links between the words.  Indeed the entirety of the document structure is absent since we cannot tell how the words were strung together in sentences, paragraphs and sections.    Despite these misgivings, the bag of words technique can effectively capture similarity between documents on the basis of word distribution alone \citep{turney2010frequency}.  This result is supported by the intuition that the domain or topic of a document influences the choice of the words used to compose the document \citep{turney2010frequency}.
+
+\subsubsection{Word-context}
+The term-document matrix may be an effective tool to measure document similarity or retrieve the most relevant documents to a given query.  However, a document is far too wide to make an ideal context if we are interested in word similarity.  The distribution hypothesis is better served by a word-context matrix.  \citep{lund1996producing} in \citep{turney2010frequency} proposed a window-based context which only considers a number of words before and after a target word.  The $k$ surrounding words of target word $w$ are: $w-k, \ldots, w-1, w+1, \ldots, w+k $.  
+
+The typical context window size is fairly small, consisting of two to five words \citep{roller2014inclusive, santus2014chasing, shwartz2017siege}.  However, wider context windows are also acceptable.  For instance, in \citep{roller2014inclusive}, one of the context windows spanned an entire corpus sentence.
+
+The context windows can be optionally decorated with their direction with respect to a target word \citep{shwartz2017siege}.  In the sentence \textit{The quick brown fox jumped over the lazy dog}, the directional context of the target word $fox$ is $(quick^-, brown^-, jumped^+, over^+)$. In a non-directional window, the left and right context words are indistinguishable.   
+
+Contexts are not necessarily limited to adjacent words; \citep{lin1998information} in \citep{turney2010frequency} and \citep{levy2014dependency} employed dependency-based contexts.  To build their experimental distributional semantic spaces, \citep{shwartz2017siege} considers both parent-daughter and parent-sister neighbours in a dependency tree.
+
+\subsubsection{Pair-pattern}
+The term, represented in the matrix row, is no longer a single word but a word-pair and the matrix column feature becomes a doubly-linked pattern which ties the term word-pair together.  We have seen a pair-pattern matrix in action in \citep{Snow2004}.  The term pair is a tuple containing a hyponym and a candidate hypernym.  Tuples can be positive or negative pairs depending on whether the candidate word is an actual hypernym.  The matrix column feature was a dependency path which linked the two words together by the concatenation of edge links in the parse tree and the feature value was the frequency a word-pair matched that particular pattern.
+
+\citep{lin2001discovery} quoted in \citep{turney2010frequency}, propose the extended distributional hypothesis which states that patterns fitting similar pairs tend to have the same semantics.  Conversely, the latent relation hypothesis states that word pairs captured by similar patterns tend to be bound by a similar semantic relation \citep{turney2010frequency}.  \citep{Snow2004} opted for a supervised approach and utilised various classifiers to learn which paths were mostly indicative of hypernymy.  The path feature set they induced included any path that linked at least five distinct nouns pairs extracted from each sentence in the corpus.  
+
+A variant of the pair-pattern matrix is \textbf{TypeDM} \citep{roller2014inclusive}, where a matrix row represents a term word and the context column is a pair consisting of a context word and a syntagmatic relationship that ties the two words together.
+
+\subsection{Feature Weighting}
+At its most elemental, each matrix type quantifies the association between a context and a term by counting the occurrences of the term in a particular context \citep{turney2010frequency}, \citep{shwartz2017siege}.  Often, the raw frequencies are adjusted to compensate for the fact that some words convey little information despite their high recurrence in a corpus.  In the bag of words model, the raw frequencies are transformed using the \textbf{\ac{tf-idf}} function family \citep{turney2010frequency}.  This compels a term to score a high weight if its presence in a document is proportional to its scarcity in other documents.
+
+An alternative to \ac{tf-idf} used to weight features in a word-context matrix is \ac{PMI}:
+\[PMI(w_i, c_j) = log \Bigg( \frac{p(w_i, c_j)}{p(w_i)p(c_j)} \Bigg) \]
+\ac{PMI} measures the log ratio of the joint probability of a word $w_i$ in a context $c_j$ and the product of the marginal probabilities of $w_i$ and $c_j$ \citep{church1990word} in \citep{turney2010frequency, shwartz2017siege}.
+
+If there is an interesting relationship between $w_i$ and $c_j$, then the conditional probability of $w_i$ given $c_j$ is greater than the joint probability of $w_i$ and $c_j$ given that the two are mutually exclusive.  When that is the case, \ac{PMI} returns a positive value.  On the other hand, if $w_i$ and $c_j$ are independent, \ac{PMI} returns a zero value.  If the presence of a particular context decreases the probability of a word co-occurring, then $p(w_i, c_j)$ is smaller than $p(w_i)p(w_j)$ and a negative \ac{PMI} is returned.
+
+A variant of \ac{PMI} is \ac{PPMI} which enforces every matrix element to be positive or zero if a word does not occur in a particular context.  \ac{PPMI} is biased towards rare events \citep{turney2010frequency} but this can be neutralised by the application of \ac{PLMI} which is returned when \ac{PPMI} is multiplied by the co-occurrence frequency of $w_i$ and $c_j$ \citep{evert2008corpora} in \citep{shwartz2017siege}.
+
+\subsection{Building a Vector Space Model}
+A pre-processing pipeline is applied to a corpus before it can be transformed into a matrix-based mathematical model.  The pipeline includes tokenisation, normalisation and, optionally, annotation steps \citep{turney2010frequency}.
+
+At first glance, tokenisation of an English corpus may seem like a trivial task since words are conveniently separated by spaces and sentences divided by the full-stop punctuation mark.  A tokeniser must, however, contend with specificities such as hyphenated words, abbreviations, diverse use of punctuation (ex. \textit{can’t}, \textit{isn’t}, etc.) and multi-word phrases that should be treated atomically (ex. \textit{catch fire}, \textit{vice president}, \textit{Daniel Day-Lewis}) .  Pictogram-based languages such as Chinese and Japanese are harder to deal with since words are not separated by spaces to begin with \citep{turney2010frequency}.
+
+Words expressed with different lexicalisations can sometimes have the same meaning.  A chief example is the capitalisation of a word at the beginning of a sentence which does not change the meaning of the word. Normalisation smoothens surface form variation by lower casing and stemming words. Stemming reduces a word to its most generic form which may not be an actual word.  Highly specific word forms can harm recall which is thus augmented by normalisation but only at the expense of precision \citep{kraaij1996viewing} in \citep{turney2010frequency}.
+
+Annotation increases the specificity of a word by decorating it with descriptors such as the part-of-speech tag, word sense tag, and dependency parse labels.  Word sense disambiguation is particularly relevant in the field of hypernymy detection and discovery since disparate meaning is often attributed to identical word forms.  The hypernym of \textit{bank} can either be \textit{incline} or \textit{financial institution} depending on its word sense.  The attachment of more information to a word is expected to increase precision while punishing recall \citep{turney2010frequency}.
+
+We briefly mentioned all the components needed to build a \ac{VSM} from pre-processing to feature weighting.  To find the degree to which $y$ is a hypernym of $x$ in word-pair $(x, y)$, a metric is applied to the vector representation of $x$ and $y$.  The metrics are collectively referred to as unsupervised methods since they are applied without the need of training data.  In the following section we explore unsupervised methods within selected literature.
+
+\section{Unsupervised Methods}
+\subsection{Metric Overview}
+Unsupervised methods consists of metrics grouped into four categories, each representative of a hypernymy inflected semantic hypothesis.  \citeauthor{shwartz2017siege} furnish us with an exhaustive survey of metrics across all categories which are listed below.  In all descriptions, $\textbf{x}$ and $\textbf{y}$ represent the term word (hyponym) and candidate hypernym feature vector respectively.
+
+%% Table summarising the measures and grouping them by hypothesis needs to come here
+
+\subsubsection{Similarity Measures}
+Following the distributional hypothesis \citep{harris1954distributional}, similarity measures focus on the symmetric similarities between the hyponym and hypernym.  Cosine similarity is the inner product of the unit-normalised vectors $\textbf{x}$ and $\textbf{y}$, thus placing the onus of similarity on the angle between the vectors.   The cosine metric measures word similarity by the angle between the vectors $\textbf{x}$ and $\textbf{y}$ where acute angles indicate higher similarity.  The Lin measure is the ratio between common contexts and separate contexts of $\textbf{x}$ and $\textbf{y}$.  A high-level explanation of APSyn can be found in \citep{shwartz2017siege} and more details in \citep{santus2016unsupervised}.
+
+\subsubsection{Distributional Inclusional Measures}
+A common criticism of the measures based on the distribution hypothesis is that they are not able to discern among various semantic relations \citep{roller2014inclusive}.  A term word’s nearest neighbours will bear some semantic relationship to it but is not guaranteed to be its hypernym. Moreover, the distributional hypothesis fails to acknowledge the asymmetric nature of hypernymy.  This is better captured by the distributional inclusional hypothesis \citep{geffet2005distributional} which states that the main contexts of the hyponym term are absorbed in the contexts of its hypernym.  According to this hypothesis, plugging in the generic term instead of the specific term in a sentence would not warp the sentence’s meaning.  Weeds Precision \citep{weeds2003general} is an example of an asymmetric metric that computes the weighted inclusion of the contexts of $\textbf{x}$ within the contexts of $textbf{y}$.  Details of the other measures may be found in their respective papers.
+
+invCL \citep{lenci2012identifying} is another example of an inclusional metric which is calculated as the geometric mean of the degree of inclusion of the hyponym’s contexts in the hypernym’s contexts  and the non-inclusion of the hypernym’s contexts into the hyponym’s contexts.
+
+
+\subsubsection{Distributional Informativeness Measures}
+\citeauthor{santus2014chasing} debated the validity of the distributional inclusional hypothesis.  They argue that the distinction between a hyponym and a hypernym lies in the generality of their contexts.  By virtue of their abstract qualities, hypernyms occur in broad contexts.  Their hyponyms, on the other hand, are specific and thus more likely to feature in explicit contexts.  For instance, an animal has general properties of locomotion, feeding and reproduction but only the echidna and platypus will feature in the context of egg-laying mammals.
+
+The distributional informativeness hypothesis is derived from this principal.  SLQS \citep{santus2014chasing} employs entropy to quantify informativeness.  Lower entropy values imply less uncertainty about the outcome of an event.  Hence, the more general the contexts, the lower the probability we can guess the “topic” of reference and the higher the entropy value.  SLQS calculates the reciprocal difference of the median entropy of the top $N$ contexts of hyponym and hypernym vectors.  SLQS is also an asymmetric measure and if $SLQS(x, y)$ yields a positive value, then $\textbf{y}$ is found to be more general than $\textbf{x}$ which is an indicator of hypernymy.  Two further variants of SLQS were first proposed in \citep{shwartz2017siege}.
+
+\subsubsection{Reversed Inclusional Measures}
+The distributional inclusional hypothesis is directly challenged by the reversed inclusional measures.  The basis of these measures is the hypernym cannot always replace the hyponym in its contexts due to the high specificity of the latter.  \textit{The mammal climbed into the car} would not be a reasonable alternative for \textit{the man climbed into car} despite the fact that a man is a mammal.  \citep{shwartz2017siege} propose a simple variant of Weeds Precision and ClarkeDE to model this property, consisting of switching the original function parameters around.  Thus $WeedsPrec(x,y)$ becomes $ReversedWeedsPrec(y, x)$ and the same principle applies to ClarkeDE.
+
