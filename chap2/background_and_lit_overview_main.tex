@@ -178,9 +178,39 @@ We briefly mentioned all the components needed to build a \ac{VSM} from pre-proc
 
 \section{Unsupervised Methods}
 \subsection{Metric Overview}
-Unsupervised methods consists of metrics grouped into four categories, each representative of a hypernymy inflected semantic hypothesis.  \citeauthor{shwartz2017siege} furnish us with an exhaustive survey of metrics across all categories which are listed below.  In all descriptions, $\textbf{x}$ and $\textbf{y}$ represent the term word (hyponym) and candidate hypernym feature vector respectively.
+Unsupervised methods consists of metrics grouped into four categories, each representative of a hypernymy inflected semantic hypothesis.  \citeauthor{shwartz2017siege} furnish us with an exhaustive survey of metrics across all categories which are listed below.  In all descriptions, $\textbf{x}$ and $\textbf{y}$ represent the term word (hyponym) and candidate hypernym feature vector respectively.  A summary of unsupervised measures which can be used to estimate hypernymy simalarity can be seen in Table~\ref{tab:unsupervised_measures}.
 
 %% Table summarising the measures and grouping them by hypothesis needs to come here
+\renewcommand{\arraystretch}{1.2} 
+\begin{table*}\centering
+    \begin{tabular}{@{}ll@{}} \toprule
+    Metric              & Source \\ 
+    \cmidrule{1-2}
+    \multicolumn{2}{c}{\textit{Similarity Measures}} \\ \cmidrule(lr){1-2}
+    Cosine Similarity   & \citep{salton1975vector} \\
+    Lin Similarity      & \citep{lin1998information} \\
+    APSyn               & \citep{santus2016unsupervised} \\
+    \cmidrule{1-2}
+    \multicolumn{2}{c}{\textit{Inclusional Measures}} \\ \cmidrule(lr){1-2}
+    Weeds Precision     & \citep{weeds2003general} \\
+    cosWeeds            & \citep{lenci2012identifying} \\ 
+    ClarkeDE            & \citep{clarke2009context} \\
+    balAPinc            & \citep{kotlerman2010directional} \\
+    invCL               & \citep{lenci2012identifying} \\
+    \cmidrule{1-2}
+    \multicolumn{2}{c}{\textit{Informativeness Measures}} \\ \cmidrule(lr){1-2}
+    SLQS                & \citep{santus2014chasing} \\
+    SLQS Sub            & \citep{shwartz2017siege} \\
+    SLQS Row            & \citep{shwartz2017siege} \\
+    \cmidrule{1-2}
+    \multicolumn{2}{c}{\textit{Reversed Inclusional Measures}} \\ \cmidrule(lr){1-2}
+    Reversed Weeds      & \citep{shwartz2017siege} \\
+    Reversed ClarkeDE   & \citep{shwartz2017siege} \\
+    \bottomrule
+    \end{tabular}
+    \caption{Unsupervised Hypernymy Similarity Measures}\label{tab:unsupervised_measures}
+\end{table*}
+
 
 \subsubsection{Similarity Measures}
 Following the distributional hypothesis \citep{harris1954distributional}, similarity measures focus on the symmetric similarities between the hyponym and hypernym.  Cosine similarity is the inner product of the unit-normalised vectors $\textbf{x}$ and $\textbf{y}$, thus placing the onus of similarity on the angle between the vectors.   The cosine metric measures word similarity by the angle between the vectors $\textbf{x}$ and $\textbf{y}$ where acute angles indicate higher similarity.  The Lin measure is the ratio between common contexts and separate contexts of $\textbf{x}$ and $\textbf{y}$.  A high-level explanation of APSyn can be found in \citep{shwartz2017siege} and more details in \citep{santus2016unsupervised}.
@@ -199,3 +229,9 @@ The distributional informativeness hypothesis is derived from this principal.  S
 \subsubsection{Reversed Inclusional Measures}
 The distributional inclusional hypothesis is directly challenged by the reversed inclusional measures.  The basis of these measures is the hypernym cannot always replace the hyponym in its contexts due to the high specificity of the latter.  \textit{The mammal climbed into the car} would not be a reasonable alternative for \textit{the man climbed into car} despite the fact that a man is a mammal.  \citep{shwartz2017siege} propose a simple variant of Weeds Precision and ClarkeDE to model this property, consisting of switching the original function parameters around.  Thus $WeedsPrec(x,y)$ becomes $ReversedWeedsPrec(y, x)$ and the same principle applies to ClarkeDE.
 
+\subsection{Application of Unsupervised Metrics in Selected Literature}
+In \citep{santus2014chasing},  a 2.7-billion word corpus was constructed by concatenating the ukWaC \citep{ferraresi2007building} and WaCkypedia corpora in English \citep{baroni2009wacky}.  Word context was provided by a two-word window on either side of the target word and \ac{LMI} was used to weight the features.  The BLESS dataset \citep{Baroni2011} was recruited as an evaluation dataset.  Besides providing hypernyms for 200 English concepts, BLESS also features several negative examples of hypernymy which include other semantic relations such meronym, co-hyponymy and randomly unrelated words.
+
+\citeauthor{santus2014chasing} pitted the distributional inclusional and informativeness hypotheses against each other over two tasks.  WeedsPrec \citep{weeds2003general} represents the inclusional metric family while the informativeness hypothesis is represented by SLQS \citep{santus2014chasing}.  The first tasks involves detecting hypernymy in each positive word-pair using the most frequently occurring word as a baseline.  The harder task of discriminating hypernymy from the other semantic relations is the second challenge.  
+
+WeedsPrec does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while SLQS does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive SLQS is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  
