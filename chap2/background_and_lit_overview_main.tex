@@ -232,6 +232,21 @@ The distributional inclusional hypothesis is directly challenged by the reversed
 \subsection{Application of Unsupervised Metrics in Selected Literature}
 In \citep{santus2014chasing},  a 2.7-billion word corpus was constructed by concatenating the ukWaC \citep{ferraresi2007building} and WaCkypedia corpora in English \citep{baroni2009wacky}.  Word context was provided by a two-word window on either side of the target word and \ac{LMI} was used to weight the features.  The BLESS dataset \citep{Baroni2011} was recruited as an evaluation dataset.  Besides providing hypernyms for 200 English concepts, BLESS also features several negative examples of hypernymy which include other semantic relations such meronym, co-hyponymy and randomly unrelated words.
 
-\citeauthor{santus2014chasing} pitted the distributional inclusional and informativeness hypotheses against each other over two tasks.  WeedsPrec \citep{weeds2003general} represents the inclusional metric family while the informativeness hypothesis is represented by SLQS \citep{santus2014chasing}.  The first tasks involves detecting hypernymy in each positive word-pair using the most frequently occurring word as a baseline.  The harder task of discriminating hypernymy from the other semantic relations is the second challenge.  
+\citeauthor{santus2014chasing} pitted the distributional inclusional and informativeness hypotheses against each other over two tasks.  WeedsPrec \citep{weeds2003general} represents the inclusional metric family while the informativeness hypothesis is represented by SLQS \citep{santus2014chasing}.  The first tasks involves detecting hypernymy in each positive word-pair using the most frequently occurring word as a baseline.  The second, harder task consisted of discriminating hypernymy from the other semantic relations.
 
-WeedsPrec does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while SLQS does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive SLQS is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  
+WeedsPrec does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while SLQS does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive SLQS is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  The results are reproduced in Table~\ref{tab:santus_comparison} from \citet{santus2014chasing}.
+
+\begin{table*}\centering
+    \begin{tabular}{@{}lrrrr@{}} \toprule
+    \textbf{Metric}  & \textbf{Hypernymy} & \textbf{Co-hyponymy} & \textbf{Meronymy} & \textbf{Unrelated} \\
+    \cmidrule{1-5}
+    \textit{Baseline}   & $0.40$ & $0.51$ & $0.38$ & $0.17$ \\
+    \textit{Cosine}   & $0.48$ & $0.46$ & $0.31$ & $0.21$ \\
+    \textit{WeedsPrec}   & $0.50$ & $0.35$ & $0.39$ & $0.21$ \\
+    \textit{SLQS $\times$ Cosine}   & $\textbf{0.59}$ & $\textbf{0.27}$ & $\textbf{0.35}$ & $\textbf{0.24}$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{\ac{AP} of two unsupervised metrics when discriminating semantic relations }\label{tab:santus_comparison}
+\end{table*}
+
+SLQS is less likely to confuse co-hyponymy for hypernymy than WeedsPrec which suggests that in general the co-hyponym in the candidate word slot ($y$) is as specific as the query word ($x$).  The scores reflect the average precision over all 200 concepts in the BLESS dataset ($AP@all$).  
