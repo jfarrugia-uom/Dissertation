@@ -184,47 +184,47 @@ Unsupervised methods consists of metrics grouped into four categories, each repr
 \renewcommand{\arraystretch}{1.2} 
 \begin{table*}\centering
     \begin{tabular}{@{}ll@{}} \toprule
-    Metric              & Source \\ 
+    \textbf{Metric}              & \textbf{Source} \\ 
     \cmidrule{1-2}
-    \multicolumn{2}{c}{\textit{Similarity Measures}} \\ \cmidrule(lr){1-2}
-    Cosine Similarity   & \citep{salton1975vector} \\
-    Lin Similarity      & \citep{lin1998information} \\
-    APSyn               & \citep{santus2016unsupervised} \\
+    \multicolumn{2}{c}{Similarity Measures} \\ \cmidrule(lr){1-2}
+    $Cosine Similarity$   & \citep{salton1975vector} \\
+    $Lin Similarity$      & \citep{lin1998information} \\
+    $APSyn$               & \citep{santus2016unsupervised} \\
     \cmidrule{1-2}
-    \multicolumn{2}{c}{\textit{Inclusional Measures}} \\ \cmidrule(lr){1-2}
-    Weeds Precision     & \citep{weeds2003general} \\
-    cosWeeds            & \citep{lenci2012identifying} \\ 
-    ClarkeDE            & \citep{clarke2009context} \\
-    balAPinc            & \citep{kotlerman2010directional} \\
-    invCL               & \citep{lenci2012identifying} \\
+    \multicolumn{2}{c}{Inclusional Measures} \\ \cmidrule(lr){1-2}
+    $Weeds Precision$     & \citep{weeds2003general} \\
+    $cosWeeds$            & \citep{lenci2012identifying} \\ 
+    $ClarkeDE$            & \citep{clarke2009context} \\
+    $balAPinc$            & \citep{kotlerman2010directional} \\
+    $invCL$               & \citep{lenci2012identifying} \\
     \cmidrule{1-2}
-    \multicolumn{2}{c}{\textit{Informativeness Measures}} \\ \cmidrule(lr){1-2}
-    SLQS                & \citep{santus2014chasing} \\
-    SLQS Sub            & \citep{shwartz2017siege} \\
-    SLQS Row            & \citep{shwartz2017siege} \\
+    \multicolumn{2}{c}{Informativeness Measures} \\ \cmidrule(lr){1-2}
+    $SLQS$                & \citep{santus2014chasing} \\
+    $SLQS_{Sub}$            & \citep{shwartz2017siege} \\
+    $SLQS_{Row}$            & \citep{shwartz2017siege} \\
     \cmidrule{1-2}
-    \multicolumn{2}{c}{\textit{Reversed Inclusional Measures}} \\ \cmidrule(lr){1-2}
-    Reversed Weeds      & \citep{shwartz2017siege} \\
-    Reversed ClarkeDE   & \citep{shwartz2017siege} \\
+    \multicolumn{2}{c}{Reversed Inclusional Measures} \\ \cmidrule(lr){1-2}
+    $Reversed Weeds$      & \citep{shwartz2017siege} \\
+    $Reversed ClarkeDE$   & \citep{shwartz2017siege} \\
     \bottomrule
     \end{tabular}
-    \caption{Unsupervised Hypernymy Similarity Measures}\label{tab:unsupervised_measures}
+    \caption{Unsupervised Hypernymy Similarity Measures.}\label{tab:unsupervised_measures}
 \end{table*}
 
 
 \subsubsection{Similarity Measures}
-Following the distributional hypothesis \citep{harris1954distributional}, similarity measures focus on the symmetric similarities between the hyponym and hypernym.  Cosine similarity is the inner product of the unit-normalised vectors $\textbf{x}$ and $\textbf{y}$, thus placing the onus of similarity on the angle between the vectors.   The cosine metric measures word similarity by the angle between the vectors $\textbf{x}$ and $\textbf{y}$ where acute angles indicate higher similarity.  The Lin measure is the ratio between common contexts and separate contexts of $\textbf{x}$ and $\textbf{y}$.  A high-level explanation of APSyn can be found in \citep{shwartz2017siege} and more details in \citep{santus2016unsupervised}.
+Following the distributional hypothesis \citep{harris1954distributional}, similarity measures focus on the symmetric similarities between the hyponym and hypernym.  Cosine similarity is the inner product of the unit-normalised vectors $\textbf{x}$ and $\textbf{y}$, thus placing the onus of similarity on the angle between the vectors.   The cosine metric measures word similarity by the angle between the vectors $\textbf{x}$ and $\textbf{y}$ where acute angles indicate higher similarity.  The Lin measure is the ratio between common contexts and separate contexts of $\textbf{x}$ and $\textbf{y}$.  A high-level explanation of $APSyn$ can be found in \citep{shwartz2017siege} and more details in \citep{santus2016unsupervised}.
 
 \subsubsection{Distributional Inclusional Measures}
-A common criticism of the measures based on the distribution hypothesis is that they are not able to discern among various semantic relations \citep{roller2014inclusive}.  A term word’s nearest neighbours will bear some semantic relationship to it but is not guaranteed to be its hypernym. Moreover, the distributional hypothesis fails to acknowledge the asymmetric nature of hypernymy.  This is better captured by the distributional inclusional hypothesis \citep{geffet2005distributional} which states that the main contexts of the hyponym term are absorbed in the contexts of its hypernym.  According to this hypothesis, plugging in the generic term instead of the specific term in a sentence would not warp the sentence’s meaning.  Weeds Precision \citep{weeds2003general} is an example of an asymmetric metric that computes the weighted inclusion of the contexts of $\textbf{x}$ within the contexts of $textbf{y}$.  Details of the other measures may be found in their respective papers.
+A common criticism of the measures based on the distribution hypothesis is that they are not able to discern among various semantic relations \citep{roller2014inclusive}.  A term word’s nearest neighbours will bear some semantic relationship to it but is not guaranteed to be its hypernym. Moreover, the distributional hypothesis fails to acknowledge the asymmetric nature of hypernymy.  Instead, this is better captured by the distributional inclusional hypothesis \citep{geffet2005distributional} which states that the main contexts of the hyponym term are absorbed in the contexts of its hypernym.  According to this hypothesis, plugging in the generic term instead of the specific term in a sentence would not warp the sentence’s meaning.  $Weeds Precision$ \citep{weeds2003general} is an example of an asymmetric metric that computes the weighted inclusion of the contexts of $\textbf{x}$ within the contexts of $textbf{y}$.  Details of the other measures may be found in their respective papers.
 
-invCL \citep{lenci2012identifying} is another example of an inclusional metric which is calculated as the geometric mean of the degree of inclusion of the hyponym’s contexts in the hypernym’s contexts  and the non-inclusion of the hypernym’s contexts into the hyponym’s contexts.
+$invCL$ \citep{lenci2012identifying} is another example of an inclusional metric which is calculated as the geometric mean of the degree of inclusion of the hyponym’s contexts in the hypernym’s contexts  and the non-inclusion of the hypernym’s contexts into the hyponym’s contexts.
 
 
 \subsubsection{Distributional Informativeness Measures}
 \citeauthor{santus2014chasing} debated the validity of the distributional inclusional hypothesis.  They argue that the distinction between a hyponym and a hypernym lies in the generality of their contexts.  By virtue of their abstract qualities, hypernyms occur in broad contexts.  Their hyponyms, on the other hand, are specific and thus more likely to feature in explicit contexts.  For instance, an animal has general properties of locomotion, feeding and reproduction but only the echidna and platypus will feature in the context of egg-laying mammals.
 
-The distributional informativeness hypothesis is derived from this principal.  SLQS \citep{santus2014chasing} employs entropy to quantify informativeness.  Lower entropy values imply less uncertainty about the outcome of an event.  Hence, the more general the contexts, the lower the probability we can guess the “topic” of reference and the higher the entropy value.  SLQS calculates the reciprocal difference of the median entropy of the top $N$ contexts of hyponym and hypernym vectors.  SLQS is also an asymmetric measure and if $SLQS(x, y)$ yields a positive value, then $\textbf{y}$ is found to be more general than $\textbf{x}$ which is an indicator of hypernymy.  Two further variants of SLQS were first proposed in \citep{shwartz2017siege}.
+The distributional informativeness hypothesis is derived from this principal.  $SLQS$ \citep{santus2014chasing} employs entropy to quantify informativeness.  Lower entropy values imply less uncertainty about the outcome of an event.  Hence, the more general the contexts, the lower the probability we can guess the “topic” of reference and the higher the entropy value.  $SLQS$ calculates the reciprocal difference of the median entropy of the top $N$ contexts of hyponym and hypernym vectors.  $SLQS$ is also an asymmetric measure and if $SLQS(x, y)$ yields a positive value, then $\textbf{y}$ is found to be more general than $\textbf{x}$ which is an indicator of hypernymy.  Three further variants of $SLQS$ were first proposed in \citep{shwartz2017siege}.  $SLQS_{Sub}$ is a weakly symmetric version of $SLQS$ evaluated by subtracting the median entropy of a hyponym's top $N$ contexts from the median entropy of its hypernym's top $N$ contexts.  $SLQS_{Row}$ exploits the fact that the context and target word entropies are not highly correlated, thus repositioning $SLQS$ in terms of target word entropy \citep{shwartz2017siege}.  Finally, $SLQS_{Row, Sub}$ uses the same subtraction expression as $SLQS_{Sub}$ on $SLQS_{Row}$.
 
 \subsubsection{Reversed Inclusional Measures}
 The distributional inclusional hypothesis is directly challenged by the reversed inclusional measures.  The basis of these measures is the hypernym cannot always replace the hyponym in its contexts due to the high specificity of the latter.  \textit{The mammal climbed into the car} would not be a reasonable alternative for \textit{the man climbed into car} despite the fact that a man is a mammal.  \citep{shwartz2017siege} propose a simple variant of Weeds Precision and ClarkeDE to model this property, consisting of switching the original function parameters around.  Thus $WeedsPrec(x,y)$ becomes $ReversedWeedsPrec(y, x)$ and the same principle applies to ClarkeDE.
@@ -232,9 +232,7 @@ The distributional inclusional hypothesis is directly challenged by the reversed
 \subsection{Application of Unsupervised Metrics in Selected Literature}
 In \citep{santus2014chasing},  a 2.7-billion word corpus was constructed by concatenating the ukWaC \citep{ferraresi2007building} and WaCkypedia corpora in English \citep{baroni2009wacky}.  Word context was provided by a two-word window on either side of the target word and \ac{LMI} was used to weight the features.  The BLESS dataset \citep{Baroni2011} was recruited as an evaluation dataset.  Besides providing hypernyms for 200 English concepts, BLESS also features several negative examples of hypernymy which include other semantic relations such meronym, co-hyponymy and randomly unrelated words.
 
-\citeauthor{santus2014chasing} pitted the distributional inclusional and informativeness hypotheses against each other over two tasks.  WeedsPrec \citep{weeds2003general} represents the inclusional metric family while the informativeness hypothesis is represented by SLQS \citep{santus2014chasing}.  The first tasks involves detecting hypernymy in each positive word-pair using the most frequently occurring word as a baseline.  The second, harder task consisted of discriminating hypernymy from the other semantic relations.
-
-WeedsPrec does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while SLQS does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive SLQS is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  The results are reproduced in Table~\ref{tab:santus_comparison} from \citet{santus2014chasing}.
+\citeauthor{santus2014chasing} pitted the distributional inclusional and informativeness hypotheses against each other over two tasks.  $WeedsPrec$ \citep{weeds2003general} represents the inclusional metric family while the informativeness hypothesis is represented by $SLQS$ \citep{santus2014chasing}.  The first tasks involves detecting hypernymy in each positive word-pair using the most frequently occurring word as a baseline.  The second, harder task consisted of discriminating hypernymy from the other semantic relations.
 
 \begin{table*}\centering
     \begin{tabular}{@{}lrrrr@{}} \toprule
@@ -246,7 +244,136 @@ WeedsPrec does not beat the baseline in the first task, scoring a precision of $
     \textit{SLQS $\times$ Cosine}   & $\textbf{0.59}$ & $\textbf{0.27}$ & $\textbf{0.35}$ & $\textbf{0.24}$ \\
     \bottomrule
     \end{tabular}
-    \caption{\ac{AP} of two unsupervised metrics when discriminating semantic relations }\label{tab:santus_comparison}
+    \caption{\ac{AP} of two unsupervised metrics when discriminating semantic relations.}\label{tab:santus_comparison}
 \end{table*}
 
-SLQS is less likely to confuse co-hyponymy for hypernymy than WeedsPrec which suggests that in general the co-hyponym in the candidate word slot ($y$) is as specific as the query word ($x$).  The scores reflect the average precision over all 200 concepts in the BLESS dataset ($AP@all$).  
+$WeedsPrec$ does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while $SLQS$ does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive $SLQS$ is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  The results are reproduced in Table~\ref{tab:santus_comparison} from \citet{santus2014chasing}.
+
+$SLQS$ is less likely to confuse co-hyponymy for hypernymy than $WeedsPrec$ which suggests that in general the co-hyponym in the candidate word slot ($y$) is as specific as the query word ($x$).  The scores reflect the average precision over all 200 concepts in the BLESS dataset ($AP@all$).
+
+In \citep{shwartz2017siege}, the authors undertake a more ambitious study of unsupervised metrics over four commonly-used datasets: BLESS \citep{Baroni2011}; EVALution \citep{santus2015evalution}; Lenci/Benotto \citep{benotto2015distributional}; and Weeds \citep{weeds2014learning}.  Each dataset features positive hypernymy examples and negative examples consisting of words that are related together via some other semantic relationship such as meronymy, synonymy, co-hyponymy or randomly unrelated.  The study tests each metric’s ability at distinguishing hypernymy from the other relations.  Furthermore, experiments were also carried out to measure the metric’s performance at detecting hypernymy among specific relations in isolation. 
+
+\begin{table*}\centering
+    \begin{tabular}{@{}cccc@{}} \toprule
+    \textbf{Context Type} & \multicolumn{2}{c}{\textbf{Context Parameters}} & \textbf{Feature Weighting} \\ \cmidrule{1-4}
+    \multirow{6}{*}{Window} & 
+    \multirow{3}{*}{Directional} &
+    \multirow{3}{*}{$win2d$ or $win5d$} & Raw Freq \\
+    & & & PPMI \\
+    & & & LMI \\ 
+    \cmidrule{2-4}
+    & \multirow{3}{*}{Non-Directional} &
+      \multirow{3}{*}{$win2$ or $win5$} & Raw Freq \\
+    & & & PPMI \\
+    & & & LMI \\ 
+    \cmidrule{1-4}
+    \multirow{3}{*}{Dependency} & 
+    \multirow{3}{*}{-} &
+    \multirow{3}{*}{$dep$ or $joint$} & Raw Freq \\
+    & & & PPMI \\
+    & & & LMI \\
+    \bottomrule
+    \end{tabular}
+    \caption{Vector Space Model combinations used in \citep{shwartz2017siege}.}\label{tab:siege_vector_spaces}
+\end{table*}
+
+Following \citep{santus2014chasing}, \citeauthor{shwartz2017siege} make use of the same concatenated corpus but in contrast to \citeauthor{santus2014chasing}, lemmatised it and annotated it with part-of-speech tags and dependency labels.  The \ac{VSM}’s vocabulary was limited by only considering nouns, verbs and adjectives that featured 100 times or more in the corpus.  Several \acl{VSM}s were constructed in an attempt to determine which particular combination, in tandem with an unsupervised metric, works best at identifying hypernymy among several relata.  
+
+Table~\ref{tab:siege_vector_spaces} illustrates the \ac{VSM} variants tested.  The authors tested window and dependency-based contexts, with the association between the words and their contexts weighted by raw frequency, \ac{PPMI}, and \ac{PLMI} for a total of 18 matrix combinations. $win2$ and $win5$ represent a two and five word non-directional context window respectively, whereas the $d$ suffix denotes a directional context.  The dependency-based contexts are denoted by $dep$ and $joint$, where the former represents parent-daughter context and the latter captures parent-sister pairs in the dependency tree.
+
+\begin{table*}\centering
+    \begin{tabular}{@{}lccccr@{}} \toprule
+    \textbf{Dataset} & \shortstack{\textbf{Hyper vs.} \\ \textbf{Relation} } & \textbf{Measure} & \shortstack{\textbf{Context} \\ \textbf{Type} } & \shortstack{\textbf{Feature} \\ \textbf{Weighting}} & \textbf{AP@100} \\ \cmidrule{1-6}
+    \multirow{5}{*}{EVALution} & 
+    All Relations & $invCL$ & joint & freq & 0.661 \\
+    & Meronym & $APSyn$ & joint & freq & 0.883 \\
+    & Attribute & $APSyn$ & joint & freq & 0.880 \\
+    & Antonym & $SLQS_{Row}$ & joint & freq & 0.740 \\
+    & Synonym & $SLQS_{Row}$ & joint & freq & 0.830 \\
+    \cmidrule{1-6}
+    \multirow{5}{*}{BLESS} & 
+    All Relations & $invCL$ & win5 & freq & 0.540 \\
+    & Meronym & $SLQS_{Sub}$ & win5d & freq & 1.000 \\
+    & Coordinate & $SLQS_{Sub}$ & joint & freq & 0.995 \\
+    & Attribute & $SLQS_{Sub}$ & dep & PLMI & 1.000 \\
+    & Event & $APSyn$ & dep & freq & 1.000 \\
+    \cmidrule{1-6}
+    \multirow{3}{*}{Lenci/Benotto} & 
+    All Relations & $APSyn$ & joint & freq & 0.617 \\
+    & Antonym & $APSyn$ & dep & freq & 0.861 \\
+    & Synonym & $SLQS_{Row, Sub}$ & joint & PPMI & 0.948 \\
+    \cmidrule{1-6}
+    \multirow{2}{*}{Weeds} & 
+    All Relations & $ClarkeDE$ & win5d & freq & 0.911 \\
+    & Coordinate & $ClarkeDE$ & win5d & freq & 0.911 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Best unsupervised results accompanied by VSM features in comprehensive experiment.}\label{tab:siege_unsupervised_results}
+\end{table*}
+
+For each measure, context-type, feature weighting function, the word-pairs were ranked in descending order of the score achieved.  The \ac{AP} was measured in two instances: on the full list of word-pairs; and on the 100 most confidently scored pairs.  A table reflecting the best $AP@100$ results recorded in the experiments is shown in Table~\ref{tab:siege_unsupervised_results} from \citet{shwartz2017siege}.
+
+Results suggest that there does not exist one combination of measure and semantic space that outperforms the rest across the board.  Supported by the best results, the authors speculated that syntactic contexts (dependency, joint-dependency) have higher hypernymy predictive power due to them capturing both proximity and syntactic features.  The na\"ve raw frequency feature weight acquitted itself surprisingly well considering it does not provide more information than co-occurrence of word and context.
+
+The nature of the word-pairs in the datasets influenced the experiments’ outcome and shed some light on why some metrics fared better on some datasets than others.  $SLQS$ outputs a high score if the candidate word being tested for hypernymy is found to be more general than the query word \citep{santus2014chasing}.  It performed well (although not necessarily the best) in the hypernymy/antonymy, hypernymy/synonymy challenges where the (negative) candidate antonyms and synonyms were largely less general than the hypernyms in the set.  Conversely, the symmetric similarity measures were best suited to distinguish hypernymy from words which have few shared contexts.  For instance, the attribute words featured in BLESS are adjectives which share few contexts with the noun term word.  
+
+Like \citep{santus2014chasing}, $SLQS$ was more effective at recognising hypernymy than inclusion-based methods, even when applied onto dependency-based context types.  However, inclusion-based methods such as $ClarkeDE$, $invCL$ and $WeedsPrec$ were superior to $SLQS$ on the Weeds dataset.  \citeauthor{shwartz2017siege} conclude that this result is due to the distribution of words in Weeds, in which every positive and negative hypernym instance features only once.  BLESS contains several repeated hypernyms which, moreover, tend to be rather general (ex. \textit{animal}, \textit{object}).  This plays to the strengths of $SLQS$ which justifies its dominance on this particular set.
+
+\subsection{Criticism of Unsupervised Methods}
+We examined empirical work which illustrated the power of unsupervised metrics, founded as they are on sound linguistic hypotheses.  Although the metrics have been used in a hypernymy detection context, they can be leveraged to discover hypernyms by finding the nearest neighbours of a hyponym vector in a particular vector space according to an asymmetric measure based on the distributional inclusional or informativeness hypothesis like the baselines created by the SemEval 2018 Task 9 organisers \citep{camacho2018semeval}.  For unsupervised methods to be effective in this regard, the score returned when considering a hypernymy word-pair must be statistically distinguishable from the score returned if the word-pair is random or linked by some other semantic relation.  Otherwise recognising hypernyms using such methods is reduced to a game of chance.  Although \citep{santus2014chasing} challenged the soundness of inclusion measures, \citep{roller2014inclusive} tested whether asymmetric metrics based on the inclusional hypothesis are able to fulfill this requirement and, unfortunately, found them initially lacking.
+
+\citeauthor{roller2014inclusive} construct a corpus in a manner similar to \citep{santus2014chasing}, but enlarged by the inclusion of Gigaword and BNC.  The authors pre-processed the corpus by lemmatising it and annotating the part-of-speech tags, after which they filtered out words which occurred less than 500 times.  They constructed three vector spaces, two of which were based on a window context (2 words around the target word, and a full sentence respectively), and one based on a TypeDM tensor model.  The vector spaces are denoted as \textit{U+W2}, \textit{U+Sent} and \textit{TypeDM} respectively.  The features of the two window-based models were transformed by \ac{PPMI}.
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/standardised_distribution_invCL.png}
+  \caption{Standardised distribution of $invCL$ score across relations and VSMs.}
+  \label{fig:standardised_invCL_boxplot}
+\end{figure}
+
+
+A battery of inclusional measures, including $WeedsPrec$ \citep{weeds2003general} and $invCL$ \citep{lenci2012identifying}, were used to score the word-pairs in the BLESS dataset \citep{Baroni2011} in each vector space which, as we have already seen, consists of word-pairs tied by several semantic relations.  The scores were standardised and a box-plot of the score achieved when measuring $invCL$ asymmetric similarity - chosen for the best results attained in the experiment - across relations and vector spaces is reproduced in Figure~\ref{fig:standardised_invCL_boxplot} from \citet{roller2014inclusive}.
+
+Despite $invCL$ was the most productive metric at hypernym identification, we can see that performance is not robust across all vector space models.  The standardised $z$-score was significantly higher for hypernymy word-pairs in the \textit{TypeDM} space but was entirely deprived of predictive ability in the \textit{U+W2}  and \textit{U+Sent} \ac{VSM}s. \ac{AP} results for hypernymy against co-hyponymy, meronymy and random relation respectively, depict a similar picture.  In all vector spaces except \textit{TypeDM}, both the asymmetric measures as well as the baseline cosine symmetric measures assigned the highest ranking to co-hyponym terms by a significant margin.  In \textit{TypeDM}, $invCL$ acquires a higher mean average precision for hypernyms than for co-hyponyms but the difference is not statistically significant \citep{roller2014inclusive}.
+
+These experiments pose a conundrum for unsupervised methods research: they have been shown to be successful in some settings but clearly miss the mark in others.  \citeauthor{roller2014inclusive} argued that the distributional inclusional hypothesis was selective and did not apply on all contexts.  However, unsupervised methods of distributional inclusion considered all contexts equally, which ultimately harms their performance \citep{roller2014inclusive}.  They propose a technique similar to \citep{Snow2004}, which leverages a supervised classifier to both learn the distributional signals most associated with a given set of hypernymy word-pairs, and interpret the trained models to understand which features are contributing to the estimated result.
+
+\section{Supervised Methods}
+High-quality, ground-truth data and associated target discrete labels (or continuous values if the task is of the regression type), distinguish supervised methods from the unsupervised measures we have reviewed so far.  In the hypernymy identification domain, supervised methods are not grounded in a linguistic hypothesis but attempt to learn the asymmetric metric from a provided training set \citep{levy2015supervised}.
+
+Just like in the unsupervised context, the query and candidate hypernym terms are represented by vectors sourced from a vector space model.  Instead of applying distributional hypotheses, the vectors representing the words in the pair are combined by a vector operations like concatenation \citep{baroni2012entailment}, or difference \citep{roller2014inclusive}.  In the concatenation case, the hypernym vector is added to the tail of the hyponym vector to create a feature which has twice the number of dimensions as the individual word vector.  In the diff case, the hypernym vector is subtracted from the hyponym \citep{roller2014inclusive} or vice versa \citep{shwartz2017siege}.  The combined feature vectors are fed into a classifier together with the target labels.  The literature we reviewed shows a preference for the logistic regression \citep{roller2014inclusive, shwartz2017siege, levy2015supervised, yamane2016distributional, bernier2018crim} and \ac{SVM} classifiers \citep{shwartz2017siege, levy2015supervised, baroni2012entailment}.
+
+\subsection{Classifier Background}
+\subsubsection{Logistic Regression}
+Despite the name, logistic regression is actually a binary classification learning algorithm that uses the properties of the logistic function $\sigma(z)=\frac{1}{1 + e^{-z}}$ that maps real valued inputs to values between $0$ and $1$.  Values in this range can be interpreted as a probability. The real value input is a linear combination of $m$ features and $m+1$ weights.  This can be expressed in the terms of the logit function: \[logit(p(y = 1 | x)) = z = \textbf{w}^T\textbf{x}\]
+
+The resulting real value can be mapped to a probability using the defined logistic equation.  To learn the best weights (or coefficients) a cost function is required to minimise the error when predicting hypernymy.  This is done by minimising the logistic loss function: 
+\[J(w) = \sum_{i=1}^{n}\Big[-y^{(i)}log\big(\sigma(z^{(i)})\big) - \big(1 - y^{(i)}\big) log\big(1-\sigma(z^{(i)}\big)\big)  \Big] \] 
+
+The linear model for binary classification can be extended to the multiclass classification via the \textit{OvR} (one vs rest technique) or using multiclass settings that optimise the model for multi label classification.  Deviations from the correct prediction push the cost function towards infinity thus penalising poor predictions. 
+
+Various gradient descent solvers can be used to minimise the cost function but some are better suited than others depending on the circumstances.  Adam \citep{kingma2014adam} is a sophisticated version of the standard \ac{SGD} solver which attempts to minimise the task’s cost function by taking tiny steps in the direction opposite to the gradient calculated from the cost function’s derivative.  Adam is distinguished from vanilla \ac{SGD} by managing an adaptive learning rate for every trainable parameter.  It is known to work well in several empirical scenarios and is used extensively in the literature we reviewed \citep{shwartz2016path, bernier2018crim, yamane2016distributional, espinosa2016supervised}.
+
+Two problems afflict all machine learning algorithms: bias and variance.  High bias means that the model does not learn enough from the training data, under-fitting the data and does not generalise well to unseen instances.   High variance is when the model misinterprets random noise in the data as important features which do not carry over to new unseen instances.  Variance and bias in logistic regression models can be tuned with the addition of regularisation parameters that penalise extreme feature coefficients. $L2$ regularisation penalises large weights whereas $L1$ encourages sparse solutions – weight coefficients set to $0$, thus nullifying the effect of the corresponding feature on the model.  Because of this reason, $L1$ regularisation is often used as a feature selection technique.
+
+\subsubsection{Support Vector Machines}
+%% to be added
+
+\subsection{Representative Work}
+\citeauthor{baroni2012entailment}'s work \citep{baroni2012entailment} is considered a baseline in the literature under review \citep{shwartz2017siege, shwartz2016path, camacho2017we, roller2014inclusive, levy2015supervised}.  The study focused on two tasks, but we shall ignore the second task which is related to learning quantifying determiners (ex. \textit{few} entails \textit{some}).  
+
+In the first task, the authors wanted to capture training data for an entailment recogniser by leveraging properties of adjective-noun (AN) composite expressions, such as \textit{red car}.  Based on the fact that most ANs imply the headword noun (\textit{white cat} entails \textit{cat}), the vector equivalent of these pairs can be used to train a classifier to detect hypernymy for other nouns (\textit{cat} entails \textit{animal}).  Like hyponyms, adjective-noun phrases are more specific than the noun and hence their contexts are a subset of the context of the modified noun. 
+
+Corpus pre-processing steps mirror what we have already described in other work.  The author uses a sentence wide word-window context and the features were transformed by \ac{PMI}.  A sparse vector space model composed of $48,000$ target word vector rows and $27,000$ context word columns.  To counter the matrix’s sparsity and improve computation efficiency, the vector was reduced to $300$ components via an \ac{SVD} transformation.  The training data set, partially generated from BLESS, included $1,246$ positive $(AN, N)$ pairs.  Negative instances were induced automatically by linking ANs with randomly-selected nouns in the dataset.  The test set, which had to be composed of (hyponym, hypernym) pairs, was culled from WordNet \citep{Miller1995}, avoiding hypernyms which are too abstract (ex. \textit{object}, \textit{entity}, etc.).  Negative instances were generated using the same method employed in the training set.  
+
+To build the feature vector, \citeauthor{baroni2012entailment} concatenated the vector equivalent of each training pair component together.  Since the vector space was reduced to $300$ dimension, each feature was composed of a $600$-dimension vector.  The author opted for an \ac{SVM} with polynomial kernel to learn the entailment signal.  They supported their choice by noting that a non-linear \ac{SVM} extracts feature interactions automatically, which would otherwise have had to be handcrafted in order to be exploited by a linear classifier like a logistic regression model.  They trained their \ac{SVM} on the $(AN, N)$ pairs and achieved a $69.3\%$ accuracy score when they evaluated the model on the hypernymy test set.  Accuracy ascended to $88.6\%$, when they trained the \ac{SVM} directly on the hypernymy set with $10-$fold cross-validation.  The results showed that a model trained to recognise the head noun in adjective-noun pairs can be effectively transferred to the related - but different - task of distinguishing hypernyms from random words.
+
+\citeauthor{roller2014inclusive} use vector difference to construct their features.  Inspired by the success of \citeauthor{mikolov2013distributed} at using vector subtraction to learn word analogies \citep{mikolov2013distributed}, they come up with their own vector difference variant.  They represent each word-pair by the difference of the unit-normalised vectors, combined with their square differences.  
+
+These features are intended to capture both the dimensions that strongly predict hypernymy and the dimensions that are predictive of random words.
+The authors construct a vector space with a sentence wide word-window similar to \citep{baroni2012entailment}.  The corpus used by \citep{roller2014inclusive} differs from \citep{baroni2012entailment} only by the inclusion of Gigaword in addition to BNC, ukWaC and WaCkypedia.  The resultant vector space is reduced to $300$ dimensions by \ac{SVD}, once again mirroring \citeauthor{baroni2012entailment}'s setup.  
+
+The training data were provided by the BLESS and ENTAILMENT datasets.  Instead of splitting the datasets into training and test, they opt to measure the classifier’s ability at identifying hypernyms on all terms in the sets.  To do so, they holdout one term and train on the remaining terms.  Additionally, they carry out a lexical split whereby they ignore any word-pairs in the training set which overlaps one of the words in the test, irrespective of position.  An average accuracy score of $0.80$ and $0.82$ is achieved on BLESS and ENTAILMENT respectively, considerably beyond the most frequent class baseline of $0.46$ and $0.50$ respectively.  \citeauthor{roller2014inclusive} also train an \ac{SVM} classifier on concatenated features and experiment with a variety of vector spaces, achieving similar results.  However, the logistic regression model trained on $diff$ features beat the \ac{SVM} in every experiment attempted.  For the sake of comparison, we specifically mention the result attained on the experiment which was, in our view, most similar to \citep{baroni2012entailment}.
+
+
+
