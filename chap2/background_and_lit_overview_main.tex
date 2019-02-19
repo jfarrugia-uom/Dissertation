@@ -548,7 +548,7 @@ The authors followed previous work \citep{levy2015supervised, shwartz2017siege, 
 
 In contrast to \citep{Fu2014}, \citeauthor{ustalov2017negative} framed the problem as a hypernym discovery task and evaluated the results accordingly.  Instead of precision, recall and $F1$ scores, they opted for $hit@l$ (similar to $precision@k$) and \ac{AUC}.  The authors chose to evaluate at $l=(1, 5, 10)$.  While $hit@l$ simply returns the average ratio of correct results in the first $l$-slots, \ac{AUC} also considers the rank of the predicted hypernyms.  The results they achieved showed that the regularisation terms added to the \ac{MSE} loss function improved the scores achieved on all metrics and across the English and Russian datasets, irrespective of the number of clusters trained.  
 
-However, the improvement margin between the scores achieved with and without regularisation (controlling for the number of clusters), is slight.  Statistical significance (or otherwise) was not reported in their paper but the percentage improvement between the baseline score and highest score achieved by any one of the regularisation options is, on average, 1.3\%.  Regularisation terms had a greater impact on the single cluster model, where a 13\% improvement on the baseline was recorded.  However, in general, much better results were accomplished with the 25 cluster model which is consistent with \citeauthor{Fu2014}'s findings.
+However, the improvement margin between the scores achieved with and without regularisation (controlling for the number of clusters), is slight.  Statistical significance (or otherwise) was not reported in their paper but the percentage improvement between the baseline score and highest score achieved by any one of the regularisation options is, on average, 1.3\%.  Regularisation terms had a greater impact on the single cluster model, where a 13\% improvement on the baseline was recorded.  However, in general, much better results were achieved with the 25 cluster model which is consistent with \citeauthor{Fu2014}'s findings.
 
 \subsection{Sense Awareness and Domain Clustering}
 \citeauthor{espinosa2016supervised} contribute several developments to the projection learning research with their \textsc{TaxoEmbed} framework \citep{espinosa2016supervised}:
@@ -609,9 +609,9 @@ Unlike \citeauthor{Fu2014, espinosa2016supervised}, the test terms are not alrea
 \end{itemize}
 
 \begin{table*}\centering
-    \begin{tabular}{@{}lrrrrcrrrr@{}} \toprule
+    \begin{tabular}{@{}rrrrrcrrrr@{}} \toprule
     & \multicolumn{4}{c}{\textbf{Development Set}} & \phantom{a} & \multicolumn{4}{c}{\textbf{Test Set}} \\ 
-    & \multicolumn{2}{c}{\textbf{Japanese}} & \multicolumn{2}{c}{\textbf{English}} && \multicolumn{2}{c}{\textbf{Japanese}} & \multicolumn{2}{c}{\textbf{English}} \\ 
+    & \multicolumn{2}{c}{Japanese} & \multicolumn{2}{c}{English} && \multicolumn{2}{c}{Japanese} & \multicolumn{2}{c}{English} \\ 
     %\midrule
     \cmidrule{2-5} \cmidrule{7-10}
     & \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} && \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} \\ \midrule
@@ -630,7 +630,7 @@ Furthermore, \ac{MRR} was found to increase with the number of clusters and the 
 
 \citeauthor{yamane2016distributional} do not examine the lexical memorisation bias especially in the English context where it was shown to be pronounced \citep{levy2015supervised, shwartz2017siege}.  Splitting the dataset on a lexical basis rather than on a random basis would have lowered the risk of learning prototypical hypernyms but, judging on previous studies, would have probably had an adverse impact on the model’s performance.
 
-\subsection{CRIM Modifications to Yamane et al.}
+\subsection{CRIM Modifications to Yamane et al.} \label{CRIM}
 The work submitted to Semeval 2018 Task 9 competition \citep{camacho2018semeval} by researchers affiliated with the \ac{CRIM} achieved the best scores in the English subtasks from all submitted solutions.  Several resources are provided by the task organisers including gold-standard datasets for each subtask and an extensive vocabulary to limit the candidate term search space.  The CRIM solution featured two components:
 \begin{itemize}
     \item A supervised projection learning method using the inner-product vector operation to measure similarity between the projected and the actual hypernym embeddings, as introduced in \citep{yamane2016distributional};
@@ -639,32 +639,100 @@ The work submitted to Semeval 2018 Task 9 competition \citep{camacho2018semeval}
 
 To increase recall in the unsupervised mode, the authors follow \citep{Snow2004, ritter2009anyway} and search for conjunction patterns in the corpus to harvest co-hyponyms $q'=(q'_1,\ldots,q'_k )$ of a given term query $q$.  The occurrence frequency of each co-hyponym $q'_i$ is recorded and a co-hyponym is scored by multiplying its occurrence frequency by the cosine similarity of $(q, q'_i)$.  The co-hyponyms are ranked by their score and the highest-scoring words are retained.  The harvested co-hyponyms are used to augment the mined hypernyms of $q$ since the coverage of the original hypernym is extended.  The hypernyms are ranked using the same method employed for the co-hyponym ranking.
 
-In this section we will focus on \citeauthor{bernier2018crim}'s extensions to the inner-product similarity method introduced by \citep{yamane2016distributional}.  The authors’ most prominent deviation is opting out of clustering the training pairs as was done in the literature so far \citep{Fu2014, espinosa2016supervised, yamane2016distributional}.  Instead, they propose a trainable fixed tensor consisting of $k$ projection matrices $\bm{\Phi}_i \in \mathbb{R}^{d \times d}$ for $i \in \{1,\ldots,k\}$ where $d$ is the dimensionality of the embeddings.  Each linear projection matrix is applied to the hyponym embeddings to produce $k$ hypernyms projections $\bm{P} \in \mathbb{R}^{k \times d}$.  The vectors are normalised to unit length, and the similarity between each projected hypernym vector and the ground-truth positive or negative hypernym in the dataset is computed using the dot product.  The linear combination of $k$ similarity scores and $k+1$ weights (an intercept term is included) is fed to a sigmoid activation function which computes the probability that the training word-pair $(x,y)$ is linked by hypernymy.
+In this section we will focus on \citeauthor{bernier2018crim}'s extensions to the inner-product similarity method introduced by \citep{yamane2016distributional}.  The authors’ most prominent deviation is opting out of clustering the training pairs as was done in the literature so far \citep{Fu2014, espinosa2016supervised, yamane2016distributional}.  Instead, they propose a trainable fixed tensor consisting of $k$ projection matrices $\bm{\Phi}_i \in \mathbb{R}^{d \times d}$ for $i \in \{1,\ldots,k\}$ where $d$ is the dimensionality of the embeddings.  Each linear projection matrix is applied to the hyponym embeddings to produce $k$ hypernyms projections $\bm{P} \in \mathbb{R}^{k \times d}$.  The vectors are normalised to unit length, and the similarity between each projected hypernym vector and the ground-truth positive or negative hypernym in the dataset is computed using the dot product.  The linear combination of $k$ similarity scores and $k+1$ weights (an intercept term is included) is fed to a sigmoid activation function which computes the probability that the training word-pair $(x,y)$ is linked by hypernymy.  The authors reported the best results were attained when they set $k=24$.  
 
 The similarity weights and $k$ projection matrices are learnt by minimising the binary cross-entropy cost function.  Like \citep{yamane2016distributional}, they leverage Adam \citep{kingma2014adam} to optimize the gradient descent but override the recommended hyper-parameters by setting $\beta_1 = \beta_2 = 0.9$.
 
 Apart from learning fixed multi-projection matrices, \citeauthor{bernier2018crim} carried out additional refinements to \citep{yamane2016distributional}.  They experimented with a projection matrix initialisation strategy whereby they added random noise - drawn from a normal distribution with mean 0 and stardard deviation set as per \citep{glorot2010understanding} - to an identity matrix.  Ablation experiments executed by the authors showed that this initialisation strategy helped the model achieve better results than when the projection matrices were just randomly initialised.
 
-The authors also found that their model benefitted from a higher positive to negative sample ratio than an equal positive to negative ratio advocated in \citep{yamane2016distributional} where every training gradient update is based on a single positive and negative example.  The best results were observed when ten negative hypernym samples were drawn for every positive hypernm in the training set.  Moreover, down-sampling high frequency hypernyms had a positive effect when tuning their model on the development set but later tests revealed that scores would have been higher if the model was trained on all datapoints.  Notwithstanding, their official results were based on down-sampled runs.
+The authors also found that their model benefitted from a higher positive to negative sample ratio than an equal positive to negative ratio advocated in \citep{yamane2016distributional} where every training gradient update is based on a single positive and negative example.  The best results were observed when ten random negative hypernym samples were drawn from the vocabulary for every positive hypernm in the training set.  Moreover, down-sampling high frequency hypernyms had a positive effect when tuning their model on the development set but later tests revealed that scores would have been higher if the model was trained on all datapoints.  Notwithstanding, their official results were based on down-sampled runs.
 
 \citep{yamane2016distributional} eschew regularisation entirely or do not report provisions taken in their publication.  \citeauthor{bernier2018crim} are aware of their model’s tendency to over-fit and add dropout to the word embeddings as well as the hypernym projection vector.  Furthermore, they use gradient clipping to avoid large gradient updates to the model in the back-propagation step, especially during the first training epochs and also employ early stopping to halt training once no improvement is observed on the validation set for a consecutive number of epochs.
 
 The largest performance boost in the CRIM model was observed when the embeddings were fine-tuned.  The embeddings were initially pre-trained on each input corpus corresponding to the various sub-tasks, using the word2vec skipgram algorithm with negative sampling \citep{mikolov2013efficient}.  Prior to training the embeddings, the corpora were pre-processed such that bi-grams and tri-grams featured in the vocabulary were merged into an atomic token.  In all projection learning setups we considered so far, the embeddings weights are frozen and do not contribute to minimising the loss functions.  Training the embeddings specialises them for the task at hand, but could also result in the embeddings “forgetting” the semantic represenation learnt from the pre-training on the corpus, vastly limiting their usefulness \citep{howard2018universal}.  The authors do not report how the embeddings were tuned but ablation tests show that training the embeddings alongside the projection matrices and sigmoid layer weights improved the \ac{MAP} score by 45\% to 143\%, depending on which other features they excised from their model.
 
 \begin{table*}\centering
-    \begin{tabular}{@{}lrrrrcrrrr@{}} \toprule
-    & \multicolumn{4}{c}{\textbf{Development Set}} & \phantom{a} & \multicolumn{4}{c}{\textbf{Test Set}} \\ 
-    & \multicolumn{2}{c}{\textbf{Japanese}} & \multicolumn{2}{c}{\textbf{English}} && \multicolumn{2}{c}{\textbf{Japanese}} & \multicolumn{2}{c}{\textbf{English}} \\ 
-    %\midrule
+    \begin{tabular}{@{}rrrrrcrrrr@{}} \toprule
+    & \multicolumn{9}{c}{\textbf{General Purpose English Dataset (1A)}} \\ \cmidrule{2-10} 
+    & \multicolumn{4}{c}{Projection Learning} & \phantom{a} & \multicolumn{4}{c}{Hybrid} \\
     \cmidrule{2-5} \cmidrule{7-10}
-    & \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} && \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} \\ \midrule
-    \# Clusters & 1 & 1 & 1 & 1 && 5 & 19 & 1 & 2 \\
-    \ac{MRR} & 0.215 & \textbf{0.279} & 0.321 & \textbf{0.343} && 0.193 & \textbf{0.349} & 0.280 & \textbf{0.339} \\
+    & $MRR$ & $MAP$ & $P@1$ & $P@5$ && $MRR$ & $MAP$ & $P@1$ & $P@5$ \\ \midrule
+    Given Dataset & 0.349 & 0.191 & 0.288 & \textit{N/A} && 0.359 & 0.195 & 0.297 & 0.187 \\
+    Augmented Dataset & 0.345 & 0.190 & 0.283 & \textit{N/A} && \textbf{0.361} & \textbf{0.198} & \textbf{0.297} & \textbf{0.190} \\
     \bottomrule
     \end{tabular}
     \caption{\ac{CRIM} results achieved using projection learning only and hybrid results on the general-purpose English dataset \citep{bernier2018crim}.}\label{tab:CRIM_results}
 \end{table*}
 
+As mandated by the shared task's mission set objective \citep{camacho2018semeval}, \citep{bernier2018crim} created a model able to discover hypernyms rather than merely identify hypernymy.  To find the most likely hypernyms for a given query term $q$, the trained model's prediction function was invoked for every word in the vocabulary, and the 15 top-ranked words were emitted as likely hypernym candidates.
+
 Like \citep{espinosa2016supervised}, \citeauthor{bernier2018crim} are aware that neural methods benefit from more training data, and tried to bolster their results by augmenting their dataset with synthetic examples.  They exploited word distributional similarity in the embeddings by finding a query’s nearest neighbour (measured by cosine similarity) in the embeddings space and considering that word a co-hyponym.  Similar to \citep{Snow2004, ritter2009anyway}, the authors assign the original query’s hypernym to the “synthetic” co-hyponym and include this as a new word-pair in the dataset.  Similarly, if two or more hypernyms share the same nearest neighbour, the latter is also considered a bona-fide hypernym, paired with the relevant hyponyms and added to the dataset.  
 
 Amplifying the dataset had a positive effect on the results but only when combined with the unsupervised approach.  The synthetic examples had a slight detrimental effect on the projection learning supervised method.
+
+\section{SemEval-2018 Task 9: Hypernym Discovery}
+We explored hypernym discovery in the context of the SemEval-2018 Task 9 shared task \citep{camacho2018semeval}.  The competition featured a revamped benchmark for representing hypernymy, extending it from the traditional binary classification task to retrieval of candidate hypernyms from a given corpus.  The organisers set out an ambitious challenge composed of five subtasks encompassing three languages.  Contestants could develop systems to find hypernyms in Spanish and Italian, besides English.  Alongside the three general-purpose corpora in English, Spanish and Italian, the organisers also provided two domain-specific, English corpora covering the medical and music domains respectively.  However, we specifically focused on the challenging general-purpose English language task, motivated by the considerable research carried out on this language and the fact that we had no prior experience in the area.
+
+In the following sub-sections, we will describe the English data that accompanied the shared task. A description of the three information retrieval  metrics used to evaluate the results will follow. The authors included supervised and unsupervised baselines of varying sophistication against which any solution was compared; these will also be briefly mentioned.  Eleven models were submitted of which three were not accompanied by technical papers.  The submitted model which was most relevant to our work due to it obtaining the best result in the English subtasks was explored in section \ref{CRIM}.  The other submissions will be briefly reviewed in the final subsection.
+
+\subsection{Shared Task Datasets}
+Unlike previous work undertaken in the hypernym discovery and identification research areas, this challenge steered away from the dependency on Wikipedia as underlying source corpus \citep{espinosa2016supervised, shwartz2016path, shwartz2017siege} and 
+standard datasets such as \textit{BLESS}, \textit{Weeds} and others for training and evaluation \citep{ustalov2017negative, yamane2016distributional, shwartz2016path}.  
+
+Three subtasks were designed for the English language.  The first (1A), required participants to extract hypernyms from a 3-billion-word general-purpose corpus sourced from \textit{UMBC} \citep{han2013umbc_ebiquity}.  The \textit{UMBC} corpus is made up of high-quality, heterogenous paragraphs extracted from several domains.  The other two subtasks focused on texts specific to the medical and music domains.  Participants were invited to evaluate  models trained directly on the domain-specific datasets but were also encouraged to cross-evaluate models trained on general-purpose English.  Training data is often not available for highly specialised domains and such an experiment can help determine the suitability of general models to discover hypernyms from text on which the models were never trained.
+
+Details regarding the Spanish and Italian corpora, datasets can be found in the paper \citep{camacho2018semeval}.
+
+\subsubsection{Dataset Construction}
+The construction of the dataset was subdivided in four steps:
+\begin{enumerate}
+    \item Creation of vocabulary;
+    \item Collection and selection of input terms;
+    \item Extraction of gold hypernyms;
+    \item Validation and filtering of extracted hypernyms;
+\end{enumerate}
+All possible hypernyms were collected in one vocabulary dataset for every subtask.  Words in the vocabulary were considered on the basis of frequency in source text.  Words had to be featured five and three times for inclusion in the general-purpose and domain-specific vocabularies respectively.  $N$-grams were included up to tri-grams as long as they too exceeded the frequency thresholds.  Exceedingly general concepts with low descriptive power (ex. \textit{entity}) were semi-automatically black-listed by first compiling a list of most common hypernyms and then manually retaining the ones which still provided useful information (ex. \textit{animal}).
+
+Candidate hyponyms (terms) also had to exceed the same frequency threshold instituted in vocabulary creation step.  Similarly, bi-grams and tri-grams were allowed.  Only terms having at least one hypernym were ultimately considered.  Terms were automatically extracted via the application of a semi-automatic two-step process.  Bearing in mind frequency, type and knowledge domain criteria, terms were automatically extracted.  Each term was normalised manually by singularising each word, capitalising proper nouns, and lower-casing concepts.  Finally, ambiguous terms and terms incorrectly mapped to a domain were removed.
+
+For each term, all BabelNet \citep{navigli2012babelnet} synsets were first retrieved which featured the term as a lexicalisation.  The parent nodes of each synset, across all lexical references were visited.  All lexicalizations of the visited synsets as featured in BabelNet were selected, given that they also existed in the corresponding vocabulary.
+After, a two-step verification process ensured the quality of the extracted hypernyms.  The first validation run was crowdsourced, delegated to proven workers from Amazon Mechanical Turk (AMT).  Each query term and candidate hypernyms was assigned to three workers who were asked to select the correct hypernyms.  Gold labels were decided on the basis of majority voting.  Then, expert human validators were first tasked to remove incorrect hypernyms and normalise correct hypernyms (ex. singularise).  In the case of the English dataset, this step was skipped and the validation job delegated to the AMT workers.  All datasets, including the English one, were once again processed by the expert validators who, in the second case, were asked to add obvious, missing hypernyms and remove mislabelled hypernyms that were neglected by the crowdsourced validators.
+
+\subsubsection{Why is the Dataset Challenging?}
+The shared task dataset is distinguishable from the standard datasets in the following ways:
+\begin{itemize}
+    \item Besides single words, the dataset also features bi-grams and tri-grams.  Multi-token words can be dealt by averaging the constituent word vectors or by fusing the individual words in an atomic token and considering them as a single word; 
+    \item The query terms are split between common concepts and proper noun entities.  Models can be trained on concepts and entities separately or on concepts and entities in unison;
+    \item The domain distribution is varied encompassing a wide range of domains.  
+    \item Word senses are conflated.  Hypernyms are given for all senses of a given word.  For instance the gold-standard hypernyms for the query word \textit{fault} include \textit{fissure} and \textit{imperfection} which capture the geological and failure senses of the lexicalisation;
+    \item The dataset is noisy whereby the gold standard pairs are not necessarily correct.  For instance, the given hypernyms for \textit{Campo San Polo} (Venetian square) include \textit{topological manifold} and \textit{hausdorff space} which are two mathematical concepts that are unrelated to the single \textit{public square} sense of the word.  Models will therefore have to confront training pairs which will actually penalise their performance;
+\end{itemize}
+
+\subsubsection{English General-purpose Dataset Metrics}
+\begin{table*}\centering
+    \begin{tabular}{@{}lrrrr@{}} \toprule
+    \multicolumn{5}{c}{\textbf{General-purpose English Dataset 1A}} \\
+    & Term Count & Word-pairs & Distinct Hypernyms & Distinct Across Sets \\ \midrule
+    Training & 1,500 & 11,779 & 4,233 & 2,480 \\
+    Test & 1,500 & 7,048 & 3,076 & 1,323 \\ \midrule
+    \textbf{Total} & 3,000 & 18,827 & 5,556 & 5,556 \\
+    \bottomrule
+    \end{tabular}
+    \caption{English, general-purpose dataset metrics.}\label{tab:semeval_english_dataset_metrics}
+\end{table*}
+As can be seen from Table~\ref{tab:semeval_english_dataset_metrics}, term words often feature a multitude of possible hypernyms.  Although the term words are lexically split in the training and test sets, the same cannot be said of the hypernyms.  Indeed, from 3,076 distinct hypernyms in the test set, 1,753 also feature in the $y$-slot of one or more word-pairs in the training set.  The lexical memorisation phenomenon studied in \citep{levy2015supervised} was also observed in one of the shared task's submitted work \citep{bernier2018crim}.  In the supervised context, creating lexically separated datasets would likely inhibit prototypical hypernyms from being "discovered" but would also reduce the training set appreciably, thus limiting the potential of a supervised model.
+
+In addition to the training and test sets, a small validation set made up of 200 word-pairs (50 terms) was also provided.
+
+
+%
+%Five subtasks were curated together with a corresponding corpus:
+%\begin{enumerate}
+%    \item English general-purpose corpus taken from the 3-billion word \textit{UMBC} corpus \citep{han2013umbc_ebiquity};
+%    \item Spanish general-purpose corpus culled from a 1.8-billion-word corpus \citep{cardellino2016spanish};
+%    \item Italian general-purpose corpus called \textit{itWac} extracted from various web sources within the .it domain \citep{baroni2009wacky};
+%    \item Domain-specific corpus, music, in English.  A 100-million word concatenated corpus of music-related texts including music biographies from \textit{Last.fm} contained in ELMD 2.9, articles related to music from Wikipedia, and album customer reviews from Amazon \citep{oramas2016elmd};
+%    \item Domain-specific corpus, medicine, in English.  130-million word corpus picked from MEDLINE, a collection of scientific publications and other academic documents;
+%\end{enumerate}
+
+
