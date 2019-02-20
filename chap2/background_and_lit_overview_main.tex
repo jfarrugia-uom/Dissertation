@@ -363,8 +363,9 @@ Various gradient descent solvers can be used to minimise the cost function but s
 Two problems afflict all machine learning algorithms: bias and variance.  High bias means that the model does not learn enough from the training data, under-fitting the data and does not generalise well to unseen instances.   High variance is when the model misinterprets random noise in the data as important features which do not carry over to new unseen instances.  Variance and bias in logistic regression models can be tuned with the addition of regularisation parameters that penalise extreme feature coefficients. $L2$ regularisation penalises large weights whereas $L1$ encourages sparse solutions – weight coefficients set to $0$, thus nullifying the effect of the corresponding feature on the model.  Because of this reason, $L1$ regularisation is often used as a feature selection technique.
 
 \subsubsection{Support Vector Machines}
-%% to be added
-%Use of kernel function to automatically create non-linear combinations of features.  This has the effect of projecting the original linear space to higher dimensions that subsequently allows separation of the classes via a linear hyper-plane. 
+The \ac{SVM} is a binary classification algorithm which maximises the margin between the decision boundary hyperplane and the sample vectors closest to the boundary.  The latter are referred to as support vectors. Non-linearly separably inputs can also be classified by \ac{SVM}s.  To achieve this, the original vectors are projected to higher dimensions in which a linear hyperplane is learned to separate the projected vectors.  The decision boundary becomes non-linear if the vector space is re-projected back to the original axes \citep{raschka2017python}.
+
+A particularly attractive aspect of \ac{SVM}s is the use of kernel functions to automatically create non-linear feature combinations.  Kernel functions such as RBF (Radial Basis Function) provide a mathematically-efficient way to transform the original features to higher dimensions.  RBF simplifies the similarity computation between two points and is generally represented by the equation $e^{-\gamma \Vert\bm{x}_i - \bm{x}_j \Vert^2}$, where $\gamma$ is a hyper-parameter which can be tuned to control the bias-variance trade-off and $\bm{x}_i$, $\bm{x}_j$ are two sample vectors.  The exponential term $e$ ensures the similarity score is in the range $[0, 1]$ \citep{raschka2017python}.
 
 \subsection{Representative Work} 
 \citeauthor{baroni2012entailment}'s work \citep{baroni2012entailment} is considered a baseline in the literature under review \citep{shwartz2017siege, shwartz2016path, camacho2017we, roller2014inclusive, levy2015supervised}.  The study focused on two tasks, but we shall ignore the second task which is related to learning quantifying determiners (ex. \textit{few} entails \textit{some}).  
@@ -654,7 +655,7 @@ The largest performance boost in the CRIM model was observed when the embeddings
 
 \begin{table*}\centering
     \begin{tabular}{@{}rrrrrcrrrr@{}} \toprule
-    & \multicolumn{9}{c}{\textbf{General Purpose English Dataset (1A)}} \\ \cmidrule{2-10} 
+    & \multicolumn{9}{c}{\textbf{General-purpose English Dataset 1A}} \\ \cmidrule{2-10} 
     & \multicolumn{4}{c}{Projection Learning} & \phantom{a} & \multicolumn{4}{c}{Hybrid} \\
     \cmidrule{2-5} \cmidrule{7-10}
     & $MRR$ & $MAP$ & $P@1$ & $P@5$ && $MRR$ & $MAP$ & $P@1$ & $P@5$ \\ \midrule
@@ -722,7 +723,7 @@ The shared task dataset is distinguishable from the standard datasets in the fol
 \subsubsection{English General-purpose Dataset Metrics}
 \begin{table*}\centering
     \begin{tabular}{@{}lrrrr@{}} \toprule
-    \multicolumn{5}{c}{\textbf{General-purpose English Dataset 1A}} \\ \midrule
+    & \multicolumn{4}{c}{\textbf{General-purpose English Dataset 1A}} \\ \cmidrule{2-5}
     & \textit{Term Count} & \textit{Word-pairs} & \shortstack[r]{\textit{Intra-set}\\\textit{Uniq. Hypers.}} & \shortstack[r]{\textit{Inter-set}\\\textit{Uniq. Hypers.}} \\ \midrule
     Training & 1,500 & 11,779 & 4,233 & 2,480 \\
     Test & 1,500 & 7,048 & 3,076 & 1,323 \\ \midrule
@@ -752,9 +753,33 @@ Participating systems were compared against research-grounded supervised and uns
 
 The unsupervised baselines first required pre-processing the corpus and mapping it to a \ac{VSM} using a methodology similar to what was reported in several work we reviewed in this dissertation \citep{shwartz2017siege, santus2014chasing, roller2014inclusive}.  Three linguistic hypotheses (refer to Table~\ref{tab:unsupervised_measures}) were represented by a metric chosen from each respective "family". Symmetric similarity was represented by \textbf{APSyn} \citep{santus2016unsupervised}; \textbf{balAPInc} \citep{kotlerman2010directional} characterised the distributional inclusional hypothesis while informativeness was based on \textbf{SLQS} \citep{santus2014chasing}.
 
-\textit{vanilla Taxoembed} returned the best score when evaluating the English, general-purpose subtask (1A) although it was bested by MFH in every other subtask \citep{camacho2018semeval}.  This is a manifestation of lexical memorisation and an effect of splitting the dataset randomly rather than lexically \citep{levy2014dependency}.  In general, the unsupervised baselines fared poorly despite optimising the metrics' various hyper-parameters \citep{camacho2018semeval}.  They placed last in the overall rankings in every subtask except two (Italian 1B, Spanish 1C).  However, unsupervised systems submitted by the participants, especially those based on embeddings vectors had a better showing as we see in the next section.
+\begin{table*}\centering
+    \begin{tabular}{@{}lrrrcrrrcrrr@{}} \toprule
+    & \multicolumn{11}{c}{\textbf{General-purpose English Dataset 1A}} \\
+    \cmidrule{2-12}
+    & \multicolumn{3}{c}{\textbf{Concepts}} & \phantom{a} & \multicolumn{3}{c}{\textbf{Entities}} & \phantom{a} & \multicolumn{3}{c}{\textbf{Both}} \\ 
+    \cmidrule{2-4} \cmidrule{6-8} \cmidrule{10-12}
+    & \textit{MAP} & \textit{MRR} & \textit{p@5} && 
+      \textit{MAP} & \textit{MRR} & \textit{p@5} && 
+      \textit{MAP} & \textit{MRR} & \textit{p@5} \\  \midrule
+    \textbf{vTE} & 0.069 & 0.160 & 0.065 && 0.192 & 0.424 & 0.179 && 0.106 & 0.238 & 0.099 \\
+    \textbf{MFH} & 0.047 & 0.125 & 0.041 && 0.184 & 0.426 & 0.166 && 0.088 & 0.214 & 0.078 \\
+    \textbf{APSyn} & 0.017 & 0.037 & 0.017 && 0.005 & 0.014 & 0.005 && 0.014 & 0.030 & 0.014 \\
+    \textbf{balAPInc} & 0.017 & 0.039 & 0.017 && 0.005 & 0.015 & 0.004 && 0.014 & 0.032 & 0.013 \\
+    \textbf{SLQS} & 0.007 & 0.017 & 0.007 && 0.004 & 0.009 & 0.003 && 0.006 & 0.015 & 0.006 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Baseline performance on the English, general-purpose dataset from \citep{camacho2018semeval}}.\label{tab:semeval_baseline}
+\end{table*}
+
+The baseline results can be viewed in Table~\ref{tab:semeval_baseline}, slightly adapted from \citep{camacho2018semeval}.  \textit{vanilla Taxoembed} (vTE) returned the best score when evaluating the English, general-purpose subtask (1A) although it was bested by MFH in every other subtask \citep{camacho2018semeval}.  This is a manifestation of lexical memorisation and an effect of splitting the dataset randomly rather than lexically \citep{levy2014dependency}.  In general, the unsupervised baselines fared poorly despite optimising the metrics' various hyper-parameters \citep{camacho2018semeval}.  They placed last in the overall rankings in every subtask except two (Italian 1B, Spanish 1C).  However, unsupervised systems submitted by the participants, especially those based on embeddings vectors had a better showing as we see in the next section.
 
 \subsection{Submitted Results}
+\textbf{CRIM} was the projection learning/Hearst pattern hybrid proposed in \citep{bernier2018crim} which achieved the best scores in all English subtasks and which was described in section \ref{CRIM}.  Interestingly, an application of the piecewise projection-learning system originally proposed in \citep{Fu2014}, failed to deliver remarkable results \citep{qiu2018nlp_hz}.  This prompted \citeauthor{qiu2018nlp_hz} to build \textbf{NLP\_HZ}, a simpler, supervised model which leverages word2vec skip-gram embeddings \citep{mikolov2013efficient} to find a test term's closest neigbours in the training set using cosine similarity and then returning the gold-standard hypernyms of these neighbouring words as the retrieved candidates \citep{qiu2018nlp_hz}.  This solution  fared particurly well in the Spanish and Italian subtasks.
+
+On the unsupervised front, \textbf{ADAPT} yielded superior results to the unsupervised baselines in the medical (2A) sub-task \citep{maldonado2018adapt}.  Once again skip-gram word embeddings \citep{mikolov2013efficient} were used to create word features.  The solution simply returned the 15 nearest neighbours of a query term word according to cosine similarity.  Their solution was harmed by not merging multi-token words into a single token, opting instead to represent n-grams by the mean of the words' constituent vectors.  Similarly, the system was only able to emit single word results while 82\% and 92\% of the medical and music domain input words respectively are multi-word terms.
+
+\textbf{EXPR} is an integrated path-based and distributional model similar to \citep{shwartz2016path} but computational inefficiency stopped its developers from processing the entire corpora curtailing its potential \citep{aldine2018expr}.  Motivated by \citep{hearst1992automatic, Snow2004}, \textbf{APOLLO} also exploits lexico-syntactic patterns to link hyponyms to their hypernyms.  \citeauthor{onofrei2018apollo} reduced 44 lexico-syntactic pattern to 8 syntactic patterns,  claiming their solution is language independent albeit only evaluating it within the general-purpose English context; time constraints prevented them from testing their solution on the Spanish and English sub-tasks.
 
 \section{Conclusion}
 Although unsupervised pattern-matching methods are enjoying a revival \citep{roller2018hearst} and have been effectively used to extract hypernyms ever since Marti Hearst pioneered the field in 1992 \citep{hearst1992automatic}, we decided to focus on a family of algorithms known as \textit{projection learning} \citep{ustalov2017negative}.  The assumption is that a regular, linear relationship exists between the hyponym vector and its corresponding hypernym vector.  Machine-learning architectures were developed to learn this linear transformation matrix which can be applied to any hyponym and which should subsequently yield a vector at close proximity to its real hypernym/s.  These solutions were mainly motivated by the inadequacy of earlier supervised systems \citep{baroni2012entailment, weeds2014learning}) which compelled them to pick salient hypernyms in the given training set and subsequently associate a hypernymy relationship between any query word and these often-represented hypernyms.
