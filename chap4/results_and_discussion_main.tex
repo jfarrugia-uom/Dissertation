@@ -49,48 +49,44 @@ We measured the models' performance on the basis of 5 metrics: \ac{MRR}, \ac{MAP
 
 According to our cross-validated experiments on randomly-split datasets, the regularised models exert only a slight influence on the results, except for those observed on the single cluster model trained on word2vec embeddings features.  MRR scores are plotted in Figure~\ref{fig:MRR_models_baselines}.  MRR rewards models for which the first discovered, correct hypernym per term is ranked highly.  \citeauthor{ustalov2017negative}'s modifications slightly harm the models in the fastText 10 and 25 cluster scenarios.  The most-pronounced effect of regularisation was observed with the single-cluster model trained on word2vec embeddings features.  MRR improved by 9.5\% and 11.2\%  with the asymmetric and neighbour regularisation models respectively.  P$@5$ results are plotted in Figure~\ref{fig:pat5_models_baselines}.  Similar to the MRR results, regularisation has left the largest impact on the single-cluster model trained on word2vec features.
 \begin{table*}\centering
-\begin{tabular}{@{}lrrrrrrrrrr@{}}\toprule
-& \multicolumn{2}{c}{\textit{Baseline Sample}} & \multicolumn{4}{c}{\textit{Asymmetric Reg. Sample}} &
-\multicolumn{4}{c}{\textit{Neighbour Reg. Sample}}\\
-\cmidrule{2-11}
-& $\bar{x}$ & $\pm\sigma_{\bar{x}}$ & $\bar{x}$ & $\pm\sigma_{\bar{x}}$ & $t$ & $p$ & 
-$\bar{x}$ & $\pm\sigma_{\bar{x}}$ & $t$ & $p$ \\ \midrule
-\textit{w2v}\\
-\textit{1} & 0.227 & 0.016 & 0.249 & 0.010 & \textcolor{blue}{-2.601} & \textcolor{magenta}{\textbf{0.030}} & 0.253 & 0.011 & \textcolor{blue}{-3.032} & \textcolor{magenta}{\textbf{0.019}}\\
-\textit{10} & 0.254 & 0.011 & 0.253 & 0.020 & \textcolor{blue}{0.080} & \textcolor{magenta}{0.470} & 0.261 & 0.011 & \textcolor{blue}{-0.674} & \textcolor{magenta}{0.269}\\
-\textit{25} & 0.275 & 0.008 & 0.273 & 0.016 & \textcolor{blue}{0.249} & \textcolor{magenta}{0.408} & 0.278 & 0.011 & \textcolor{blue}{-0.390} & \textcolor{magenta}{0.358}\\
-\cmidrule(lr){2-11}
-\textit{GloVe}\\
-\textit{1} & 0.284 & 0.015 & 0.285 & 0.019 & \textcolor{blue}{-0.084} & \textcolor{magenta}{0.468} & 0.285 & 0.014 & \textcolor{blue}{-0.151} & \textcolor{magenta}{0.443}\\
-\textit{10} & 0.248 & 0.019 & 0.248 & 0.034 & \textcolor{blue}{-0.005} & \textcolor{magenta}{0.498} & 0.250 & 0.020 & \textcolor{blue}{-0.093} & \textcolor{magenta}{0.465}\\
-\textit{25} & 0.262 & 0.013 & 0.268 & 0.017 & \textcolor{blue}{-0.600} & \textcolor{magenta}{0.290} & 0.267 & 0.012 & \textcolor{blue}{-0.443} & \textcolor{magenta}{0.340}\\
-\cmidrule(lr){2-11}
-\textit{fastT}\\
-\textit{1} & \textbf{0.339} & 0.019 & \textbf{0.341} & 0.014 & \textcolor{blue}{-0.211} & \textcolor{magenta}{0.422} & \textbf{0.334} & 0.015 & \textcolor{blue}{0.462} & \textcolor{magenta}{0.334}\\
-\textit{10} & \textbf{0.295} & 0.024 & \textbf{0.291} & 0.010 & \textcolor{blue}{0.271} & \textcolor{magenta}{0.400} & \textbf{0.292} & 0.021 & \textcolor{blue}{0.215} & \textcolor{magenta}{0.420}\\
-\textit{25} & \textbf{0.293} & 0.009 & \textbf{0.293} & 0.020 & \textcolor{blue}{0.005} & \textcolor{magenta}{0.498} & \textbf{0.292} & 0.012 & \textcolor{blue}{0.154} & \textcolor{magenta}{0.443}\\
+\begin{tabular}{@{}lrrcrrcrrcrr@{}}\toprule
+& \multirow{2}{*}{MFH} & \multirow{2}{*}{Cos} & \phantom{a} &  \multicolumn{2}{c}{\textit{Baseline}} & \phantom{a} & \multicolumn{2}{c}{\textit{Asymmetric}} & \phantom{a} & \multicolumn{2}{c}{\textit{Neighbour}}\\
+\cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12}
+&  &  && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ \\ \midrule
+\textbf{word2vec}\\
+\textit{1} & 0.204 & 0.019 && 0.227 & 0.016 && 0.249 & 0.010 && 0.253 & 0.011 \\
+\textit{10} & 0.204 & 0.019 && 0.254 & 0.011 && 0.253 & 0.020 && 0.261 & 0.011 \\
+\textit{25} & 0.204 & 0.019 && 0.275 & 0.008 && 0.273 & 0.016 && 0.278 & 0.011 \\
+\cmidrule{2-12}
+\textbf{GloVe}\\
+\textit{1} & 0.204 & 0.032 && 0.284 & 0.015 && 0.285 & 0.019 && 0.285 & 0.014 \\
+\textit{10} & 0.204 & 0.019 && 0.248 & 0.019 && 0.248 & 0.034 && 0.250 & 0.020 \\
+\textit{25} & 0.204 & 0.019 && 0.262 & 0.013 && 0.268 & 0.017 && 0.267 & 0.012 \\
+\cmidrule{2-12}
+\textbf{fastText}\\
+\textit{1} & 0.204 & 0.025 && \textbf{0.339} & 0.019 && \textbf{0.341} & 0.014 && \textbf{0.334} & 0.015 \\
+\textit{10} & 0.204 & 0.019 && \textbf{0.295} & 0.024 && \textbf{0.291} & 0.010 && \textbf{0.292} & 0.021 \\
+\textit{25} & 0.204 & 0.019 && \textbf{0.293} & 0.009 && \textbf{0.293} & 0.020 && \textbf{0.292} & 0.012 \\
 \bottomrule
 \end{tabular}
-\caption{Statistical analyses of regularised \ac{MAP} improvements over baselines in multi-cluster, multi-embeddings settings.}\label{tab:t_test_regularised}
+\caption{5-fold crossvalidated \ac{MAP} results for \ac{MSE} model variants trained on three embeddings spaces.}\label{tab:map_mse}
 \end{table*}
-We ran statistical significant tests on our experiment results and plot the values in Table~\ref{tab:t_test_regularised}.  In this table we are comparing the performance of the various regularised models against a non-na\"ve baseline, while controlling for embeddings and cluster size.  The $t-$values (in blue) are computed according to the Welch t-test and are negative if the mean of the baseline is less than the mean of the regularised model, and positive if the mean of the baseline is larger than the mean of the regularised model.  The $p-$values are in pink and reflect a left-tailed test if the $t-$value is negative and a right-tailed test if it is positive.  The objective is to assess whether the baseline mean is significantly smaller or significantly greater than the mean MAP of the regularised models depending on the observed results.  We marked the overall best \ac{MAP} results in bold. Significant p-values at 95\% confidence are also set in bold.
+Our experiments' \ac{MAP} scores are reproduced in Table~\ref{tab:map_mse}.  In this table we are comparing the performance of the various regularised models against a non-na\"ive baseline, while also showing score variations based on three cluster sizes and embeddings.  For comparison, we also included two na\"ive baselines: MFH and Cosine similarity.  We marked the overall best \ac{MAP} results in bold.  The re-projected neighbour regularised model enjoyed the widest improvement margin, increasing the mean \ac{MAP} by around 11.5\% from 0.227 to 0.253 but this performance was isolated to the single-cluster model.  Improvement was either exceedingly subtle (ex. GloVe, clusters=10) or altogether absent (ex. fastText, clusters=1).  We evaluate these results statistically in Chapter 5.
 
 \subsection{Single Cluster against Multi-Cluster Model Results}
-We measured statistical significance at 95\% confidence for difference of means in \ac{MAP} obtained when training a single cluster model against several clusters, controlling for model type and embeddings.  
+Increasing the cluster size seems to have a favourable effect on the word2vec models in most cases, particularly when training a 25-cluster baseline model for which a 21.1\% \ac{MAP} score improvement over the single-cluster variant was registered.  Less pronounced improvements were recorded on the regularised models while a 10-cluster model had a moderate effect on \ac{MAP} where the widest improvement margin (21.1\%) was only noted with the baseline model.  
 
-Increasing the cluster size seems to have a favourable effect on the word2vec models in most cases, particularly when training a 25-cluster baseline model for which a 21.4\% \ac{MAP} score improvement over the single-cluster variant was registered.  Less pronounced, but nonetheless significant, improvements were recorded on the regularised models while a 10-cluster model had a moderate effect on \ac{MAP} where a significantly better result was only noted with the baseline model.  
+Increasing cluster size had a detrimental effect on models trained on GloVe embedddings.  Specifically, the \ac{MAP} scores dipped for the baseline and neighbour regularisation models while the asymmetric model fared similarly.  The deterioration was not as conspicuous between the single cluster and 25-cluster models, although the performance of the latter suffered compared to the smaller model.  
 
-Increasing cluster size had a detrimental effect on models trained on GloVe embedddings.  Specifically, the \ac{MAP} scores dipped significantly for the baseline and neighbour regularisation models while the asymmetric model was insignificantly worse.  The deterioration was not as conspicuous between the single cluster and 25-cluster models, although the performance of the latter suffered compared to the simpler model.  
-
-Multi-clusters harmed the fastTest models even more.  All single-cluster models were significantly better-performing than the 10-cluster and 25-cluster variants, whereby every multi-cluster model suffered an average decrease of 13.4\% of its corresponding single-cluster \ac{MAP} score.
+Multi-clusters harmed the fastText models even more.  All single-cluster models were better-performing than the 10-cluster and 25-cluster variants, whereby every multi-cluster model suffered an average decrease of 13.4\% of its corresponding single-cluster \ac{MAP} score.  
 
 \subsection{Embeddings Effect} \label{ustalov_embeddings}
-We observed the overall best \ac{MAP} result with a single-cluster model trained on fastText embeddings with asymmetric regularisation (0.341) which was significantly better - at 95\% confidence - than both the Fiword2vec and GloVe models, controlling for cluster-size and model type.  Moreover, fastText \ac{MAP} results were the best in every other category and significantly better than those returned in the equivalent word2vec-based experiments, with the exception of the 25-cluster regularised models in which the results, although better, were not significantly so at 95\% confidence.
+We observed the overall best \ac{MAP} result with a single-cluster model trained on fastText embeddings with asymmetric regularisation (0.341).  Moreover, fastText \ac{MAP} results were the best in every other category, suggesting that the feature space exerts a greater influence on the \ac{MSE} models' performance than either cluster size or regularisation.  The hypothesis will be evaluated statistically in Chapter 5.
 
-GloVe embeddings' \ac{MAP} scores were significantly better (95\% confidence) than the corresponding word2vec models only in the single-cluster experiments.  In the rest of the scenarios, GloVe features yielded the worst results, although not significantly worse than the word2vec scores. 
+The mean GloVe embeddings' \ac{MAP} score was only higher than the corresponding word2vec models in the single-cluster experiments.  In the 10 and 25-cluster configurations, GloVe features yielded the worst results.  We shall determine if GloVe was significantly worse when evaluating the results according to the \ac{ANOVA} framework in Chapter 5.
 
 \subsection{Naïve Baselines}
-We also note from Figures~\ref{fig:MRR_models_baselines},~\ref{fig:pat5_models_baselines} that all trained models have an edge on the na\"ve baselines.  The \ac{MFH} yields better results than cosine similarity across the base, but is bettered by even the worst-performing trained model in all scenarios.
+We also note from Figures~\ref{fig:MRR_models_baselines},~\ref{fig:pat5_models_baselines} and Table~\ref{tab:map_mse} that all trained models have a considerable edge on the na\"ive baselines.  The \ac{MFH} yields better results than cosine similarity across the base, but is bettered by even the worst-performing trained model in all scenarios.  
 
 %% Results are interpreted in the evaluation.  Significant is only observed in one particular scenario - w2v; single cluster.
 \subsection{Lexically-Split Experiment Results}
@@ -107,3 +103,122 @@ We should also note that the SemEval-2018 Task 9 evaluation code takes into cons
 Lastly, the \ac{MFH} baseline results were deliberately excluded since they do not apply to a lexically-split dataset context.
 %Mention that MFH baseline is indifferent to the embeddings since it uses simple lexical frequency rather feature vectors
 
+\section{Binary Cross-entropy Models}
+\subsection{Objectives}
+In this set of experiments, we explore two projection models which rely on the dot product of the hypernym projection and actual hypernym to determine the similarity between the two vectors.  One, which we dub \textit{Yamane} after the first credited contributor in \citep{yamane2016distributional}, jointly-learns clusters and projection parameters.  The other, which we refer to as \textit{CRIM}, after the research institute represented by the authors of the original paper \citep{bernier2018crim} is inspired by Yamane but instead of partitioning samples into separate models during the training, learns multiple projection matrices within the same model.
+
+We evaluate each model on the same dataset we used to train the hard-clustered MSE  models, using 5-fold cross validation.  We measure performance using the same set of metrics, which we borrow from the Shared Task-2018, Task 9 organisers \citep{camacho2018semeval}.  Although attempts were made by the respective authors to compare their work against others', they did not all peruse of the same data and metrics so direct comparison was not possible.  Moreover, all models were trained on word2vec features in the literature we reviewed, while we considered three pre-trained embeddings variants.  
+
+Both models, as well as their respective training algorithms, were developed from the ground-up.  We stick to the technical paper when building Yamane but integrate combined asymmetric and neighbour regularisation in the CRIM model.  We also analyse the performance of CRIM based on the following hyperparameter combinations:
+\begin{itemize}
+    \item Number of internal projections $k \in \{1, 5, 10\}$;
+    \item Negative sample count $m \in \{1, 5, 10\}$;
+    \item Regularisation strength $\lambda \in \{0, 0.1, 1\}$;
+    \item Choice of embeddings features;
+\end{itemize}
+We will juxtapose Yamane's scores as a counterpoint to CRIM since the latter is a design evolution of the former.  Finally, we choose the best performing binary cross-entropy and \ac{MSE} models and perform an \ac{ANOVA} analysis of the difference of means of their cross-validated results to determine whether the models' performance is statistically distinguishable.
+
+\subsection{Effect of Regularisation on CRIM}
+\begin{table*}\centering
+\begin{tabular}{@{}lrcrrcrrcrr@{}}\toprule
+& \multirow{2}{*}{Best MSE} & \phantom{a} &  \multicolumn{2}{c}{$\lambda=0$} & \phantom{a} & \multicolumn{2}{c}{$\lambda=0.1$} & \phantom{a} & \multicolumn{2}{c}{$\lambda=1.0$}\\
+\cmidrule{4-5} \cmidrule{7-8} \cmidrule{10-11}
+&  && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ && $\bar{x}$ & $\pm\sigma_{\bar{x}}$ \\ \midrule
+\textbf{word2vec} \\
+\textit{MAP} & 0.278 && 0.325 & 0.003 && 0.330 & 0.006 && 0.303 & 0.013 \\
+\textit{MRR} & \textbf{0.536} && 0.470 & 0.005 && 0.502 & 0.008 && 0.507 & 0.021 \\
+\cmidrule{2-11}
+\textbf{GloVe} \\
+\textit{MAP} & 0.285 && 0.295 & 0.013 && 0.288 & 0.009 && 0.286 & 0.010 \\
+\textit{MRR} & 0.509 && 0.459 & 0.019 && 0.453 & 0.005 && 0.452 & 0.015 \\
+\cmidrule(lr){2-11}
+\textbf{fastText} \\
+\textit{MAP} & 0.341 && 0.391 & 0.012 && 0.389 & 0.008 && \textbf{0.392} & 0.011 \\
+\textit{MRR} & 0.529 && 0.528 & 0.007 && 0.528 & 0.012 && 0.526 & 0.007 \\
+\bottomrule
+\end{tabular}
+\caption{Regularisation effect on CRIM \ac{MAP} and \ac{MRR} results.}\label{tab:crim_regularised}
+\end{table*}
+
+\begin{table*}\centering
+\begin{tabular}{@{}lcc@{}}\toprule
+\textbf{Embeddings} & \textbf{\# Projections} & \textbf{\# Negative Samples}\\
+\midrule
+\textit{w2v} & 1 & 10\\
+\textit{GloVe} & 10 & 5\\
+\textit{fastText} & 10 & 10\\
+\bottomrule
+\end{tabular}
+\caption{Configuration leading to best CRIM geometric mean of \ac{MAP}, \ac{MRR} results.}\label{tab:crim_best_parameter_combination}
+\end{table*}
+
+We trained 27 CRIM models configured on all combinations of embeddings spaces (w2v, GloVE, fT); projections (1, 5, 10) and negative sample count (1, 5, 10), without regularisation.  Applying \citep{ustalov2017negative} to CRIM, we integrated two regularised variants ($lambda$ = 0.1, 1) of every model combination and recorded the results.  We then selected the best performing, non-regularised model in terms of the geometric mean of \ac{MAP} and \ac{MRR}, segregated by embeddings space.  Given the winning combination, we found the results of the regularised equivalent and report the results in Table~\ref{tab:crim_regularised}.  The overall best \ac{MAP} and \ac{MRR} are also in bold.  The hyperparameter combination (according to our grid-search parameter ranges) according to which we selected the best model can be seen in Table~\ref{tab:crim_best_parameter_combination}.  We outline the results yielded by CRIM under various hyperparameters in more detail in section \ref{hyper_effect_CRIM}.
+
+Our results partially mirror our experiments with regularisation applied to the hard-clustered setup.  Once again, (slightly) better results can only be observed in the word2vec feature context.  \ac{MRR} improved by 6.9\% and 7.9\% respectively on the non-regularised word2vec model.  However, the mean word2vec \ac{MAP} score regressed with regularisation.  The regularised models had an almost imperceptible impact on models trained on GloVe and fastText features.  Overall, the best \ac{MAP} and second-best \ac{MRR} results were returned by a model configured with 10 projection layers and sampling 10 negative hypernyms per batch update, and trained on fastText features.  The best \ac{MRR} score was actually returned by a \ac{MSE} model training on word2vec features.
+
+\subsection{Effect of Hyperparameter Tuning on CRIM} \label{hyper_effect_CRIM}
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/CRIM_MRR_score_projection_and_negative_sample.png}
+  \caption{CRIM model \ac{MRR} score variations by embeddings, projections, and negative sample count.}
+  \label{fig:crim_hyper_mrr}
+\end{figure}
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/CRIM_MAP_score_projection_and_negative_sample.png}
+  \caption{CRIM model \ac{MAP} score variations by embeddings, projections, and negative sample count.}
+  \label{fig:crim_hyper_map}
+\end{figure}
+Figures~\ref{fig:crim_hyper_mrr},\ref{fig:crim_hyper_map} illustrate plots of our 5-fold cross-validated \ac{MRR} and \ac{MAP} results respectively, generated by non-regularised models configured with different hyperparameter combinations, each trained on three distinct embeddings features.  Standard error bars were added to each plot.  
+
+Increasing the number of projections did not have the same effect across all embeddings spaces.  Word2vec \ac{MRR} and \ac{MAP} results were adversely impacted, especially when a larger projection count was combined with a single negative sample count.  In this case, we measured an MRR and MAP decrease of 14\% and 13.7\% respectively on the 10-projection, single negative sample model, compared to single projection, single negative sample model.  GloVe-trained models were affected by multiple projections; all configurations yielded higher means for both \ac{MRR} and \ac{MAP} readings.  fastText \ac{MRR} is slightly negatively correlated to the number of projections learned but mean \ac{MAP} rose as projections were increased from 1 to 5, and 1 to 10 projections respectively.  However, increasing model complexity by learning 10 projections instead of 5, left only a modest mark on the scores.  In Chapter 5 we will discover whether these improvements are statistically backed by an \ac{ANOVA} study.
+
+We observed a generally positive effect when augmenting the number of negative samples from a single one to at least five.  In approximately one third of the configurations, we observed an increase of means when  comparing both \ac{MRR} and \ac{MAP} metrics.  The configuration which mostly exploited a negative sample increase was the word2vec, 10-projection model where \ac{MRR} and \ac{MAP} improved by 10.2\% and 11.1\% respectively when 5 negative samples were fed to the model during training, compared to a single negative sample.  Similar to the projections hyperparameter, the improvement garnered when going from 5 to 10 negative samples is subtler, and this holds across all configurations.  
+
+\subsection{Yamane Results}
+\begin{table*}\centering
+    \begin{tabular}{@{}lcccrr@{}} \toprule
+    & \textbf{Clusters} & $\bm{\lambda}$ & \textbf{Neg. Count} & \textbf{Mean MRR} & \textbf{Mean MAP}\\
+    \cmidrule{2-6}
+    \textit{w2v} & 4 & 0.16 & 5 & 0.538 $\pm$0.017 & 0.390 $\pm$0.029\\
+    \textit{GloVe} & 4 & 0.16 & 5 & 0.451 $\pm$0.017 & 0.297 $\pm$0.024\\
+    \textit{fastText} & 5 & 0.18 & 5 & 0.533 $\pm$0.014 & 0.396 $\pm$0.016\\
+    \bottomrule
+    \end{tabular}
+    \caption{Yamane hyperparameter settings and 5-fold cross-validated scores.}\label{tab:yamane_settings_scores}
+\end{table*}
+The results obtained by our implementation of Yamane can be seen in Table~\ref{tab:yamane_settings_scores}.  The outcome more or less adhered to CRIM's where models trained on fastText features outperformed the other two.  GloVe-trained models scored the lowest \ac{MRR} and \ac{MAP}.  In general Yamane edges past CRIM in terms of \ac{MAP} and \ac{MRR} with the only exception being the GloVe model.
+
+Contrary to the other algorithms, Yamane narrowed the gap between word2vec and fastText-trained models.  The edge that fastText features had over word2vec in the \ac{MSE} almost completely disappeared.  As we saw in Figures~\ref{fig:crim_hyper_mrr},\ref{fig:crim_hyper_map}, multiple projections damaged CRIM's performance.  This is contrasted in Yamane, where learning four projection matrices (one per cluster) improved word2vec-trained model's \ac{MRR} and \ac{MAP}.  However, despite this performance boost, we found Yamane models hard to train.  Metrics collected on the validation fold at the end of every epoch, show models that have a tendency to be erratic and which converge surprisingly quickly.  
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/Yamane_training_patterns.png}
+  \caption{Yamane training patterns on selected folds.}
+  \label{fig:yamane_training_patterns}
+\end{figure}
+We captured training patterns in a matrix displayed in Figure~\ref{fig:yamane_training_patterns}. The rows show the pattern on the arbitrarily chosen 1st, 3rd and 5th data folds, while columns illustrate how the model reacts to the various feature embeddings during the first 10 epochs.  We measured validation \ac{MAP} and \ac{MRR}.  Although the validation fold query terms are always entirely segregated from the training terms, the validations results are sometimes as good as the final results obtained after training an \ac{MSE} model for 700 epochs.  This is especially evident with the  fastText-trained models (middle column).  Large dips often follow the creation of new clusters since the most recent cluster would also be the relatively less trained.  Many more gradient updates are performed in an epoch in Yamane than in CRIM since the model is training on a single positive sample at a time (augmented by 5 negative hypernym candidates randomly drawn during training) and there is no indication in \citet{yamane2016distributional} that the learning rate should be reduced to factor for the smaller batch size.  The absence of patterns both row-wise and column-wise in the plot suggests some form of bias towards the inherent randomness when choosing the training samples, one at a time, with which to train the ensemble's clusters.  Early stopping is evident in all sub-plots with all but one of the examples terminating before the tenth epoch.  Our conservative \textit{patience} setting coupled with the ensemble's propensity to maximise validation performance earlier in the training loop contributed to this phenomenon.
+
+\subsection{Best Models}
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/Comparison_of_best_performing_algorithms.png}
+  \caption{\ac{MRR}, \ac{MAP} scores of best-performing models in projection learning family.}
+  \label{fig:part1_best_models}
+\end{figure}
+
+\begin{table*}\centering
+    \begin{tabular}{@{}clccc@{}} \toprule
+    \textbf{Model} & \textbf{Embeddings} & \shortstack{\textbf{Projections/}\\\textbf{Clusters}} & $\bm{\lambda}$ & \textbf{Neg. Count} \\ \midrule
+    
+    \bottomrule
+    \end{tabular}
+    \caption{Best-performing models' hyperparameter settings.}\label{tab:all_model_best_hyper}
+\end{table*}
+
+We conclude this section, by selecting the best-performing configuration of each respective model: \ac{MSE}, CRIM and Yamane.  We ranked every model based on the geometric mean of the cross-validated \ac{MRR} and \ac{MAP} scores.  The hyperparameter combinations that led to the best model, based on our definition are shown in Table~\ref{tab:all_model_best_hyper} and the scores - together with standard error bars - can be seen in Figure~\ref{fig:part1_best_models}.
+
+
+
+
+Our experiments did not exhaust all reasonable model configurations, so these results are by no means conclusive.  In the next section we shift focus to the SemEval-2018 Task9 English, general purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
