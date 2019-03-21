@@ -1,12 +1,13 @@
 \chapter{Results \& Discussion}
-
-Recall that we split the practical work in two categories.  In this first instance, we tested the reviews projection learning algorithms on a common dataset and evaluation metrics as well as multiple embedding spaces.  We aimed at producing more statistical rigour than was presented in the original paper.  In the second set of experiments, we focused onto a particular algorithm, exploring it in some detail within the context of the shared task \citep{camacho2018semeval}.  The results of the conducted experiments are collated in this chapter.  
-
 %\textbf{Should include a reiteration of the experiments, and their outcome.  Together with a description (discussion).  Preamble should include a reminder of the aims and objectives together with a list of experiments to achieve these.  Should include many charts and other visualization with appropriate descriptions}.  
+Recall that we split the practical work in two categories.  In this first instance, we tested the reviewed projection learning algorithms on a common dataset and evaluation metrics as well as multiple embedding spaces.  We aimed for more statistical rigour than was presented in the original papers.  In the second set of experiments, we focused onto a particular algorithm, exploring it in some detail within the context of the shared task \citep{camacho2018semeval}.  
+
+\section{Dataset Details}
+
 
 \section{Hard-Clustering and Regularisation}
 \subsection{Objectives}
-\citeauthor{ustalov2017negative} proposed a set of regularistion terms, minimised alongside the \ac{MSE} objective function, designed to uphold the asymmetric nature of the hypernymy relation and discourage the model from projecting a query term close to its synonyms \citep{ustalov2017negative}.  We felt that the proposals were interesting but that the study's evidence of their efficacy was statistically weak.  Meanwhile, the chosen evaluation metrics - although sound - did not make it possible to compare the models with their projection learning peers \citep{yamane2016distributional, bernier2018crim}.  
+\citeauthor{ustalov2017negative} proposed a set of regularistion terms, minimised together with the \ac{MSE} objective function, designed to uphold the asymmetric nature of the hypernymy relation and discourage the model from projecting a query term close to its synonyms \citep{ustalov2017negative}.  We felt that the proposals were interesting but that the study's evidence of their efficacy was statistically weak.  Meanwhile, the chosen evaluation metrics - although sound - did not make it possible to compare the models with their projection learning peers \citep{yamane2016distributional, bernier2018crim}.  
 
 We aimed to peruse of a standard set of metrics and employ a slightly-modified implementation provided by the SemEval-2018, Task 9 organisers \citep{camacho2018semeval}.  Moreover, we refactored the experimental setup such that produce a distribution of scores from a cross-validated dataset which allowed us to conduct a \textit{difference of means} hypothesis test.  Finally, we tested several embeddings feature spaces for observable differences in performance.
 
@@ -28,7 +29,7 @@ We evaluated single-cluster models that learned one transformation matrix for al
 
 The training experience on the clusters differed.  We recorded the training and test loss returned when training a 10-cluster, baseline (i.e. no regularisation) model on an arbitrary training fold. This is the \citep{Fu2014} baseline as implemented in \citep{ustalov2017negative}.  We reproduced train and test losses for four clusters, chosen because of their idiosyncratic performance, in Figure~\ref{fig:train_test_loss_w2v}.
 
-In some cases, such as \textit{cluster 5} (top-right panel), the cluster contained word-pairs featuring a distinctive linear relation between hyponym and hypernym vectors, a fact which was captured by the model.  The test loss mirrors the training loss almost perfectly which suggests that the members of the 5$^{th}$ test cluster belong to the same semantic family of the word-pairs in the training cluster.  The 6$^{th}$ and 7$^{th}$ cluster do not fare as well: over-fit is manifested at the 150-200 epoch mark and the end-of-training loss is markedly higher than what was observed in the 5$^{th}$ cluster.  A balanced performance was delivered by the 8$^{th}$ cluster: no over-fit and a reasonable end-of-training loss.
+In some cases, such as \textit{cluster 5} (top-right panel), the cluster contained word-pairs featuring a distinctive linear relation between hyponym and hypernym vectors, a fact which was captured by the model.  The test loss mirrors the training loss almost perfectly which suggests that the members of the 5$^{th}$ test cluster belong to the same semantic family of the word-pairs in the training cluster.  The 6$^{th}$ and 7$^{th}$ cluster do not fare as well: over-fit is manifested at the 150-200 epoch mark and the end-of-training loss is markedly higher than what was observed in the 5$^{th}$ cluster.  A balanced performance was delivered by the 8$^{th}$ cluster: no conspicuous over-fit and a reasonable end-of-training loss.
 
 \subsection{Baseline against Regularised Model Results}
 \begin{figure}[ht!] 
@@ -149,10 +150,10 @@ We will juxtapose Yamane's scores as a counterpoint to CRIM since the latter is 
 \textit{fastText} & 10 & 10\\
 \bottomrule
 \end{tabular}
-\caption{Configuration leading to best CRIM geometric mean of \ac{MAP}, \ac{MRR} results.}\label{tab:crim_best_parameter_combination}
+\caption{Configuration leading to best CRIM harmonic mean of \ac{MAP}, \ac{MRR} results.}\label{tab:crim_best_parameter_combination}
 \end{table*}
 
-We trained 27 CRIM models configured on all combinations of embeddings spaces (w2v, GloVE, fT); projections (1, 5, 10) and negative sample count (1, 5, 10), without regularisation.  Applying \citep{ustalov2017negative} to CRIM, we integrated two regularised variants ($lambda$ = 0.1, 1) of every model combination and recorded the results.  We then selected the best performing, non-regularised model in terms of the geometric mean of \ac{MAP} and \ac{MRR}, segregated by embeddings space.  Given the winning combination, we found the results of the regularised equivalent and report the results in Table~\ref{tab:crim_regularised}.  The overall best \ac{MAP} and \ac{MRR} are also in bold.  The hyperparameter combination (according to our grid-search parameter ranges) according to which we selected the best model can be seen in Table~\ref{tab:crim_best_parameter_combination}.  We outline the results yielded by CRIM under various hyperparameters in more detail in section \ref{hyper_effect_CRIM}.
+We trained 27 CRIM models configured on all combinations of embeddings spaces (w2v, GloVE, fT); projections (1, 5, 10) and negative sample count (1, 5, 10), without regularisation.  Applying \citep{ustalov2017negative} to CRIM, we integrated two regularised variants ($lambda$ = 0.1, 1) of every model combination and recorded the results.  We then selected the best performing, non-regularised model in terms of the harmonic mean of \ac{MAP} and \ac{MRR}, segregated by embeddings space.  Given the winning combination, we found the results of the regularised equivalent and report the results in Table~\ref{tab:crim_regularised}.  The overall best \ac{MAP} and \ac{MRR} are also in bold.  The hyperparameter combination (according to our grid-search parameter ranges) according to which we selected the best model can be seen in Table~\ref{tab:crim_best_parameter_combination}.  We outline the results yielded by CRIM under various hyperparameters in more detail in section \ref{hyper_effect_CRIM}.
 
 Our results partially mirror our experiments with regularisation applied to the hard-clustered setup.  Once again, (slightly) better results can only be observed in the word2vec feature context.  \ac{MRR} improved by 6.9\% and 7.9\% respectively on the non-regularised word2vec model.  However, the mean word2vec \ac{MAP} score regressed with regularisation.  The regularised models had an almost imperceptible impact on models trained on GloVe and fastText features.  Overall, the best \ac{MAP} and second-best \ac{MRR} results were returned by a model configured with 10 projection layers and sampling 10 negative hypernyms per batch update, and trained on fastText features.  The best \ac{MRR} score was actually returned by a \ac{MSE} model training on word2vec features.
 
@@ -210,15 +211,23 @@ We captured training patterns in a matrix displayed in Figure~\ref{fig:yamane_tr
 \begin{table*}\centering
     \begin{tabular}{@{}clccc@{}} \toprule
     \textbf{Model} & \textbf{Embeddings} & \shortstack{\textbf{Projections/}\\\textbf{Clusters}} & $\bm{\lambda}$ & \textbf{Neg. Count} \\ \midrule
-    
+    \multirow{3}{*}{CRIM} & \textit{word2vec} & 1 & 0.1 & 10 \\
+    & \textit{GloVe} & 5 & 1.0 & 5\\
+    & \textit{fastText} & 10 & 0. & 10\\ \cmidrule{2-5}
+    \multirow{3}{*}{Yamane} & \textit{word2vec} & 4 & 0.16 & 5 \\
+    & \textit{GloVe} & 4 & 0.16 & 5\\
+    & \textit{fastText} & 5 & 0.18 & 5\\ \midrule
+    & \textbf{Embeddings} & \textbf{Clusters} & \multicolumn{2}{c}{\textbf{Regularised Model}}\\ \cmidrule{2-5}
+    \multirow{3}{*}{MSE} & \textit{word2vec} & 25 & \multicolumn{2}{c}{Neighbour} \\
+    & \textit{GloVe} & 1 & \multicolumn{2}{c}{Neighbour} \\
+    & \textit{fastText} & 1 & \multicolumn{2}{c}{Asymmetric} \\
     \bottomrule
     \end{tabular}
     \caption{Best-performing models' hyperparameter settings.}\label{tab:all_model_best_hyper}
 \end{table*}
 
-We conclude this section, by selecting the best-performing configuration of each respective model: \ac{MSE}, CRIM and Yamane.  We ranked every model based on the geometric mean of the cross-validated \ac{MRR} and \ac{MAP} scores.  The hyperparameter combinations that led to the best model, based on our definition are shown in Table~\ref{tab:all_model_best_hyper} and the scores - together with standard error bars - can be seen in Figure~\ref{fig:part1_best_models}.
+We conclude this section, by selecting the best-performing configuration of each respective model: \ac{MSE}, CRIM and Yamane.  We ranked every model based on the harmonic mean of the cross-validated \ac{MRR} and \ac{MAP} scores.  The hyperparameter combinations that led to the best models, based on our definition are shown in Table~\ref{tab:all_model_best_hyper} and the scores - together with standard error bars - can be seen in Figure~\ref{fig:part1_best_models}.  The binary cross-entropy models which estimate the similarity between the projected and actual hypernym using the dot-product operation and which allow the presentation of explicit negative examples, seem to generate more accurate hypernyms.  The best \ac{MSE} model scored a mean 0.341 \ac{MAP} when trained on fastText embeddings.  This score was only bettered by the binary cross-entropy models trained on fastText, with a margin of 16.24\% and 14.84\% with Yamane and CRIM respectively.  The Yamane model scored a mean 0.3901 \ac{MAP} on the word2vec trained model, the only tested model to bridge the word2vec/fastText divide on \ac{MAP}.  By way of contrast, the next best \ac{MAP} score we recorded was 0.3302 (CRIM) while from the \ac{MSE} models, the highest score obtained was 0.278.  The GloVe embeddings seemed to be the least affected by different models: the highest (Yamane) and lowest (MSE) scores different by only 1.2 points.
 
+\ac{MSE} models are more competitive with respect to \ac{MRR} indicating that either model type is more or less equally capable of generating a correct highest ranked hypernym.  Yamane and MSE scored 0.539 and 0.536 respectively - practically equivalent results - on the word2vec trained models, while CRIM trailed behind with 0.502.  fastText features dampened the effect of the model, with cross-validated scores of 0.533, 0.528 and 0.529 obtained on Yamane, CRIM and MSE models respectively.  Finally, the MSE model coaxed the top \ac{MRR} score of 0.487 from among GloVe-trained models.  However, this score trails 1.46 points from the worst-performing model in the rest of the cohort (CRIM trained on word2vec).
 
-
-
-Our experiments did not exhaust all reasonable model configurations, so these results are by no means conclusive.  In the next section we shift focus to the SemEval-2018 Task9 English, general purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
+Our experiments did not exhaust all reasonable model configurations, so these results are not necessarily conclusive.  We will determine if the differences in our collected data are statistically significant in Chapter 5, where we evaluate our findings according to the \ac{ANOVA} framework.  In the next section we shift focus to the SemEval-2018 Task9 English, general-purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
