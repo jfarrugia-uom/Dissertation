@@ -33,14 +33,6 @@ After evaluating the effect of regularisation and clusters on the embeddings sep
 
 We found embeddings to have a strong, significant effect on single-cluster baseline models, $F(2,12)=52.376$, $p < 0.05$, $\omega^2=0.876$.  Post-hoc analysis revealed that fastText vectors yield a higher $M_1$ score than GloVe, and that GloVe in turn return higher $M_1$ than word2vec.  The effect decreases but it still significant on 10-cluster models, $F(2,12)=9.471$, $p < 0.05$, $\omega^2=0.530$.  In this scenario fastText embeddings mean scores are significantly higher than both word2vec and GloVe but GloVe results are not significantly better than word2vec.  Finally, we see the gap narrowing in the 25-cluster scenario.  The effect of embeddings is still moderately significant, $F(2,12)=11.406$, $p < 0.05$, $omega^2=0.582$, but post-hoc shows that the only significant $M_1$ difference is observed when comparing fastText and GloVe, the latter being worse.  
 
-\subsubsection{Observations on MSE}
-All configurations - irrespective of embeddings choice, clusters or regularisation comfortably beat the plain Cosine similarity and \ac{MFH}  na\"ive baselines.  We did not evaluate these results statistically, since the improvement is obvious: for instance the fastText, single-cluster asymmetric model beats the \ac{MFH} baseline by a 69\% margin.
-
-There is strong empirical evidence which suggests that - on our chosen combined dataset and metrics -  
-training a single-cluster, baseline model on fastText is the way to go.  We challenged the \citet{ustalov2017negative} assertion that regularisation has an effect on \ac{MSE} model performance.  Indeed, we found that regularisation has no significant effect on $M_1$ both in interaction with other factors, and in isolation.  This applied on all embeddings, including the same word2vec embeddings they used in their experiment.  However, we did not run an exhaustive grid-search tests to tune the $\lambda$ regularisation weighting parameter; instead we fixed the setting to 1, which was their chosen regularisation weight for re-projected regularisation.
-
-\citet{Fu2014} findings were re-confirmed, despite the fact setup was modified in several ways: we recast their original problem as hypernym discovery; we evaluated on information retrieval metrics; we cross-validated the models on a different dataset.  Cluster size was certainly found to improve performance on word2vec embeddings, although the same did not hold for the other embeddings vector spaces.
-
 \subsection{Binary Cross-entropy Models}
 We evaluated our implementation of two models, CRIM and Yamane, both of which learn multiple projection matrices without resorting to hard-clustering.  We believe that hard-clustering runs counter to the philosophy of hypernym discovery.  The clusters are originally learned in an unsupervised fashion, by applying a $k-$means model to the hypernym/hyponym vector offsets.  To allocate the test samples to the clusters, the hypernym vector needs to be used to compute the appropriate vector offsets.  This is equivalent to leaking test data to the training procedure.  In reality, we should not assume, and do not require, the presence of test hypernyms when validating a hypernym discovery model.  CRIM and Yamane only need query terms, and a vocabulary to bound the search space, to estimate hypernyms and thus are "purer" hypernym discovery implementations.  We test CRIM on four factors each having the following levels:
 \begin{itemize}
@@ -126,7 +118,28 @@ Next, we investigated the negative hypernyms most often predicted with the highe
     \caption{Highest-ranked false positive hypernyms.}        
     \label{fig:false_positive_crim_yamane}
 \end{figure}
-Both CRIM and Yamane display a tendency to generate hypernyms which were often encountered during training such as \textit{animal}, \textit{plant} and \textit{object}.  Out of the 15 false positives most-commonly predicted by CRIM, two featured in the top ten highest occurring hypernyms in the training set. In the case of Yamane, five of these words were also on the top ten hypernym list.  Therefore, a shade of lexical memorisation can also be observed in projection learning models.  Perhaps, this phenomenon cannot be entirely avoided in the context of supervised learning.
+Both CRIM and Yamane display a tendency to generate hypernyms which were often encountered during training such as \textit{animal}, \textit{plant} and \textit{object}.  Out of the 15 false positives most-commonly predicted by CRIM, two featured in the top ten highest occurring hypernyms in the training set. In the case of Yamane, five of these words were also on the top ten hypernym list.  Therefore, a shade of lexical memorisation can also be observed in projection learning models.  Perhaps, this phenomenon cannot be entirely avoided in the context of supervised learning.  
+
+To restore some of our confidence in the capabilities of projection learning models, let us consider examples of terms which scored a perfect 1 \ac{AP}.  Moreover, we will only regard terms with hypernyms which seldom occur in the training set.  We will focus on CRIM, which has shown more ability to discover relatively rare hypernyms.  We reiterate that the length of the gold-standard list exerts a heavy weight on the scoring function we borrowed from the SemEval shared task \citep{camacho2018semeval}.  
+
+\begin{table*}\centering
+    \begin{tabular}{@{}lrrl@{}} \toprule
+    \multicolumn{4}{c}{\textbf{CRIM Predictions}} \\
+    \textit{Word} & \textit{AP} & \textit{Median Frequency} & \multicolumn{1}{c}{\textit{Top 5 Predictions}} \\ \midrule
+    airship & 1. & 0.00373 & \textbf{vehicle}, \textbf{craft}, \textbf{aircraft}, airplane, artifact \\
+    canoe & 1. & 0.00339 & \textbf{vehicle}, \textbf{boat}, \textbf{craft}, \textbf{vessel}, watercraft \\
+    drape & 1. & 0.00271 & \textbf{cover}, wear, buy, sell, protect \\
+    fog & 1. & 0.00085 & \textbf{weather}, change, place, shape, supply\\
+    liberty & 1. & 0.00017 & \textbf{freedom}, liberty, belief, element, object\\
+    square & 1. & 0.00119 & \textbf{shape}, place, form, figure, point\\
+    violence & 1. & 0.00271 & \textbf{action}, violence, emotion, crime, anger\\
+    yellow & 1. & 0.00237 & \textbf{color}, plant, crop, flower, green\\
+    \bottomrule
+    \end{tabular}
+    \caption{Terms having low-frequency hypernyms correctly predicted by CRIM.}\label{tab:crim_perfect_score}
+\end{table*}
+
+Table~\ref{tab:crim_perfect_score} shows the top five hypernyms, predicted by CRIM \footnote{unregularised; 10 projections; 10 negative samples; trained on fastText word features for 15 epochs.}, for the terms having the least frequently occurring gold hypernyms.  Words in bold are gold-standard hypernyms and most terms in the table featured only a single gold-standard hypernym.  The model was unregularised, which explains why predictions at times include the term word itself (\textit{liberty}, \textit{violence}), or synonyms of the word (\textit{yellow}).  However, the model also surprises us with hypernyms which, despite being technically incorrect, are arguably precise.  Examples include, \textit{canoe} $\Rightarrow$ \textit{watercraft}; \textit{liberty} $\Rightarrow$ \textit{belief}; \textit{square} $\Rightarrow$ \textit{place}, \textit{form}, \textit{figure}; and \textit{violence} $\Rightarrow$ \textit{crime}. 
 
 \subsection{Observations}
 
@@ -135,12 +148,17 @@ Both CRIM and Yamane display a tendency to generate hypernyms which were often e
 % Choice of embeddings makes a real difference
 % Increasing projections works, just on word2vec which is what bernier observed after running ablation tests
 % during the shared task result evaluation
+All configurations - irrespective of model, embeddings choice, clusters or regularisation comfortably beat the basic Cosine similarity and \ac{MFH} na\"ive baselines.  We did not evaluate these results statistically, since the improvement is obvious: for instance the fastText, single-cluster asymmetric model minimising \ac{MSE} beats the \ac{MFH} baseline by a 69\% margin.
 
-Introducing the regularisation terms proposed by \citet{ustalov2017negative} to CRIM did not really work out.  The effect was slightly negative, insofar that a significant result was only observed in one model setup out of 27.  Regularisation was not found to have any significant effect on \ac{MSE} models either.  
+With respect to the \ac{MSE} model family, there is strong empirical evidence which suggests that - on our chosen combined dataset and metrics - training a single-cluster, baseline model on fastText is the way to go.  We challenged the \citet{ustalov2017negative} assertion that regularisation has an effect on \ac{MSE} model performance.  Indeed, we found that regularisation has no significant effect on $M_1$ both in interaction with other factors, and in isolation.  This applied on all embeddings, including the same word2vec embeddings \citeauthor{ustalov2017negative} used in their English experiments.  However, we did not run an exhaustive grid-search tests to tune the $\lambda$ regularisation weighting parameter; instead we fixed the setting to 1, which was their chosen regularisation weight for re-projected regularisation.
 
-Increasing the projection in CRIM, had an adverse reaction when training the model on word2vec features.  \citet{bernier2018crim} reported a different empirical experience whereby multiple projections improved their \ac{MAP}/\ac{MRR} score.  This could be due to the interaction of the projection layer setting with any other setting.  The authors themselves specifically point out that they did not perform an in-depth analysis of their hyperparameter settings.  Moreover, they tune embeddings jointly with the projection matrices while decreasing the learning rate by a full order of magnitiude and training for several hundred epochs.  
+\citet{Fu2014} findings were re-confirmed, despite the setup was modified in several ways: we recast their original problem as hypernym discovery; we evaluated on information retrieval metrics; we cross-validated the models on a different dataset.  Cluster size was certainly found to improve performance on word2vec embeddings, although the same did not hold for the other embeddings vector spaces, particulary fastText.
 
-Once again, fastText was proven to be the superior embeddings out of the three on which to train Yamane and CRIM.  
+Introducing the regularisation terms proposed by \citet{ustalov2017negative} to a binary cross-entropy model (CRIM) did not really work out.  The effect was moderately negative, insofar that a significant result was only observed in one model setup out of 27.  Regularisation was not found to have any significant effect on \ac{MSE} models either.  
 
-The poor performance of GloVe, is probably due to embeddings training algorithms makes use of the dot product operator.  In word2vec and fastText, dot-product is used to estimate the similarity of the context word and target word (and vice versa).  In GloVe the objective function encourages the dot product of word vectors to approximate the log of the co-occurrence probability of the words which may make the embeddings less suitable for our task.
+Increasing the projections in CRIM, had an adverse reaction when training the model on word2vec features.  \citet{bernier2018crim} reported a different empirical experience whereby multiple projections improved their \ac{MAP}/\ac{MRR} score.  This could be due to the interaction of the projection layer setting with one or several other setting.  The authors themselves specifically point out that they did not perform an in-depth analysis of their hyperparameter settings.  Moreover, they tune embeddings jointly with the projection matrices while decreasing the learning rate by a full order of magnitiude and training for several hundred epochs.  
+
+In both \ac{MSE} and binary cross-entropy model types, fastText was proven to be the superior embeddings out of the three tested.  We believe this is a small contribution we made to the research area since, to our knowledge, projection learning models have so far only been evaluated on word2vec embeddings features.  Yamane, on the other hand, narrowed the gap between word2vec and fastText we had so far observed.  Yamane and CRIM were found to perform significantly better than \ac{MSE} models which \citet{yamane2016distributional} refer to as \say{pipeline models}. In this paper, the authors reported the superior performance of the "inner product" method, an assertion we found to be statistically sound.
+
+The poor performance of GloVe, is probably due to how the embeddings training algorithm makes use of the dot product operator.  In word2vec and fastText, dot-product is used to estimate the similarity of the context word and target word (and vice versa depending on the model choice).  In GloVe the objective function encourages the dot product of word vectors to approximate the log of the co-occurrence probability of the words which may make the embeddings less suitable for our model.
 
