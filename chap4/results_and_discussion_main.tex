@@ -65,8 +65,7 @@ We illustrated the distribution of hypernyms in the datasets by plotting the log
 \end{figure}
 The Shared Task dataset is split in four partitions between training/test splits and concept/entity hyponym word types.  We plotted the distribution of the 15 most frequent hypernyms in the overall dataset with respect to each partition in Figure~\ref{fig:shared_task_mfh}.  The word \textit{person} features conspicuously as a frequent hypernym in every data partition with a considerable margin over \textit{city}, the second most frequent hypernym overall.  This is consistent with Figure~\ref{fig:dataset_hypernym_freq}.
 
-The distribution of training and test samples seems to be fairly uniform, at least in terms of the 15 most-common hypernyms.  In general, entities are more likely to be defined by frequent hypernyms.  This is understandable since named entity labels are narrower in scope than concepts which encompass all common nouns.  The popularity of hypernyms like \textit{city}, \textit{state}, and \textit{leader}, might be an  indication that \textit{UMBC} corpus leans towards geo-political content, but this is tenuous evidence at best.  Lastly, we observe that the natural world is not as over-represented as is was in the Combined Dataset, although \textit{animal} and \textit{plant} are among the 15 most frequent hypernyms in the Shared Task dataset too.
-
+The distribution of training and test samples seems to be fairly uniform, at least in terms of the 15 most-common hypernyms.  In general, entities are more likely to be defined by frequent hypernyms.  This is understandable since named entity labels are narrower in scope than concepts which encompass all common nouns.  The popularity of hypernyms like \textit{city}, \textit{state}, and \textit{leader}, might be an  indication that \textit{UMBC} corpus leans towards geo-political content, but this is tenuous evidence at best.  Lastly, we observe that the natural world is not as over-represented as is was in the Combined Dataset, although \textit{animal} and \textit{plant} are still among the 15 most frequent hypernyms in the Shared Task dataset too.
 
 \section{Hard-Clustering and Regularisation}
 \subsection{Objectives}
@@ -295,3 +294,39 @@ We conclude this section, by selecting the best-performing configuration of each
 Our experiments did not exhaust all reasonable model configurations, so these results are not necessarily conclusive.  We will determine if the differences in our collected data are statistically significant in Chapter 5, where we evaluate our findings according to the \ac{ANOVA} framework.  In the next section we shift focus to the SemEval-2018 Task 9 English, general-purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
 
 \section{Experiments on Shared Task Corpus and Data}
+Based on its performance, quick convergence and configurability, we applied our CRIM implementation on the Shared Task.  Our implementation is distinguished from the original technical setup \citep{bernier2018crim}, by learning the projection matrices and tuning the embeddings in two separate training phases, enabling us to accelerate convergence.  Beside word2vec word embeddings, we additionally fit our model on GloVe and fastText features.
+
+We focused on the English, general-purpose task which was accompanied by the largest corpus and dataset.  In a novel departure from the Combined Dataset, and other dataset used in the experiments we reviewed, the Shared Task organisers categorised each query term as either \textit{concept} or \textit{entity}.  The objectives of our experiments were to:
+\begin{itemize}
+    \item Frozen embeddings
+    \begin{enumerate}
+        \item At the most basic level, find out if our implementation matches the published performance of CRIM;
+        \item Determine whether the combination of projection layers and embeddings has some effect on the validation score on the test set;
+        \item Train the model on concept, entities separately and combined, and each time validate it on only concepts, only entities, and both term types together.  In this way we will investigate whether entity (or concept) hypernymy encodes its own signal which cannot be generalised unless the model is first exposed to actual entity (or concept) examples;
+        \item Experiment with an \ac{MTL} setup whereby we train a common feature extractor connected to two logistic regression classifier heads, which learn optimal coefficients for concepts and entities separately;
+    \end{enumerate}
+    \item Tuned embeddings
+    \begin{enumerate}
+        \item For each embeddings space, find the best model in terms of the harmonic mean of \ac{MAP} and \ac{MRR}, and apply a simple transfer learning method to tune embeddings whilst keeping the previously trained projection matrices static;
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Effect of Projection Layers and Embeddings on Model}
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.\linewidth]{images/semeval_crim_proj_embed.png}
+  \caption{\ac{MRR}, \ac{MAP} and P$@1$ scores of CRIM, trained on var.}
+  \label{fig:semeval_crim_proj_embed}
+\end{figure}
+We present the results of models trained and validated on a combination of concepts and entities in Figure~\ref{fig:semeval_crim_proj_embed}.  
+
+
+
+
+
+
+
+
+
+
+

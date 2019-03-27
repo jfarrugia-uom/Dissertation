@@ -1,6 +1,5 @@
-\chapter{Introduction}
-
 %%\textbf{Note that you may have multiple \texttt{{\textbackslash}include} statements here, e.g.\ one for each subsection.}\cofeBm{0.7}{1}{0}{3cm}{-1cm}
+\chapter{Introduction}
 
 \section{What is Hypernymy?} % why is this a non trivial problem
 It is difficult to imagine a language which excludes generic terms or word classes entirely.  Such a language would be challenging to comprehend since a detailed definition of every word is required before a sentence or an utterance can be understood.  The definition needs to describe the word in terms of its base elements and would not be able to set it in a wider context of related words.  We imagine that communication in this hypothetical language would be a laborious task.  Translation would be an arduous, if not impossible, enterprise and our understanding of the world around us severely compromised.  It would be hard to imagine such a language being used on a day-to-day basis in today's highly-connected, globalised world.
@@ -69,7 +68,3 @@ Dependency paths were later used to discover hypernym-containing patterns automa
 
 When word embeddings burst onto the scene in 2013 \citep{mikolov2013distributed}, supervised methods involving various combinations of the hyponym and hypernym vector embeddings fed into a classifier acquired outstanding results in the hypernym identification binary task.  Closer inspection by researchers sceptical about these results underscored these methods’ proneness to overfitting the training data. In doing so, they shone a light on the limitation of the identification task and encouraged the NLP research community to recast identification to hypernym discovery.  We then move on to a variant of supervised learning which attempts to learn a linear projection learning matrix which when applied to a hyponym vector, yields a vector close to its hypernym.  We decided to focus particularly on this method in our experiments, considering their relative success in generating hypernyms.  
 We close the background chapter by reviewing the SemEval 2018 Task 9 shared task \citep{camacho2018semeval}, concentrating on the methodology used to create the training and testing datasets which were part automated and part crowd-sourced.  Setting aside the popular precision/recall/\(F1\) evaluation measures, the task’s organisers propose a new set of metrics, borrowed from \ac{IR} that are suited to the ranking nature of the problem.  Finally, we examine the submitted models focusing on those which peruse of projection learning techniques to propose hypernyms for the given candidate terms.
-
-
-
-

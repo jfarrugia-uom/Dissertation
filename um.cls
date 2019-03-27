@@ -33,7 +33,7 @@
 \RequirePackage[pdftex]{graphicx}    % For pictures
 \RequirePackage{amssymb}             % at least, for black squares in bullet list
 \RequirePackage[pdfusetitle]{hyperref}            % for hyperreferences
-\RequirePackage[authoryear,semicolon,square,sort]{natbib}     % for [Ebejer, 2012; Alba, 2013] kind of references
+\RequirePackage[authoryear,semicolon,round,sort]{natbib}     % for [Ebejer, 2012; Alba, 2013] kind of references
 
 \usepackage[defaultsans]{lato}
 \usepackage[printonlyused,withpage]{acronym}
@@ -48,7 +48,7 @@
 
 \OnehalfSpacing                                  % One and a half line spacing
 
-\setlength{\headsep}{1.5cm}                      % Add space between the header and text
+\setlength{\headsep}{0.5cm}                      % Add space between the header and text
 
 \nouppercaseheads								 % Don't convert titles to Uppercase
 \makepagestyle{umpage}
