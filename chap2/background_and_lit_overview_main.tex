@@ -1,11 +1,17 @@
 \chapter{Literature Review}
 Hypernymy identification and discovery are broadly split into pattern-based and distributional methods \citep{camacho2018semeval, Wang2017}.  The two classes need not be mutually exclusive and we will encounter hybrid methods which integrate features from both approaches, improving on the result achieved by employing each respective method independently  \citep{shwartz2016path, bernier2018crim}.  Despite being overshadowed by distributional methods in recent years, there has been renewed interest in pattern-based methods \citep{roller2018hearst}, a fact that underscores their continued relevance.
+%CB:
+For this  reason, the literature review will provide an overview of these two approaches to give the reader a more complete picture of the research area. 
 
 \section{Pattern-Based Methods} \label{Pattern-Based Methods}
-Lexico-syntactic patterns frequently occurring in language encode the hypernymy semantic relationship between words bound to the patterns.  Such patterns are still referred to as Hearst patterns in tribute to the Marti Hearst's pioneering work on hypernym discovery more than 25 years ago \citep{hearst1992automatic}.
+%CB: reader doesn't necessarily know what lexico-syntactic patterns are
+Lexico-syntactic patterns, usually formalised as part-of-speech and word sequences or patterns, %frequently occurring in language 
+encode the hypernymy semantic relationship between words bound to the patterns.  Such patterns are still referred to as Hearst patterns in tribute to Marti Hearst's pioneering work on hypernym discovery more than 25 years ago \citep{hearst1992automatic}.
 
 \subsection{Hearst Patterns} \label{Hearst Patterns}
-\citeauthor{hearst1992automatic} kick-started the chase for hypernyms when she proposed that the text corpus itself contained information about the language in which it was written \citep{hearst1992automatic}.  She observes that an unknown word within a text can be understood by the reader via word pattern co-occurrences that unambiguously entail the word to a familiar superordinate term \citep{hearst1992automatic}.  Consider the following sentence snippet:
+\citeauthor{hearst1992automatic} kick-started the chase for hypernyms when she proposed that the text corpus itself contained information about the language in which it was written %\citep{hearst1992automatic}.  CB: You don't need to cite every sentence. You've starting the section citing her, and unless that changes, the reader can assume that you are still talking about her work.
+She observes that an unknown word within a text can be understood by the reader via word pattern co-occurrences that unambiguously entail the word to a familiar superordinate term.% \citep{hearst1992automatic}.  
+Consider the following sentence snippet:
 
 \say{African birds such as turacos, trogons and nicators are…}
 
@@ -41,7 +47,7 @@ Despite these limitations, Hearst’s early attempt yielded results promising en
 Fittingly, Hearst was also the first to observe limitations to her approach.  Some mined hypernyms were overly generic (ex. the hypernym \textit{species} does not convey much about the hyponym other than it is a living organism).  In other cases, the context influenced the hypernym to make it too specific; for instance \textit{aircraft} was found to be a \textit{target} because of the military sense of the text in question \citep{hearst1992automatic}.
 
 \subsection{Extending Hearst with Probabilistic Methods}
-The examination of the pattern-based methods’ weaknesses was extended by \citet{Wang2017} who note that the absence of “world knowledge” limited the precision of these methods.   They present other challenges inherent in Hearst Pattern parsing:
+The examination of the pattern-based methods' weaknesses was extended by \citet{Wang2017} who note that the absence of ``world knowledge'' limited the precision of these methods.   They present other challenges inherent in Hearst Pattern parsing:
 \begin{itemize}
     \item Since hypernym and hyponym words are nouns or noun phrases, several named entities will be excluded since they are not considered noun phrases.  For instance: \say{…classic movies such as Gone with the Wind…} where \textit{Gone with the Wind} is actually a proper noun and type of movie (as well as classic movie);
     \item Named entities sometime feature the word \textit{and} in their name.  Examples include \textit{Proctor \textbf{and} Gamble}, \textit{Alf Mizzi \textbf{and} Sons Ltd.}, \textit{Plough \textbf{and} Anchor} etc. A pattern like \say{…companies such as IBM, Nokia, Proctor and Gamble…} will consider \textit{Proctor} and \textit{Gamble} to be two different hyponym candidates;
@@ -61,17 +67,22 @@ The algorithm produces a set of hypernymy relations which make up the edges of a
 It was stated that taxonomies were hard to evaluate automatically \citep{camacho2017we} and Probase was no exception.  Evaluation was estimated manually by human judges who were asked to determine the correctness of 50 randomly selected concept-instance/sub-concept pairs drawn from 40 concepts across a multitude of domains.  The average precision (AP) measured was 92.8\% although no inter-annotator agreement scores were provided.  The AP score was only bettered by YAGO \citep{suchanek2007yago} at 95\%.  \citet{wu2012probase} observe that YAGO is a Wikipedia-based framework which features cleaner sources than the general web corpus that populated Probase.  \citet{yu2015learning} used Probase to furnish a large training dataset consisting of 5.8 million hypernym word-pairs, to learn supervised embeddings optimised to detect hypernymy.
 
 \subsection{Learning Patterns Automatically} \label{Learning Patterns Automatically}
-Although Probase shows that it is possible to harvest a vast number of concepts using Hearst patterns \citep{hearst1992automatic} exclusively, \citeauthor{Snow2004} leveraged machine learning to learn new patterns from a corpus \citep{Snow2004}.  The novelty of their work was the use of a dependency parser (MINIPAR) to examine the grammatical structure of the corpus sentences with the objective to find syntactic relationships between the words.  The dependency path is a directional link between two words composed of the word lemmas or stems, part-of-speech tags and dependency label.  The \ac{POS} tag categorises the word class (noun, verb, adjective, etc.); the dependency label indicates the nature of the link between the words.  Figure~\ref{fig:simple_dep_tree} displays\footnote{https://explosion.ai/demos/displacy} the dependency tree of the sentence \say{A Labrador is a dog}.
+Although Probase shows that it is possible to harvest a vast number of concepts using Hearst patterns %\citep{hearst1992automatic} CB: no need of citation here unless what you are saying is coming from hearst's paper
+exclusively, \citeauthor{Snow2004} leveraged machine learning to learn new patterns from a corpus \citep{Snow2004}.  The novelty of their work was the use of a dependency parser (MINIPAR) %CB: is there a specific reference to this particular dependency parser ?
+to examine the grammatical structure of the corpus sentences with the objective to find syntactic relationships between the words.  The dependency path is a directional link between two words composed of the word lemmas or stems, part-of-speech tags and dependency label.  The \ac{POS} tag categorises the word class (noun, verb, adjective, etc.); the dependency label indicates the nature of the link between the words.  Figure~\ref{fig:simple_dep_tree} displays%\footnote{https://explosion.ai/demos/displacy} CB: Not really needed
+the dependency tree of the sentence \say{A Labrador is a dog}.
 \begin{figure}[ht!] % supposedly places it here ...
   \centering
   \includegraphics[width=1.\linewidth]{images/dependency_parse.png}
   \caption{Example dependency tree of a simple sentence.}%% \index{Dependency tree}}
   \label{fig:simple_dep_tree}
 \end{figure}
-The dependency path can be represented as a feature according to a bespoke notation.  An edge between two words can be captured with the tuple $(lemma, pos_tag, dependency_label, direction)$ and the link between two related words expressed as a list of edges.  The link between the hyponym \textit{Labrador} and its hypernym \textit{dog} would be expressed as the sequence:
+
+
+The dependency path can be represented as a feature according to a bespoke notation.  An edge between two words can be captured with the tuple (lemma, pos\_tag, dependency\_label, direction) and the link between two related words expressed as a list of edges.  The link between the hyponym \textit{Labrador} and its hypernym \textit{dog} would be expressed as the sequence:
 \[(Labrador, PROPN, NSUB, <), (be, VERB, ROOT, -),(dog, NOUN, ATTR, >)\]
 
-This particular notation is used in \citep{shwartz2016path} which we found more intuitive than the older convention used in \citep{Snow2004}.  To avoid longer, potentially less precise paths, a limit on the links between nouns can be imposed.  \citep{Snow2004} opted for the shortest path consisting of a maximum of four links between any two nouns.
+This particular notation is used in \cite{shwartz2016path} which is more intuitive than the older convention used in \cite{Snow2004}.  To avoid longer, potentially less precise paths, a limit on the links between nouns can be imposed.  \citeauthor{Snow2004} opted for the shortest path consisting of a maximum of four links between any two nouns.
 
 To avoid extreme sparsity in the path vector model, \citet{Snow2004} harvested dependency paths that held for at least five different word pairs from a corpus of 6 million news article sentences.  Doing so they generated 69,592 distinct dependency path features.  The corpus was also used to extract training and evaluation data.  As \citet{wu2012probase} did later on, \citeauthor{Snow2004} extracted hyponym-hypernym word-pairs from each sentence in their corpus.  Invoking WordNet \citep{Miller1995} as lexical resource, they split the set of pairs into known hypernymy and random words.  To consider a word-pair, both of its constituent words had to be first detected in WordNet.  An ordered word-pair $(x, y)$ would be added to the known hypernym set, if $y$ is found to be an ancestor of $x$.  Words that were not hierarchically related were consigned to the random word list.  The ratio of known hypernyms to random words was 1:50.    
 

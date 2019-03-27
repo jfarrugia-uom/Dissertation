@@ -1,8 +1,71 @@
 \chapter{Results \& Discussion}
 %\textbf{Should include a reiteration of the experiments, and their outcome.  Together with a description (discussion).  Preamble should include a reminder of the aims and objectives together with a list of experiments to achieve these.  Should include many charts and other visualization with appropriate descriptions}.  
-Recall that we split the practical work in two categories.  In this first instance, we tested the reviewed projection learning algorithms on a common dataset and evaluation metrics as well as multiple embedding spaces.  We aimed for more statistical rigour than was presented in the original papers.  In the second set of experiments, we focused onto a particular algorithm, exploring it in some detail within the context of the shared task \citep{camacho2018semeval}.  
+Recall that we split the practical work in two categories.  In this first instance, we tested the reviewed projection learning algorithms on a common dataset and evaluation metrics as well as multiple embedding spaces.  We aimed for more statistical rigour than was presented in the original papers.  In the second set of experiments, we focused on CRIM, an easy-to-train algorithm which performed well in our experiments and was the best submission in the Semeval-2018, Task 9 challenge.  We explored it in some detail within the context of the shared task \citep{camacho2018semeval}.  
 
-\section{Dataset Details}
+\section{Dataset Statistics}
+To fully appreciate the results, we need to foster familiarity with the datasets used to train and evaluate our models.  In this section, we outline the main datasets used in our experiments, in terms of their descriptive statistics.  
+
+\subsection{Combined Dataset}
+We use a standard, highly curated dataset - actually an amalgam of four datasets - to run a comparative study of each reviewed projection learning model.   We refer to this dataset throughout this dissertation as the \textit{Combined Dataset}.  
+\begin{table*}\centering
+\begin{tabular}{@{}llr@{}}\toprule
+\multicolumn{3}{c}{\textbf{Combined Dataset}} \\ \midrule
+\multicolumn{2}{c}{Total Tuples} & 7,397\\
+\multicolumn{2}{c}{Unique Queries} & 2,259\\ \midrule
+\multirow{3}{*}{Hypernyms} & Unique & 1,453\\
+& Max & 17\\
+& Mean & 3.274\\
+Synonyms & Query terms, $\vert syn \vert > 0$ & 877\\
+\bottomrule
+\end{tabular}
+\caption{Combined Dataset statistics.}\label{tab:combined_dataset_stat}
+\end{table*}
+
+Table~\ref{tab:combined_dataset_stat} reflects the Combined Dataset's key statistics.  It contains a total of 7,397 tuples which we will split in five folds, dedicating 5,918 tuples in each fold for training the models and 1,479 for validation\footnote{The exact numbers may vary depending on the embeddings used; in this case we assume word2vec.}.  There are 2,259 distinct query (or hyponym) terms which are mapped to 1,453 distinct hypernyms.  74\% of the query terms are associated with one to four hypernyms, where a hyponym is linked to a mean 3.3 hypernyms.  Less than 50 hyponyms are mapped to 10 or more hypernyms each.  Example terms include wearable items such as \textit{cloak} (11), \textit{glove} (12); and animals such as \textit{fox} (10), \textit{cow} (14).  
+
+The words in the Combined Dataset largely pertain to the biology domain: 2,295 tuples (31\% of the total dataset) feature one of 8 hypernyms (0.55\% of all distinct hypernyms in the set) which categorise some aspect of the natural world.  The top three most frequent hypernyms are \textit{animal}, \textit{plant} and \textit{chordate} which occupy the hypernym slot of 497, 440 and 363 word-pairs respectively.  The Combined Dataset also features a set of synonyms which we use to adjust our models' loss via neighbour regularisation.  There is at least one synonym for 39\% of the hyponyms.
+
+\subsection{Shared Task Dataset}
+\begin{table*}\centering
+\begin{tabular}{@{}llrcrcr@{}}\toprule
+\multicolumn{7}{c}{\textbf{Semeval-2018, Task 9 Dataset}} \\ \midrule
+& & \textbf{Concept} & \phantom{a} & \textbf{Entity} & \phantom{a} & \textbf{Both} \\
+\cmidrule{3-3} \cmidrule{5-5} \cmidrule{7-7}
+\multirow{3}{*}{Training} & \textit{\# Tuples} & 7,184 && 4,595 && 11,779 \\
+& \textit{Uniq. Hypo.} & 979 && 521 && 1500\\
+& \textit{Uniq. Hyper.} & 3,476 && 1,426 && 4,233\\ 
+\cmidrule{2-7}
+\multirow{3}{*}{Test} & \textit{\# Tuples} & 4,936 && 2,112 && 7,048 \\
+& \textit{Uniq. Hypo.} & 1,057 && 443 && 1,500\\
+& \textit{Uniq. Hyper.} & 2,575 && 812 && 3,076\\
+\cmidrule{2-7}
+\multirow{3}{*}{\textbf{Total}} & \textit{\# Tuples} & \textbf{12,120} && \textbf{6,707} && \textbf{18,827} \\
+& \textit{Uniq. Hypo.} & 2,036 && 964 && 3,000\\
+& \textit{Uniq. Hyper.} & 4,703 && 1,722 && 5,556\\
+\bottomrule
+\end{tabular}
+\caption{Semeval-2018 Task 9, English general-purpose dataset statistics.}\label{tab:semeval_dataset_stat}
+\end{table*}
+
+For this dissertation we focused on the general-purpose English dataset shipped with the Shared Task.  The organisers split the dataset into training, test and validation subsets and, since we will be comparing our results to the other participants' work, we use the data as they were delivered.  The dataset's descriptive statistics can be viewed in Table~\ref{tab:semeval_dataset_stat}, excluding the validation split which only consists of 200 tuples.
+
+It is immediately evident that the Shared Task Dataset is larger, and more diverse than the Combined Dataset.  In total, the dataset features 18,827 tuples - 2.54 times the size of the Combined Dataset - where each hyponym is associated with an average of 6.3 hypernyms.  The query terms are divided evenly between the training and test datasets.  Roughly 30\% of the terms are entities (proper nouns) and therefore \textit{instances} rather than \textit{subclasses} of their designated hypernyms.  We can see that the unique hypernym counts are not perfectly additive across the rows and columns of the table.  This is because some hypernyms are relatively more frequent than other and linked with terms in both the training and test sets.  However, this dataset is less bound to a particular domain than the Combined Dataset.  Indeed, \textit{person} is the highest frequency hypernym but is only mapped to 612 tuples or 3.25\% of the entire dataset.
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.5\linewidth]{images/both_hyper_freq_zipf.png}
+  \caption{Log-log plot of hypernym rank against frequency for Combined and Shared Task datasets.}
+  \label{fig:dataset_hypernym_freq}
+\end{figure}
+We illustrated the distribution of hypernyms in the datasets by plotting the log hypernym rank against the log frequency in Figure~\ref{fig:dataset_hypernym_freq}.  Hypernym frequency in the Combined Dataset follows a Zipf-like distribution, although clearly, the highest ranking hypernyms have similar frequencies.  In the Shared Task case,  the plot is generally shallower and less akin to a Zipf distribution.  The frequency of the top ranked hypernyms initially falls sharply and then decreases slowly from the 7$^{th}$ ranked hypernym onward.
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.75\linewidth]{images/shared_task_MFH.png}
+  \caption{Distribution of the most frequent hypernyms, segregated by training/test split and concept/entity word type.}
+  \label{fig:shared_task_mfh}
+\end{figure}
+The Shared Task dataset is split in four partitions between training/test splits and concept/entity hyponym word types.  We plotted the distribution of the 15 most frequent hypernyms in the overall dataset with respect to each partition in Figure~\ref{fig:shared_task_mfh}.  The word \textit{person} features conspicuously as a frequent hypernym in every data partition with a considerable margin over \textit{city}, the second most frequent hypernym overall.  This is consistent with Figure~\ref{fig:dataset_hypernym_freq}.
+
+The distribution of training and test samples seems to be fairly uniform, at least in terms of the 15 most-common hypernyms.  In general, entities are more likely to be defined by frequent hypernyms.  This is understandable since named entity labels are narrower in scope than concepts which encompass all common nouns.  The popularity of hypernyms like \textit{city}, \textit{state}, and \textit{leader}, might be an  indication that \textit{UMBC} corpus leans towards geo-political content, but this is tenuous evidence at best.  Lastly, we observe that the natural world is not as over-represented as is was in the Combined Dataset, although \textit{animal} and \textit{plant} are among the 15 most frequent hypernyms in the Shared Task dataset too.
 
 
 \section{Hard-Clustering and Regularisation}
@@ -14,7 +77,7 @@ We aimed to peruse of a standard set of metrics and employ a slightly-modified i
 \subsection{Effect of Training Piecewise Projections}
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=1.\linewidth]{images/Sample_of_30_vector_offsets_PCA.png}
+  \includegraphics[width=0.75\linewidth]{images/Sample_of_30_vector_offsets_PCA.png}
   \caption{Sample of 30 vector offsets projected on first two PCA components.}
   \label{fig:cluster_30_samp_pca}
 \end{figure}
@@ -22,14 +85,14 @@ We evaluated single-cluster models that learned one transformation matrix for al
 
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=1.\linewidth]{images/Train_losses_4_clusters_baseline_w2v.png}
+  \includegraphics[width=0.6\linewidth]{images/Train_losses_4_clusters_baseline_w2v.png}
   \caption{Train and validation loss on 4 data clusters (Baseline; word2vec).}
   \label{fig:train_test_loss_w2v}
 \end{figure}
 
 The training experience on the clusters differed.  We recorded the training and test loss returned when training a 10-cluster, baseline (i.e. no regularisation) model on an arbitrary training fold. This is the \citep{Fu2014} baseline as implemented in \citep{ustalov2017negative}.  We reproduced train and test losses for four clusters, chosen because of their idiosyncratic performance, in Figure~\ref{fig:train_test_loss_w2v}.
 
-In some cases, such as \textit{cluster 5} (top-right panel), the cluster contained word-pairs featuring a distinctive linear relation between hyponym and hypernym vectors, a fact which was captured by the model.  The test loss mirrors the training loss almost perfectly which suggests that the members of the 5$^{th}$ test cluster belong to the same semantic family of the word-pairs in the training cluster.  The 6$^{th}$ and 7$^{th}$ cluster do not fare as well: over-fit is manifested at the 150-200 epoch mark and the end-of-training loss is markedly higher than what was observed in the 5$^{th}$ cluster.  A balanced performance was delivered by the 8$^{th}$ cluster: no conspicuous over-fit and a reasonable end-of-training loss.
+In some cases, such as \textit{cluster 5} (top-left panel), the cluster contained word-pairs featuring a distinctive linear relation between hyponym and hypernym vectors, a fact which was captured by the model.  The test loss mirrors the training loss almost perfectly which suggests that the members of the 5$^{th}$ test cluster belong to the same semantic family of the word-pairs in the training cluster.  The 6$^{th}$ and 7$^{th}$ cluster do not fare as well: over-fit is manifested at the 150-200 epoch mark and the end-of-training loss is markedly higher than what was observed in the 5$^{th}$ cluster.  A balanced performance was delivered by the 8$^{th}$ cluster: no conspicuous over-fit and a reasonable end-of-training loss.
 
 \subsection{Baseline against Regularised Model Results}
 \begin{figure}[ht!] 
@@ -108,7 +171,7 @@ Lastly, the \ac{MFH} baseline results were deliberately excluded since they do n
 \subsection{Objectives}
 In this set of experiments, we explore two projection models which rely on the dot product of the hypernym projection and actual hypernym to determine the similarity between the two vectors.  One, which we dub \textit{Yamane} after the first credited contributor in \citep{yamane2016distributional}, jointly-learns clusters and projection parameters.  The other, which we refer to as \textit{CRIM}, after the research institute represented by the authors of the original paper \citep{bernier2018crim} is inspired by Yamane but instead of partitioning samples into separate models during the training, learns multiple projection matrices within the same model.
 
-We evaluate each model on the same dataset we used to train the hard-clustered MSE  models, using 5-fold cross validation.  We measure performance using the same set of metrics, which we borrow from the Shared Task-2018, Task 9 organisers \citep{camacho2018semeval}.  Although attempts were made by the respective authors to compare their work against others', they did not all peruse of the same data and metrics so direct comparison was not possible.  Moreover, all models were trained on word2vec features in the literature we reviewed, while we considered three pre-trained embeddings variants.  
+We evaluate each model on the same dataset we used to train the hard-clustered MSE  models, using 5-fold cross validation.  We measure performance using the same set of metrics, which we borrow from the Semeval-2018, Task 9 organisers \citep{camacho2018semeval}.  Although attempts were made by the respective authors to compare their work against others', they did not all peruse of the same data and metrics so direct comparison was not possible.  Moreover, all models were trained on word2vec features in the literature we reviewed, while we considered three pre-trained embeddings variants.  
 
 Both models, as well as their respective training algorithms, were developed from the ground-up.  We stick to the technical paper when building Yamane but integrate combined asymmetric and neighbour regularisation in the CRIM model.  We also analyse the performance of CRIM based on the following hyperparameter combinations:
 \begin{itemize}
@@ -158,7 +221,6 @@ We trained 27 CRIM models configured on all combinations of embeddings spaces (w
 Our results partially mirror our experiments with regularisation applied to the hard-clustered setup.  Once again, (slightly) better results can only be observed in the word2vec feature context.  \ac{MRR} improved by 6.9\% and 7.9\% respectively on the non-regularised word2vec model.  However, the mean word2vec \ac{MAP} score regressed with regularisation.  The regularised models had an almost imperceptible impact on models trained on GloVe and fastText features.  Overall, the best \ac{MAP} and second-best \ac{MRR} results were returned by a model configured with 10 projection layers and sampling 10 negative hypernyms per batch update, and trained on fastText features.  The best \ac{MRR} score was actually returned by a \ac{MSE} model training on word2vec features.
 
 \subsection{Effect of Hyperparameter Tuning on CRIM} \label{hyper_effect_CRIM}
-
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/CRIM_MRR_score_projection_and_negative_sample.png}
@@ -194,7 +256,7 @@ The results obtained by our implementation of Yamane can be seen in Table~\ref{t
 Contrary to the other algorithms, Yamane narrowed the gap between word2vec and fastText-trained models.  The edge that fastText features had over word2vec in the \ac{MSE} almost completely disappeared.  As we saw in Figures~\ref{fig:crim_hyper_mrr},\ref{fig:crim_hyper_map}, multiple projections damaged CRIM's performance.  This is contrasted in Yamane, where learning four projection matrices (one per cluster) improved word2vec-trained model's \ac{MRR} and \ac{MAP}.  However, despite this performance boost, we found Yamane models hard to train.  Metrics collected on the validation fold at the end of every epoch, show models that have a tendency to be erratic and which converge surprisingly quickly.  
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=1.\linewidth]{images/Yamane_training_patterns.png}
+  \includegraphics[width=.75\linewidth]{images/Yamane_training_patterns.png}
   \caption{Yamane training patterns on selected folds.}
   \label{fig:yamane_training_patterns}
 \end{figure}
@@ -228,6 +290,8 @@ We captured training patterns in a matrix displayed in Figure~\ref{fig:yamane_tr
 
 We conclude this section, by selecting the best-performing configuration of each respective model: \ac{MSE}, CRIM and Yamane.  We ranked every model based on the harmonic mean of the cross-validated \ac{MRR} and \ac{MAP} scores.  The hyperparameter combinations that led to the best models, based on our definition are shown in Table~\ref{tab:all_model_best_hyper} and the scores - together with standard error bars - can be seen in Figure~\ref{fig:part1_best_models}.  The binary cross-entropy models which estimate the similarity between the projected and actual hypernym using the dot-product operation and which allow the presentation of explicit negative examples, seem to generate more accurate hypernyms.  The best \ac{MSE} model scored a mean 0.341 \ac{MAP} when trained on fastText embeddings.  This score was only bettered by the binary cross-entropy models trained on fastText, with a margin of 16.24\% and 14.84\% with Yamane and CRIM respectively.  The Yamane model scored a mean 0.3901 \ac{MAP} on the word2vec trained model, the only tested model to bridge the word2vec/fastText divide on \ac{MAP}.  By way of contrast, the next best \ac{MAP} score we recorded was 0.3302 (CRIM) while from the \ac{MSE} models, the highest score obtained was 0.278.  The GloVe embeddings seemed to be the least affected by different models: the highest (Yamane) and lowest (MSE) scores different by only 1.2 points.
 
-\ac{MSE} models are more competitive with respect to \ac{MRR} indicating that either model type is more or less equally capable of generating a correct highest ranked hypernym.  Yamane and MSE scored 0.539 and 0.536 respectively - practically equivalent results - on the word2vec trained models, while CRIM trailed behind with 0.502.  fastText features dampened the effect of the model, with cross-validated scores of 0.533, 0.528 and 0.529 obtained on Yamane, CRIM and MSE models respectively.  Finally, the MSE model coaxed the top \ac{MRR} score of 0.487 from among GloVe-trained models.  However, this score trails 1.46 points from the worst-performing model in the rest of the cohort (CRIM trained on word2vec).
+\ac{MSE} models are more competitive with respect to \ac{MRR} indicating that either model type is more or less equally capable of generating a correct highest ranked hypernym.  Yamane and MSE scored 0.539 and 0.536 respectively - practically equivalent results - on the word2vec trained models, while CRIM trailed behind with 0.502.  fastText features dampened the effect of the model, with cross-validated scores of 0.533, 0.528 and 0.529 obtained on Yamane, CRIM and MSE models respectively.  Finally, the MSE model coaxed the top \ac{MRR} score of 0.487 from among GloVe-trained models.  However, this score trails 1.46 points behind the worst-performing model in the rest of the cohort (CRIM trained on word2vec).
 
-Our experiments did not exhaust all reasonable model configurations, so these results are not necessarily conclusive.  We will determine if the differences in our collected data are statistically significant in Chapter 5, where we evaluate our findings according to the \ac{ANOVA} framework.  In the next section we shift focus to the SemEval-2018 Task9 English, general-purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
+Our experiments did not exhaust all reasonable model configurations, so these results are not necessarily conclusive.  We will determine if the differences in our collected data are statistically significant in Chapter 5, where we evaluate our findings according to the \ac{ANOVA} framework.  In the next section we shift focus to the SemEval-2018 Task 9 English, general-purpose task and the application of the knowledge gathered from these experiments to a "real life" problem setting.
+
+\section{Experiments on Shared Task Corpus and Data}
