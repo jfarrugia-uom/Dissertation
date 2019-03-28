@@ -48,7 +48,7 @@
 
 \OnehalfSpacing                                  % One and a half line spacing
 
-\setlength{\headsep}{0.5cm}                      % Add space between the header and text
+\setlength{\headsep}{1.5cm}                      % Add space between the header and text
 
 \nouppercaseheads								 % Don't convert titles to Uppercase
 \makepagestyle{umpage}

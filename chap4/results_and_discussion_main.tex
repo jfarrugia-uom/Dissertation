@@ -53,14 +53,14 @@ It is immediately evident that the Shared Task Dataset is larger, and more diver
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=0.5\linewidth]{images/both_hyper_freq_zipf.png}
-  \caption{Log-log plot of hypernym rank against frequency for Combined and Shared Task datasets.}
+  \caption{Log-log plot of hypernym rank against frequency, Combined and Shared Task datasets.}
   \label{fig:dataset_hypernym_freq}
 \end{figure}
 We illustrated the distribution of hypernyms in the datasets by plotting the log hypernym rank against the log frequency in Figure~\ref{fig:dataset_hypernym_freq}.  Hypernym frequency in the Combined Dataset follows a Zipf-like distribution, although clearly, the highest ranking hypernyms have similar frequencies.  In the Shared Task case,  the plot is generally shallower and less akin to a Zipf distribution.  The frequency of the top ranked hypernyms initially falls sharply and then decreases slowly from the 7$^{th}$ ranked hypernym onward.
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=0.75\linewidth]{images/shared_task_MFH.png}
-  \caption{Distribution of the most frequent hypernyms, segregated by training/test split and concept/entity word type.}
+  \caption{Distribution of the most frequent hypernyms in the Shared Task dataset.}
   \label{fig:shared_task_mfh}
 \end{figure}
 The Shared Task dataset is split in four partitions between training/test splits and concept/entity hyponym word types.  We plotted the distribution of the 15 most frequent hypernyms in the overall dataset with respect to each partition in Figure~\ref{fig:shared_task_mfh}.  The word \textit{person} features conspicuously as a frequent hypernym in every data partition with a considerable margin over \textit{city}, the second most frequent hypernym overall.  This is consistent with Figure~\ref{fig:dataset_hypernym_freq}.
@@ -84,8 +84,8 @@ We evaluated single-cluster models that learned one transformation matrix for al
 
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=0.6\linewidth]{images/Train_losses_4_clusters_baseline_w2v.png}
-  \caption{Train and validation loss on 4 data clusters (Baseline; word2vec).}
+  \includegraphics[width=0.75\linewidth]{images/Train_losses_4_clusters_baseline_w2v.png}
+  \caption{Train and validation loss on 4 data clusters (Baseline, word2vec).}
   \label{fig:train_test_loss_w2v}
 \end{figure}
 
@@ -97,14 +97,14 @@ In some cases, such as \textit{cluster 5} (top-left panel), the cluster containe
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/MRR_5-fold_results_models_baselines_embeddings.png}
-  \caption{Mean MRR cross-validated results when evaluated on different cluster sizes, baselines, models and embeddings.}
+  \caption{MRR cross-validated results, by cluster size, baselines, models and embeddings.}
   \label{fig:MRR_models_baselines}
 \end{figure}
 
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/PAt5_5-fold_results_models_baselines_embeddings.png}
-  \caption{Mean P$@5$ cross-validated results when evaluated on different cluster sizes, baselines, models and embeddings.}
+  \caption{P$@5$ cross-validated results, by cluster size, baselines, models and embeddings.}
   \label{fig:pat5_models_baselines}
 \end{figure}
 
@@ -156,7 +156,7 @@ We also note from Figures~\ref{fig:MRR_models_baselines},~\ref{fig:pat5_models_b
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/MAP_lexical_split_results_models_baseline_embeddings.png}
-  \caption{\ac{MAP} results obtained on lexically-split dataset with baseline and regularised models across various embeddings.}
+  \caption{Lexical-split dataset \ac{MAP} results, by model, embeddings.}
   \label{fig:lexsplit_ustalov_map}
 \end{figure}
 In the lexically-split dataset, we ensured that a word in the hypernym slot of a word-pair either features in training set or the test set but not in both.  The \ac{MAP} results are reproduced in Figure~\ref{fig:lexsplit_ustalov_map}.  The results were much lower throughout compared to the results obtained by models trained on randomly-split data.  Nine configurations achieved scores that were very close to 0.  fastText features scored poor results with the single-cluster models, in stark contrast to what we observed in section \ref{ustalov_embeddings}.  On the other hand, the single-cluster model with asymmetric regularisation trained on GloVe features, achieved the best \ac{MAP} result (0.029).  This score was tied with the 10-cluster word2vec model also including the asymmetric regularisation term.  Notwithstanding, there is configuration which is discernibly better than the other.  Similar to other work \citep{shwartz2017siege}, the cosine unsupervised metric demonstrated robustness in the face of lexical split, returning results nominally worse than those returned in the random data split experiments.
@@ -223,13 +223,13 @@ Our results partially mirror our experiments with regularisation applied to the 
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/CRIM_MRR_score_projection_and_negative_sample.png}
-  \caption{CRIM model \ac{MRR} score variations by embeddings, projections, and negative sample count.}
+  \caption{CRIM \ac{MRR} score variations by embeddings, projections, and negative sample count.}
   \label{fig:crim_hyper_mrr}
 \end{figure}
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/CRIM_MAP_score_projection_and_negative_sample.png}
-  \caption{CRIM model \ac{MAP} score variations by embeddings, projections, and negative sample count.}
+  \caption{CRIM \ac{MAP} score variations by embeddings, projections, and negative sample count.}
   \label{fig:crim_hyper_map}
 \end{figure}
 Figures~\ref{fig:crim_hyper_mrr},\ref{fig:crim_hyper_map} illustrate plots of our 5-fold cross-validated \ac{MRR} and \ac{MAP} results respectively, generated by non-regularised models configured with different hyperparameter combinations, each trained on three distinct embeddings features.  Standard error bars were added to each plot.  
@@ -298,14 +298,14 @@ Based on its performance, quick convergence and configurability, we applied our 
 
 We focused on the English, general-purpose task which was accompanied by the largest corpus and dataset.  In a novel departure from the Combined Dataset, and other dataset used in the experiments we reviewed, the Shared Task organisers categorised each query term as either \textit{concept} or \textit{entity}.  The objectives of our experiments were to:
 \begin{itemize}
-    \item Frozen embeddings
+    \item With frozen embeddings
     \begin{enumerate}
         \item At the most basic level, find out if our implementation matches the published performance of CRIM;
         \item Determine whether the combination of projection layers and embeddings has some effect on the validation score on the test set;
         \item Train the model on concept, entities separately and combined, and each time validate it on only concepts, only entities, and both term types together.  In this way we will investigate whether entity (or concept) hypernymy encodes its own signal which cannot be generalised unless the model is first exposed to actual entity (or concept) examples;
         \item Experiment with an \ac{MTL} setup whereby we train a common feature extractor connected to two logistic regression classifier heads, which learn optimal coefficients for concepts and entities separately;
     \end{enumerate}
-    \item Tuned embeddings
+    \item Towards tuned embeddings
     \begin{enumerate}
         \item For each embeddings space, find the best model in terms of the harmonic mean of \ac{MAP} and \ac{MRR}, and apply a simple transfer learning method to tune embeddings whilst keeping the previously trained projection matrices static;
     \end{enumerate}
@@ -318,15 +318,58 @@ We focused on the English, general-purpose task which was accompanied by the lar
   \caption{\ac{MRR}, \ac{MAP} and P$@1$ scores of CRIM, trained on var.}
   \label{fig:semeval_crim_proj_embed}
 \end{figure}
-We present the results of models trained and validated on a combination of concepts and entities in Figure~\ref{fig:semeval_crim_proj_embed}.  
+We present the \ac{MAP}, \ac{MRR} and P$@1$ results of models trained and validated on a combination of concepts and entities in Figure~\ref{fig:semeval_crim_proj_embed}.  fastText embeddings trained on 5  projection layers returned the best \ac{MAP} and \ac{MRR} scores, at 0.133 and 0.267 respectively.  The fastText, 10 projection layer model obtained the highest P$@1$ score at 0.211, a subtle improvement on the 0.208 result recorded by the 5 projection layer model.
+
+Unlike the experiments on the Combined Dataset, increasing projections had a positive, albeit slight, effect on the word2vec-trained models.  In fact, the best word2vec results were observed with the 10 projection layer model.  GloVe delivered results comparable to word2vec, although increasing the projections had an overall negative effect on all scores except \ac{MAP}.
+
+\subsection{Segregation of Training Data by Query Type}
+We discovered that performance is influenced by the words with which we choose to fit a model.  From what we could empirically observe, the best strategy was to train a model with a mix of entities and concepts.  Training a model on concepts or entities exclusively invariably damaged its ability to generate hypernyms for the \textit{type} of query terms it has not observed during training.  For every embeddings space, we first selected the best performing model in terms of projection count when trained and validated on concepts+entities.  Then, we trained each model on the word types separately, and evaluated it on all word type combinations.  The cross-tabulated scores can be seen in Table~\ref{tab:semeval_wordtype_results}.
+\begin{table*}\centering
+\begin{tabular}{@{}llrrcrrcrr@{}}\toprule
+& & \multicolumn{8}{c}{\textbf{Tested On}}\\ 
+\cmidrule{3-10}
+\multicolumn{2}{c}{\multirow[c]{2}{*}{\textbf{Trained On}}} & \multicolumn{2}{c}{Concept} & \phantom{a} & \multicolumn{2}{c}{Entity} & \phantom{a} & \multicolumn{2}{c}{Both}\\ 
+\multicolumn{2}{c}{} & \textit{MRR} & \textit{MAP} && \textit{MRR} & \textit{MAP} && \textit{MRR} & \textit{MAP}\\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}  
+\multirow{3}{*}{\textit{word2vec}} 
+& Concept & 0.109 & 0.050 && 0.070 & 0.029 && 0.098 & 0.044\\
+& Entity & 0.029 & 0.015 && 0.300 & 0.139 && 0.109 & 0.051\\
+& Both & 0.160 & 0.073 && 0.299 & 0.143 && 0.201 & 0.094 \\ \midrule
+
+\multirow{3}{*}{\textit{fastText}} 
+& Concept & 0.208 & 0.099 && 0.305 & 0.132 && 0.237 & 0.109\\
+& Entity & 0.055 & 0.026 && 0.394 & 0.195 && 0.155 & 0.076\\
+& Both & \textbf{0.211} & \textbf{0.105} && 0.398 & 0.199 && \textbf{0.267} & \textbf{0.133}\\ \midrule
+
+\multirow{3}{*}{\textit{GloVe}} 
+& Concept & 0.106 & 0.045 && 0.036 & 0.014 && 0.086 & 0.036 \\
+& Entity & 0.033 & 0.013 && \textbf{0.445} & \textbf{0.206} && 0.155 & 0.070 \\
+& Both & 0.119 & 0.059 && 0.359 & 0.170 && 0.190 & 0.092\\ 
+\bottomrule
+\end{tabular}
+\caption{Test results for models trained on concepts, entities, concepts+entities.}\label{tab:semeval_wordtype_results}
+\end{table*}
+
+\begin{table*}\centering
+\begin{tabular}{@{}llrrcrrcrr@{}}\toprule
+& & \multicolumn{8}{c}{\textbf{Tested On}}\\ 
+\cmidrule{3-10}
+\multicolumn{2}{c}{\multirow[c]{2}{*}{\textbf{Trained On}}} & \multicolumn{2}{c}{Concept} & \phantom{a} & \multicolumn{2}{c}{Entity} & \phantom{a} & \multicolumn{2}{c}{Both}\\ 
+\multicolumn{2}{c}{} & \textit{MRR} & \textit{MAP} && \textit{MRR} & \textit{MAP} && \textit{MRR} & \textit{MAP}\\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}  
+\textit{word2vec} & Both & 0.161 & 0.074 && \textbf{0.339} & \textbf{0.164} && 0.214 & 0.100 \\ 
+\textit{fastText} & Both & 0.194 & 0.094 && 0.403 & 0.200 && 0.256 & 0.125\\ 
+\textit{GloVe} & Both & 0.125 & 0.059 && \textbf{0.402} & \textbf{0.193} && 0.207 & 0.099\\ 
+\bottomrule
+\end{tabular}
+\caption{Test results for best \ac{MTL} models.}\label{tab:semeval_mtl}
+\end{table*}
+
+In general, the best performance is coaxed out a model when it is trained on a mix of concept and entities.  However, the fastText model trained on concepts exclusively is an exception: it still managed a comparatively decent 0.305 \ac{MRR} and 0.132 \ac{MAP}.  The reverse effect was not observed: training fastText on only entities, impaired the model's ability to generate hypernyms for concept terms.  We also noted that models trained and evaluated on entities yielded the best scores.  This is possibly due to the distribution of hypernyms within the entity category as observed in Figure~\ref{fig:shared_task_mfh}, where around 8\% of all entity tuples are instances of \textit{person}, \textit{city} or \textit{writer}.  GloVe embeddings were particularly adapt at generating hypernyms for entity words, given that the model was trained exclusively on entities.  The GloVe Entity-Entity model scored the highest \ac{MRR} and \ac{MAP}.
+
+\subsection{Multi-task Learning Setup}
+Considering the additional complexity that went into the model's structure, training and prediction algorithms, the \ac{MTL} setup delivered modest gains.  Specifically, we observed development in the ability of word2vec and GloVe models to generate hypernyms for entity queries when trained on concepts+entities.  word2vec \ac{MRR} and \ac{MAP} were 13.4\%  and 14.6\% higher than the single classifier scores respectively.  GloVe \ac{MRR} and \ac{MAP} were 12\% and 13.5\% than the single classifier scores respectively.  In all cases, the best results were observed from models initialised with 5 projection layers, irrespective of the word embeddings space.  \ac{MRR} and \ac{MAP} results obtained from the \ac{MTL} models can be viewed in Table~\ref{tab:semeval_mtl}.
 
 
 
-
-
-
-
-
-
-
-
+   
