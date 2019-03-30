@@ -2,7 +2,7 @@
 %\textbf{Should include a reiteration of the experiments, and their outcome.  Together with a description (discussion).  Preamble should include a reminder of the aims and objectives together with a list of experiments to achieve these.  Should include many charts and other visualization with appropriate descriptions}.  
 Recall that we split the practical work in two categories.  In this first instance, we tested the reviewed projection learning algorithms on a common dataset and evaluation metrics as well as multiple embedding spaces.  We aimed for more statistical rigour than was presented in the original papers.  In the second set of experiments, we focused on CRIM, an easy-to-train algorithm which performed well in our experiments and was the best submission in the Semeval-2018, Task 9 challenge.  We explored it in some detail within the context of the shared task \citep{camacho2018semeval}.  
 
-\section{Dataset Statistics}
+\section{Dataset Statistics} \label{dataset_stats}
 To fully appreciate the results, we need to foster familiarity with the datasets used to train and evaluate our models.  In this section, we outline the main datasets used in our experiments, in terms of their descriptive statistics.  
 
 \subsection{Combined Dataset}
@@ -315,7 +315,7 @@ We focused on the English, general-purpose task which was accompanied by the lar
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/semeval_crim_proj_embed.png}
-  \caption{\ac{MRR}, \ac{MAP} and P$@1$ scores of CRIM, trained on var.}
+  \caption{\ac{MRR}, \ac{MAP} and P$@1$ scores of CRIM, by embeddings spaces and projection layer count.}
   \label{fig:semeval_crim_proj_embed}
 \end{figure}
 We present the \ac{MAP}, \ac{MRR} and P$@1$ results of models trained and validated on a combination of concepts and entities in Figure~\ref{fig:semeval_crim_proj_embed}.  fastText embeddings trained on 5  projection layers returned the best \ac{MAP} and \ac{MRR} scores, at 0.133 and 0.267 respectively.  The fastText, 10 projection layer model obtained the highest P$@1$ score at 0.211, a subtle improvement on the 0.208 result recorded by the 5 projection layer model.
@@ -370,6 +370,16 @@ In general, the best performance is coaxed out a model when it is trained on a m
 \subsection{Multi-task Learning Setup}
 Considering the additional complexity that went into the model's structure, training and prediction algorithms, the \ac{MTL} setup delivered modest gains.  Specifically, we observed development in the ability of word2vec and GloVe models to generate hypernyms for entity queries when trained on concepts+entities.  word2vec \ac{MRR} and \ac{MAP} were 13.4\%  and 14.6\% higher than the single classifier scores respectively.  GloVe \ac{MRR} and \ac{MAP} were 12\% and 13.5\% than the single classifier scores respectively.  In all cases, the best results were observed from models initialised with 5 projection layers, irrespective of the word embeddings space.  \ac{MRR} and \ac{MAP} results obtained from the \ac{MTL} models can be viewed in Table~\ref{tab:semeval_mtl}.
 
+\subsection{Transfer Learning Setup}
+\begin{figure}[!ht]
+    \centering
+    \subbottom[MRR]{\includegraphics[width=0.8\textwidth]{images/semeval_mrr_tuned.png} }\qquad
+    \subbottom[MAP]{\includegraphics[width=0.8\textwidth]{images/semeval_map_tuned.png}}%
+    \caption{Boost on \ac{MRR} and \ac{MAP} due to embeddings tuning.}        
+    \label{fig:embeddings_boost}
+\end{figure}
+Our transfer learning mechanism successfully boosted models' performance in all embeddings scenarios.  Figure~\ref{fig:embeddings_boost} displays the \ac{MRR} (top) and \ac{MAP} (bottom) scored by the base model, trained on frozen embeddings (light shading), and tuned model (dark shading) in which we trained the embeddings but froze the projections.  The plot shows the returned scores when the models were tested on concepts (left), entities (centre) and concept+entity (right).
 
+The models perform better on generating hypernyms for entities than for concepts, irrespective of the embeddings used.  fastText retains its edge even after embeddings tuning.  Entities are the only exception: a tuned word2vec model scored 0.501 \ac{MRR} and 0.253 \ac{MAP}, slightly better than fastText at 0.490 and 0.242 respectively.  word2vec benefited the most from the embeddings tuning: \ac{MRR} and \ac{MAP} increased by 53.79\% and 62.31\% based on the concept+entity evaluation. 
 
-   
+From all the experiments we executed on Shared Task dataset, our tuned fastText embeddings yielded the highest MRR/MAP scores on the concept+entity test dataset.  The model returned a respectable \textbf{0.348}/\textbf{0.173} which would have placed it third overall in the Shared Task submission leader-board.
