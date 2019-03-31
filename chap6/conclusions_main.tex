@@ -1,14 +1,45 @@
+%\textbf{This section should have a summary of the whole project.  The original aims and objective and whether these have been met should be discussed. It should include a section with a critique and a list of limitations of your proposed solutions.  Future work should be described, and this should not be marginal or silly (e.g.\ add machine learning models).  It is always good to end on a positive note (i.e.\ `Final Remarks').}
 \chapter{Conclusions}
-\textbf{This section should have a summary of the whole project.  The original aims and objective and whether these have been met should be discussed. It should include a section with a critique and a list of limitations of your proposed solutions.  Future work should be described, and this should not be marginal or silly (e.g.\ add machine learning models).  It is always good to end on a positive note (i.e.\ `Final Remarks').}
+In this dissertation we tackled hypernym discovery, a topic in computational semantics which focuses on algorithms which can suggest the hypernyms of given query words.  Hypernym discovery is an evolution of the hypernym identification binary task, in which a model is expected to detect whether two words are related by hypernymy.  Pattern-based and distributional semantic models have been proposed as solutions to either task.  We focused on \textit{projection learning}, a supervised distributional method which learns a transformation matrix that when combined with a hyponym's embeddings generates an estimate of its hypernym vector.  Although originally developed as an alternative hypernym identification solution, it was later found to be well-suited for hypernym discovery.  We were further motivated to explore these algorithms after a  projection-learning-based model, submitted by the Computer Research Institute of Montreal, achieved the highest rank in all English subtasks in the SemEval-2018 Task 9 challenge.
 
 \section{Achieved Aims and Objectives}
-\blindtext
+We divided our empirical work in two sections.  We first reviewed four projection learning methods and found two overlooked gaps in the literature.  To our knowledge, there was no published comparative analysis of all four models using a common dataset and evaluation metrics, which made it impossible to determine whether one or more models had an edge over the others.  Secondly, word2vec features were exclusively used to train all four models when applied to English-language hypernym discovery tasks.
+
+Inspired by \citet{shwartz2017siege} work with unsupervised methods, we devised an experimental setup against which to test the chosen four projection model variants.  
+
+\begin{table*}\centering
+\begin{tabular}{@{}llll@{}}\toprule
+\bottomrule
+\end{tabular}
+\caption{}\label{tab:conc_experiment_summary}
+\end{table*}
+
+We borrowed the English Combined Dataset from \citet{ustalov2017negative} consisting of four high-quality datasets and partitioned it into $k=5$ folds.  We cross-validated each model using \ac{MRR}, \ac{MAP} and P$@k$ metrics mandated by \citet{camacho2018semeval} in the Shared Task.  We tested several versions of every model, each initialised with a different set of hyperparameters, chosen based on their claimed effect on performance in the respective publications.  We treated the embeddings like another hyperparameter, fitting each model with features extracted from publicly available, pre-trained embeddings created using word2vec (skip-gram, negative sampling), GloVe and fastText.  Each experiment yielded a distribution of scores which allowed us to perform multi-factor statistical tests using the \ac{ANOVA} framework.  Our statistically significant findings are summarised below:
+\begin{enumerate}
+    \item 
+\end{enumerate}
+
+The \ac{MSE} models were published on GitHub by \citeauthor{ustalov2017negative}, and we modified the code to fit our experimental requirements.  Following the technical papers, we built the log-loss (binary cross-entropy) neural models and the training algorithms from scratch using TensorFlow's \texttt{Keras} machine learning framework.  We extended CRIM by integrating both asymmetric and neighbour regularisation terms from \citet{ustalov2017negative} training the model on both random and semantically-related negative samples. 
+
+To predict hypernymy, the binary cross-entropy models require the query word as well as candidate hypernym which results in testing every vocabulary word (consisting of around 200K words) against each query term and selecting the words returning the highest hypernymy probability.  To accelerate this process we extracted the weights from the models and customised the forward-pass using fast \texttt{numpy} operations, significantly reducing the time required to generate the test dataset's query predictions.  
+
+By addressing the aforementioned gaps and developing two models from scratch, we were able to develop a deep understanding of the models, which was the initial aim of this dissertation.  We showed that the multi-projection model developed by \citet{bernier2018crim} was statistically superior to the \ac{MSE} models that preceded it and faster to train than the original dot-product based model which inspired it \citep{yamane2016distributional}.  
+
+We applied the multi-projection (CRIM) model to our second set of experiments: the English, general-purpose subtask outlined in the Shared Task.  For this task we trained word2vec, fastText and GloVe 300-dimensional embeddings on the 3-billion-word \textit{UMBC} corpus.  With frozen fastText embeddings and using no external resources, our model achieved \textbf{0.267} \ac{MRR} and \textbf{0.133} \ac{MAP}, a substantial improvement on the original CRIM which managed \textbf{0.172} \ac{MRR} and \textbf{0.080} \ac{MAP} when trained on frozen word2vec embeddings.  We also underline that the model converged in under 15 epochs, requiring less than 5 minutes training time.  The model would have ranked third overall in the Shared Task's general-purpose English subtask leader-board, preceded only by the \ac{CRIM} group, who submitted two runs.
+
+Furthermore, we applied two sophisticated machine-learning techniques to the vanilla model.  We implemented a multi-task setup which trained two separate classifiers for concepts and entities whilst sharing the same feature extractor.  Despite the additional complexity, this had a negligible effect on the score, actually reducing performance on fastText vectors by a slight margin when compared to the vanilla setup.  We also tuned the embeddings, adopting a different approach to \citeauthor{bernier2018crim}.  Instead of training embedding and projections in the same phase, we split training into two phases.  We froze embeddings and trained projections in the first phase and froze the projections and tuned the embeddings in the second phase.  With only an additional 2 epochs of training, the strategy boosted our fastText \ac{MRR} and \ac{MAP} metrics by 30.5\% to 0.348 and 0.173 respectively.  Despite the improvement, we were not able to beat the original CRIM top-ranked submission which scored 0.361 \ac{MRR} and 0.198 \ac{MAP}.  However, to train embeddings and projections in one phase, the authors had to reduce the learning rate by an order of magnitude, clip the gradients and subsequently train their model for hundreds of epochs which is more expensive than our approach.
+
+
 
 \section{Critique and Limitations}
-\blindtext
+% no general solution - performance of algorithms depend on dataset.  The more we move away from strict taxonomical definitions, the harder recognising hypernymy becomes.  THere is an element of subjectivity even in way human perceive hypernymy.
+ 
+% in the shared dataset, the organisers simplified the problem by conflating word senses into a single lexicalisation.   The vector representation of a polysemous word will arguably be a reflection of the context of that word in the corpus.  Word embeddings rely on latent dimensions which are not directly interpretable.  Finding the closest words to a polysemous in the embeddings space by cosine similarity may render the idea of which sense the vector captures.  
+
+% In any case, projection learning methods show some ability at capturing the hypernyms for one sense of the word or another, but not likely to capture all word sense especially since we cannot tell for sure what the source feature represents.   
 
 \section{Future Work}
-\blindtext
+% English future work
+% Augmentation of dataset.  Bernier & Barriere used the embeddings space to find nearest neighbour of a training term and assuming it to be co-hyponym.  A few attempts we conducted showed this to be true for concepts but an entity's nearest neighbour is often only tangentially related to the entity.
 
-\section{Final Remarks}
-\blindtext
+% cross lingual hypernymy paper.  The SemEval paper provides good instruction on how to construct a dataset.  Creating high-quality dataset is an expensive endeavour and the organisers did very well with their crowdsourcing strategy, delivering a rich set more diverse than the curated Combined Dataset.  The "person" hypernym was the highest occurring in the dataset on account of the large number of people examples in the Entity dataset which we could have mitigated by implementing a down-sampling strategy.  Contrary to Bernier, we did not down-sample our data because we wanted to exploit every training set tuple.  Given a surplus of data - possibly by applying a data augmentation method, attempting down-sampling to reduce the probability of choosing word-pairs featuring high occurrence hypernyms could mitigate the problem of the model overfitting in favour of these common hypernmys (ex. person).

@@ -39,6 +39,11 @@
 \usepackage{dirtytalk}
 \usepackage[utf8]{inputenc}
 \usepackage{multirow, makecell}
+\usepackage{cleveref}
+\crefformat{section}{\S#2#1#3} % see manual of cleveref, section 8.2.1
+\crefformat{subsection}{\S#2#1#3}
+\crefformat{subsubsection}{\S#2#1#3}
+
 %% used to bolden math symbols
 \usepackage{bm}
 \usepackage{maltese}
@@ -91,11 +96,10 @@
 \mainmatter 
     \input{chap1/introduction_main} 
     \input{chap2/background_and_lit_overview_main}
-    %% Commented out all chapters except into and background
     \input{chap3/materials_and_methods_main}
     \input{chap4/results_and_discussion_main}
     \input{chap5/evaluation_main}
-    %%\input{chap6/conclusions_main}
+    \input{chap6/conclusions_main}
     %%\appendix
     %%    \input{appA/appendix_a_main}     % these are just test names as I didn't know what you'd want
     %%    \input{appB/appendix_b_main}    

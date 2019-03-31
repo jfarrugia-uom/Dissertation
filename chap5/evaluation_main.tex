@@ -2,12 +2,12 @@
 %%\textbf{In an ideal world, you should have two kind of evaluations.  The first is against some ground truth (perhaps a random model?).  The second kind of evaluation is against other people's work (accuracy, speed, etc.).  Any dimension which is of interest, should be evaluated.  Evaluation should be statistically sound. }
 In this chapter, we interpret our experiment results against a backdrop of reviewed literature.  We divided our experiments in two parts.  In the first instance, we compared the reviewed projection learning techniques by evaluating them on a common dataset and evaluation metrics platform.  Each algorithm features specialised hyperparameters which - according to the original literature - were reported to have some influence on performance.  We built two out of the three algorithms from first principles, following the technical instructions in the respective papers \citep{ustalov2017negative, bernier2018crim}.  
 
-We leveraged the \ac{ANOVA} framework to confirm or reject the hypothesis that a feature has an effect on score.  Before quoting the test's $F-$score and related $p-$value, we confirm that the three conditions for \ac{ANOVA} are met: normal distribution of the data points; homogeneity of variance; independent observations.  We use Jarque-Bera to test for normality; Omnibus to test for variance homogeneity; Condition Number to test for multicollinearity.  Whenever \ac{ANOVA} recommended that we reject the null hypothesis that the group means are equal, we ran Tukey \ac{HSD} post-hoc analysis which computes a series of pair-wise tests among the levels of a particular group to find out which factor levels have a significant effect on the model score.  We assume 95\% confidence throughout, which means we take a 5\% risk of committing a Type 1 error.
+We leveraged the \ac{ANOVA} framework to confirm or reject the hypothesis that a feature has no effect on score.  Before quoting the test's $F-$score and related $p-$value, we confirm that the three conditions for \ac{ANOVA} are met: normal distribution of the data points; homogeneity of variance; independent observations.  We use Jarque-Bera to test for normality; Omnibus to test for variance homogeneity; Condition Number to test for multicollinearity.  Whenever \ac{ANOVA} recommended that we reject the null hypothesis that the group means are equal, we ran Tukey \ac{HSD} post-hoc analysis which computes a series of pair-wise tests among the levels of a particular group to find out which factor levels have a significant effect on the model score.  We assume 95\% confidence throughout, which means we take a 5\% risk of committing a Type 1 error.
 
 In the second set of experiments, we focused on our implementation of CRIM \citep{bernier2018crim} and applied the algorithm on the Shared Task \citep{camacho2018semeval}.  We motivated our decision by our experience in the previous set of experiments, where we found CRIM to perform well, was receptive to different embeddings and other settings, and was easy to train.  Moreover, it was the algorithm which yielded the highest scores in the English language tasks it was set out to solve in the actual shared task.  However, we apply a number of changes which enables us to reduce training epochs significantly (from an original range between 200 and 1000 to less than 20), particularly thanks to a simple transfer learning strategy we employ which lets us learn the projection matrices and tune the embeddings in two separate phases.
 
 \section{Analyses of Projection Learning Models}
-We split the evaluation in two, starting from an analysis of regularisation and cluster count on projection-learning algorithms which are training by minimising \ac{MSE}.  We, also explore the effect of embeddings, an analysis which hitherto has not been carried out by the research community.  In the second subsection, we focus on CRIM and Yamane, the models which leverage the dot-product to estimate the similarity between the predicted and actual hypernym, and which are trained to minimise the binary cross-entropy objective function.
+We split the evaluation in two, starting from an analysis of regularisation and cluster count on projection learning algorithms which are training by minimising \ac{MSE}.  We, also explore the effect of embeddings on projection learning, an analysis which, to our knowledge, has not been carried out by the research community.  In the second subsection, we focus on CRIM and Yamane, the models which leverage the dot-product to estimate the similarity between the predicted and actual hypernym, and which are trained to minimise the binary cross-entropy objective function.
 
 \subsection{MSE Hard-Clustering Models}
 We evaluate our results on the basis of five metrics, but we focus exclusively on \ac{MRR} and \ac{MAP} which provide two interesting facets of our discovered hypernyms: how highly the models ranks  the first correct hypernym; the average precision of our 15 generated hypernyms with respect to the gold standard.  We did not find \ac{MRR} and \ac{MAP} to be always correlated, according to Spearman's correlation test.
@@ -55,14 +55,14 @@ Next, we studied the combined and independent effect of projections and embeddin
 
 The combination of embeddings and projections factors was significant, $F(4,36)=21.578$, $p \ll 0.05$, although the effect is very weak with $\omega^2=0.07$.  On the other hand, the independent effect of the embeddings is very strong with $\omega^2 = 0.88$.  We opted against exploring the embeddings independently since previous tests have shown projections to be often significant when examining embeddings spaces separately.  Instead we re-ran \ac{ANOVA} focusing on the simple effect of embeddings, by examining the three  projection levels separately.
 
-THe choice of embeddings exerts a large influence on the $M_1$ score of a single-projection CRIM model, $F(2, 12)=297.95$, $p \ll 0.05$, $\omega^2 = 0.97$.  Post-hoc analysis further revealed that fastText embeddings had a positive, significant effect on $M_1$.  The mean difference between fastText and GloVe was estimated at 12.2 points, in favour of fastText.  The latter tend to yield a higher $M_1$ than word2vec embeddings would but word2vec vectors are also significantly superior to GloVe.
+The choice of embeddings exerts a large influence on the $M_1$ score of a single-projection CRIM model, $F(2, 12)=297.95$, $p \ll 0.05$, $\omega^2 = 0.97$.  Post-hoc analysis further revealed that fastText embeddings had a positive, significant effect on $M_1$.  The mean difference between fastText and GloVe was estimated at 12.2 points, in favour of fastText.  The latter tend to yield a higher $M_1$ than word2vec embeddings would but word2vec vectors are also significantly superior to GloVe.
 
 We reached the same conclusion for 5-projection models.  Embeddings had a similarly strong effect on $M_1$ score, $F(2, 12)=163.24,$ $p \ll 0.05$, $\omega^2 = 0.956$.  Post-hoc analyses re-asserted our previous findings: fastText embeddings yield the best result while GloVe will be significantly worst.
 
 The embeddings effect was also significant in models which learn 10 projections, $F(2,12)=152.53$, $p \ll 0.05$, $\omega^2 = 0.953$.  fastText embeddings are expected to increase $M_1$ by 10.35 points and 9.39 against GloVe and word2vec respectively.  However, the 10-projection, word2vec-trained CRIM model was sufficiently poor to be almost indistinguishable from a 10-projection model trained on GloVe word vectors.
 
 \subsubsection{Interaction Effect of Regularisation and Projections}
-In section \ref{crim_model_structure}, we described our modification to the original CRIM model, whereby together with \textit{random} negative samples, we fed the model with 5 \textit{semantically-related} negative examples.  The mean similarity of the semantically-related words to the projected hypernym was added as a regularisation term in our customised loss function.  The importance the model assigned to this regularisation term is determined by the weight scalar $\lambda$ which takes on values in the range $[0,1]$, where 0 signals the model to ignore the regularisation term. 
+In \cref{crim_model_structure}, we described our modification to the original CRIM model, whereby together with \textit{random} negative samples, we fed the model with 5 \textit{semantically-related} negative examples.  The mean similarity of the semantically-related words to the projected hypernym was added as a regularisation term in our customised loss function.  The importance the model assigned to this regularisation term is determined by the weight scalar $\lambda$ which takes on values in the range $[0,1]$, where 0 signals the model to ignore the regularisation term. 
 
 The results were, generally-speaking, indifferent to regularisation.  In a few cases, the \ac{MAP} and/or \ac{MRR} scores increases fractionally, and in other cases dipped marginally.  We evaluated the influence of our three regularisation weighting settings by considering the embeddings separately.  We initially attempted to fit an \ac{ANOVA} model on the 4-way interactions of embeddings, projections, negative samples and regularisation weight but the overall model failed the multicollinearity test.  We encountered the same problem when testing for 3-way interactions, having eliminated the embeddings factor.  This forced us to follow a simpler evaluation strategy. 
 
@@ -152,13 +152,56 @@ All configurations - irrespective of model, embeddings choice, clusters or regul
 
 With respect to the \ac{MSE} model family, there is strong empirical evidence which suggests that - on our chosen combined dataset and metrics - training a single-cluster, baseline model on fastText is the way to go.  We challenged the \citet{ustalov2017negative} assertion that regularisation has an effect on \ac{MSE} model performance.  Indeed, we found that regularisation has no significant effect on $M_1$ both in interaction with other factors, and in isolation.  This applied on all embeddings, including the same word2vec embeddings \citeauthor{ustalov2017negative} used in their English experiments.  However, we did not run an exhaustive grid-search tests to tune the $\lambda$ regularisation weighting parameter; instead we fixed the setting to 1, which was their chosen regularisation weight for re-projected regularisation.
 
-\citet{Fu2014} findings were re-confirmed, despite the setup was modified in several ways: we recast their original problem as hypernym discovery; we evaluated on information retrieval metrics; we cross-validated the models on a different dataset.  Cluster size was certainly found to improve performance on word2vec embeddings, although the same did not hold for the other embeddings vector spaces, particulary fastText.
+\citet{Fu2014} findings were re-confirmed, despite the setup was modified in several ways: we recast their original problem as hypernym discovery; we evaluated on information retrieval metrics; we cross-validated the models on a different dataset.  Cluster size was certainly found to improve performance on word2vec embeddings, although the same did not hold for the other embeddings vector spaces, particularly fastText.
 
 Introducing the regularisation terms proposed by \citet{ustalov2017negative} to a binary cross-entropy model (CRIM) did not really work out.  The effect was moderately negative, insofar that a significant result was only observed in one model setup out of 27.  Regularisation was not found to have any significant effect on \ac{MSE} models either.  
 
-Increasing the projections in CRIM, had an adverse reaction when training the model on word2vec features.  \citet{bernier2018crim} reported a different empirical experience whereby multiple projections improved their \ac{MAP}/\ac{MRR} score.  This could be due to the interaction of the projection layer setting with one or several other setting.  The authors themselves specifically point out that they did not perform an in-depth analysis of their hyperparameter settings.  Moreover, they tune embeddings jointly with the projection matrices while decreasing the learning rate by a full order of magnitiude and training for several hundred epochs.  
+Increasing the projections in CRIM, had an adverse reaction when training the model on word2vec features.  \citet{bernier2018crim} reported a different empirical experience whereby multiple projections improved their \ac{MAP}/\ac{MRR} score.  This could be due to the interaction of the projection layer setting with one or several other setting.  The authors themselves specifically point out that they did not perform an in-depth analysis of their hyperparameter settings.  Moreover, they tune embeddings jointly with the projection matrices while decreasing the learning rate by a full order of magnitude and training for several hundred epochs.  
 
 In both \ac{MSE} and binary cross-entropy model types, fastText was proven to be the superior embeddings out of the three tested.  We believe this is a small contribution we made to the research area since, to our knowledge, projection learning models have so far only been evaluated on word2vec embeddings features.  Yamane, on the other hand, narrowed the gap between word2vec and fastText we had so far observed.  Yamane and CRIM were found to perform significantly better than \ac{MSE} models which \citet{yamane2016distributional} refer to as \say{pipeline models}. In this paper, the authors reported the superior performance of the "inner product" method, an assertion we found to be statistically sound.
 
-The poor performance of GloVe, is probably due to how the embeddings training algorithm makes use of the dot product operator.  In word2vec and fastText, dot-product is used to estimate the similarity of the context word and target word (and vice versa depending on the model choice).  In GloVe the objective function encourages the dot product of word vectors to approximate the log of the co-occurrence probability of the words which may make the embeddings less suitable for our model.
+The poor performance of GloVe, is probably due to how the embeddings training algorithm makes use of the dot product operator.  In word2vec and fastText, dot-product is used to estimate the similarity of the context word and target word (and vice-versa depending on the model choice).  In GloVe the objective function encourages the dot product of word vectors to approximate the log of the co-occurrence probability of the words which may make the embeddings less suitable for our model.
 
+\section{Experiments on Shared Task Corpus and Data}
+Recall that we made exclusive use of our CRIM implementation when attempting the Shared Task.  We deliberately opted for the same metrics when evaluating the models on the Combined and Shared Task dataset.  This enables us to compare the performance of the same model on different data.  Doing so, we observed that the multi-projection model performed substantially better on the Combined Dataset.  For instance, a 10-projection CRIM model trained on fastText embeddings returned 0.391 \ac{MAP}; the equivalent model trained on the Shares Task dataset only managed 0.133 \ac{MAP}.  This sharp decline in performance should not be evaluated in isolation, but in the context of the Shared Tasks submissions and baselines.
+
+\begin{figure}[!ht]
+    \centering
+    \subbottom[MRR]{\includegraphics[width=0.8\textwidth]{images/jf_official_mrr.png} }\qquad
+    \subbottom[MAP]{\includegraphics[width=0.8\textwidth]{images/jf_official_map.png} }%
+    \caption{Our best \ac{MRR} and \ac{MAP} compared to Shared Task top submissions, MFH baseline.}        
+    \label{fig:jf_official_results}
+\end{figure}
+
+
+Despite the performance reduction with Shared Task data, two significant observations we made with the Combined Dataset still hold:
+\begin{itemize}
+    \item fastText embeddings still coax the best performance out of the CRIM model compared to word2vec and GloVe;
+    \item Training CRIM on more than a single projection layer improves \ac{MAP} and \ac{MRR} performance;
+\end{itemize}
+
+The results we achieved on this dataset are competitive compared to the English, general-purpose baselines and other submissions.  
+
+\subsection{Embeddings Tuning}
+
+
+
+
+
+
+\begin{table*}\centering
+    \begin{tabular}{@{}lrrl@{}} \toprule
+    \multicolumn{4}{c}{\textbf{CRIM Predictions}} \\
+    \textit{Word} & \textit{AP} & \textit{Median Frequency} & \multicolumn{1}{c}{\textit{Top 5 Predictions}} \\ \midrule
+    airship & 1. & 0.00373 & \textbf{vehicle}, \textbf{craft}, \textbf{aircraft}, airplane, artifact \\
+    canoe & 1. & 0.00339 & \textbf{vehicle}, \textbf{boat}, \textbf{craft}, \textbf{vessel}, watercraft \\
+    drape & 1. & 0.00271 & \textbf{cover}, wear, buy, sell, protect \\
+    fog & 1. & 0.00085 & \textbf{weather}, change, place, shape, supply\\
+    liberty & 1. & 0.00017 & \textbf{freedom}, liberty, belief, element, object\\
+    square & 1. & 0.00119 & \textbf{shape}, place, form, figure, point\\
+    violence & 1. & 0.00271 & \textbf{action}, violence, emotion, crime, anger\\
+    yellow & 1. & 0.00237 & \textbf{color}, plant, crop, flower, green\\
+    \bottomrule
+    \end{tabular}
+    \caption{Examples of accurate predictions after tuning fastText embeddings.}\label{tab:ft_tuned_predictions}
+\end{table*}
