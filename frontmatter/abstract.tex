@@ -5,5 +5,11 @@
 %%  - 	https://www.sciencedirect.com/science/article/pii/S037837821830402X
 
 \begin{abstract}
-\blindtext
+Hypernym recognition automatically maps general terms to specific concepts or instances and is the foundation of human language understanding.  Recently, research has shifted from hypernym identification to discovery which requires a system to suggest hypernym candidates for a given term.  Projection learning is a recent addition to the supervised learning family which exploits linguistic regularities in embeddings spaces to learn a linear transformation matrix that projects a hyponym vector to a vector close to its hypernym.  
+
+We mount an experimental setup to perform comparative analyses of four projection learning methods, evaluating them on a common, English dataset and assess their performance via Information Retrieval metrics.  By applying the ANOVA statistical framework on the score distribution we challenge claims made in the literature regarding the effectiveness of specific projection learning model configurations.  Furthermore, we evaluate each model on pre-trained word2vec, GloVe, and fastText embeddings, an angle which, to our knowledge, has not been pursued in the projection learning research so far.
+
+For our second objective, we test our projection learning understanding on the SemEval-2018 Task 9 challenge.  We train our own word2vec, GloVe and fastText embeddings on the provided 3-billion-word corpus to examine which embeddings yield the best performance. Based on the conclusions of our comparative analyses, we focus on CRIM, a multi-projection algorithm which was the best submission in the Semeval-2018, Task 9 challenge.  We implement our own version of the model, distinguished from the original by a customised training algorithm.  Inspired by an idea from transfer learning, we train the model in two phases, learning the projections in the first phase using frozen embeddings, and tuning the embeddings in the second phase whilst keeping the trained projection weights frozen.
+
+The original model learned the projections and tuned the embeddings in the same training phase.  To avoid wiping out the pre-trained embeddings with large gradient updates, the authors decreased the learning rate by an order of magnitude, clipped the gradient and subsequently trained the model for 200 to 1000 epochs.  Our two-phase approach achieves scores comparable to the original but converges in less than 15 epochs.
 \end{abstract}

@@ -163,45 +163,56 @@ In both \ac{MSE} and binary cross-entropy model types, fastText was proven to be
 The poor performance of GloVe, is probably due to how the embeddings training algorithm makes use of the dot product operator.  In word2vec and fastText, dot-product is used to estimate the similarity of the context word and target word (and vice-versa depending on the model choice).  In GloVe the objective function encourages the dot product of word vectors to approximate the log of the co-occurrence probability of the words which may make the embeddings less suitable for our model.
 
 \section{Experiments on Shared Task Corpus and Data}
-Recall that we made exclusive use of our CRIM implementation when attempting the Shared Task.  We deliberately opted for the same metrics when evaluating the models on the Combined and Shared Task dataset.  This enables us to compare the performance of the same model on different data.  Doing so, we observed that the multi-projection model performed substantially better on the Combined Dataset.  For instance, a 10-projection CRIM model trained on fastText embeddings returned 0.391 \ac{MAP}; the equivalent model trained on the Shares Task dataset only managed 0.133 \ac{MAP}.  This sharp decline in performance should not be evaluated in isolation, but in the context of the Shared Tasks submissions and baselines.
-
-\begin{figure}[!ht]
-    \centering
-    \subbottom[MRR]{\includegraphics[width=0.8\textwidth]{images/jf_official_mrr.png} }\qquad
-    \subbottom[MAP]{\includegraphics[width=0.8\textwidth]{images/jf_official_map.png} }%
-    \caption{Our best \ac{MRR} and \ac{MAP} compared to Shared Task top submissions, MFH baseline.}        
-    \label{fig:jf_official_results}
-\end{figure}
-
+Recall that we made exclusive use of our CRIM implementation when attempting the Shared Task.  We deliberately opted for the same metrics when evaluating the models on the Combined and Shared Task dataset.  This enables us to compare the performance of the same model on different data.  Doing so, we observed that the multi-projection model performed substantially better on the Combined Dataset.  For instance, a 10-projection CRIM model trained on fastText embeddings returned 0.391 \ac{MAP}; the equivalent model trained on the Shared Task dataset only managed 0.133 \ac{MAP}.
 
 Despite the performance reduction with Shared Task data, two significant observations we made with the Combined Dataset still hold:
 \begin{itemize}
     \item fastText embeddings still coax the best performance out of the CRIM model compared to word2vec and GloVe;
-    \item Training CRIM on more than a single projection layer improves \ac{MAP} and \ac{MRR} performance;
+    \item Learning more than a single projection layer improves \ac{MAP} and \ac{MRR} performance;
 \end{itemize}
+\begin{figure}[!ht]
+    \centering
+    \subbottom[MRR]{\includegraphics[width=0.8\textwidth]{images/jf_official_mrr.png} }\qquad
+    \subbottom[MAP]{\includegraphics[width=0.8\textwidth]{images/jf_official_map.png} }%
+    \caption{Comparison of best \ac{MRR} and \ac{MAP} scores with Shared Task top submissions, MFH baseline.}        
+    \label{fig:jf_official_results}
+\end{figure}
+This sharp decline in performance should not be appraised in isolation, but in the context of the Shared Tasks submissions and baselines.  We show our best result in terms of \ac{MRR} and \ac{MAP}, alongside selected submissions' scores and the \ac{MFH} baseline in Figure~\ref{fig:jf_official_results}.  \textit{CRIM\_Orig} represents the original CRIM submission, which ranked first among all submissions in the English general-purpose subtask.  \textit{MSCG\_SANITY} was the second-best submission after CRIM, conspicuous for being the only submission to make use of an external resource, MS Concept Graph\footnote{originally known as Probase, which we briefly discussed in \cref{sec:lit_probase}.}.  Unfortunately, we do not know how the resource was used since the participants did not publish a technical paper to accompany their solution.  \ac{MFH} is a null model which emits the most frequent hypernyms in each word-type category.  \textit{CRIM\_JF\_Frozen} is the best model we achieved by learning the projection matrices while keeping the fastText embeddings frozen.  We resumed training \textit{CRIM\_JF\_Frozen}, this time tuning the embeddings but keeping the already-learned projections frozen.  We refer to the tuned model as \textit{CRIM\_JF\_Tuned}. 
 
-The results we achieved on this dataset are competitive compared to the English, general-purpose baselines and other submissions.  
+Using the original fastText embeddings, our model surpasses \textit{MSCG\_SANITY}, enriched with external resources, in all word-categories.  The \ac{MFH} model scores the second highest \ac{MRR} when tested on entities.  This is because the 15 most frequent hypernyms, which only constitute  2\% of unique hypernyms in the entity test set, account for 22\% of all (entity) test word-pairs.  Contrast this with concepts term,  whereby the 15 most frequent hypernyms only account for 8.7\% of concept test word-pairs.  \ac{MFH} duly struggled with generating hypernyms for concept query terms.
+
+After tuning the embeddings, the score margin between our model and the rest widened, but we were still not able to reach \textit{CRIM\_Orig}.  \citeauthor{bernier2018crim} conducted a series of ablation tests, each time setting a key hyperparameter to the default value or disabling it entirely.  Their \ac{MRR} ranged from 17.15 to 35.46; \ac{MAP} ranged from 8.01 to 19.47.  The main contributors to good performance were: multiple projections (they used 24, we used 10); 10 negative examples (we also opted for 10); initialising the projections by adding random noise to an identity matrix (we multiplied random noise to an identity matrix); tuning the embeddings.  Embeddings tuning was the most crucial decision of all; with frozen word2vec embeddings their model managed 0.172 \ac{MRR} and 0.080 \ac{MAP}.  \textit{CRIM\_JF\_Frozen}, which we trained on frozen fastText embeddings (concepts+entities) for less than 15 epochs scored 0.267 \ac{MRR} an 0.133 \ac{MAP}.  Our results are a reasonable improvement on the original, which we attribute primarily to our choice of embeddings, and secondly to our shorter training cycle using the default learning rate (0.001).
+
+\citeauthor{bernier2018crim} did not list all the model hyperparameters in their paper, but they included a configuration file\footnote{\url{https://github.com/gbcolborne/hypernym_discovery/blob/master/hparams.conf}}  to the published code on GitHub.  Parameter values which were specifically cited in the paper matched the values in the configuration file, an indication that they were not arbitrary.  This file indicated that the original CRIM model was trained for at least 200 epochs (based on the patience setting), the learning rate was set to 0.0002 and the gradient value clipped to 0.0004.  We speculate that this configuration caused the model to converge very slowly, which was necessary considering that embeddings were being tuned when the model had not yet acquired any knowledge of the task and large gradient updates would have disrupted the pretrained embeddings' knowledge.
+
+In the end, our tuned model managed 0.348 \ac{MRR} and 0.173 \ac{MAP} when evaluating a mix of concept and entity test terms; the original CRIM scored 0.361 and 0.198 but at the cost of a considerably longer training time.
 
 \subsection{Embeddings Tuning}
-
-
-
-
-
-
+Tuning the embeddings for one or two epochs boosted the scores substantially.  We examined the generated hypernyms after embeddings tuning to appraise the qualitative improvements in the model's performance.  In Table~\ref{tab:ft_tuned_predictions}, we illustrate a sample of high-quality predictions made by the tuned model.  The predicted words in bold matched the gold-standard.
 \begin{table*}\centering
-    \begin{tabular}{@{}lrrl@{}} \toprule
-    \multicolumn{4}{c}{\textbf{CRIM Predictions}} \\
-    \textit{Word} & \textit{AP} & \textit{Median Frequency} & \multicolumn{1}{c}{\textit{Top 5 Predictions}} \\ \midrule
-    airship & 1. & 0.00373 & \textbf{vehicle}, \textbf{craft}, \textbf{aircraft}, airplane, artifact \\
-    canoe & 1. & 0.00339 & \textbf{vehicle}, \textbf{boat}, \textbf{craft}, \textbf{vessel}, watercraft \\
-    drape & 1. & 0.00271 & \textbf{cover}, wear, buy, sell, protect \\
-    fog & 1. & 0.00085 & \textbf{weather}, change, place, shape, supply\\
-    liberty & 1. & 0.00017 & \textbf{freedom}, liberty, belief, element, object\\
-    square & 1. & 0.00119 & \textbf{shape}, place, form, figure, point\\
-    violence & 1. & 0.00271 & \textbf{action}, violence, emotion, crime, anger\\
-    yellow & 1. & 0.00237 & \textbf{color}, plant, crop, flower, green\\
+    \begin{tabular}{@{}lcl@{}} \toprule
+    \textit{Word} & \phantom{a} & \multicolumn{1}{c}{\textit{Top 5 Predictions}} \\ \midrule
+    azathioprine && \textbf{medicine}, \textbf{pharmaceutical\_drug}, \textbf{drug}, disease, medical\\
+    blazonry && \textbf{picture}, illustration, work\_of\_art, \textbf{emblem}, \textbf{figure}\\
+    flood && \textbf{natural\_phenomenon}, \textbf{physical\_phenomenon}\\
+    && atmospheric\_condition, weather\_condition, \textbf{phenomenon},\\
+    hardpan && \textbf{soil}, plant, soil\_structure, dirt, sand\\
+    hostile\_fire && \textbf{war}, \textbf{military\_operation}, \textbf{military\_action},\\ 
+    && military, military\_force\\
+    postdoc && \textbf{person}, \textbf{scholar}, \textbf{researcher}, faculty\_member, leader\\
+    president\_lyndon\_johnson && \textbf{person}, \textbf{leader}, \textbf{politician}, \textbf{political\_leader}, legislator\\
+    slovenia && \textbf{country}, \textbf{state}, city, municipal\_government, territory\\    
     \bottomrule
     \end{tabular}
     \caption{Examples of accurate predictions after tuning fastText embeddings.}\label{tab:ft_tuned_predictions}
 \end{table*}
+
+However, a closer inspection of the results uncovered a detrimental side-effect: the model tended to suggest frequently occurring, but entirely unrelated, hypernyms as likely candidates for test words.  We chose the concept and entity query terms for which no correct hypernyms were discovered before and after our fastText embeddings tuning.  In each case, we found the candidate words the model suggested with highest confidence and plotted their frequency in a histogram which can seen in Figure~\ref{fig:confident_bad_prediction_before_after_tuning}.
+\begin{figure}[!ht]
+    \centering
+    \subbottom[Before tuning]{\includegraphics[width=0.6\textwidth]{images/ft_frozen_sum_highest_Ranked_incorrect.png} }\qquad
+    \subbottom[After tuning]{\includegraphics[width=0.6\textwidth]{images/ft_transfer_max_highest_Ranked_incorrect.png} }%
+    \caption{Incorrect first-choice candidates before and after fastText embeddings tuning. }    
+    \label{fig:confident_bad_prediction_before_after_tuning}
+\end{figure}
+In the top chart, \textit{person} was the most popular, first-choice incorrect term by the model trained on frozen embeddings but was only suggested for around 85 words.  After tuning, the model predicted \textit{person} as the most-likely hypernym for around 420 words.  Our relatively small dataset, coupled with the (relative) high concentration of terms related to the \textit{person} superordinate compelled the model to push the \textit{person} vector close to several projected hypernyms.  We did not have the opportunity to study the effect of the original, tuned embeddings, which the authors trained alongside the projection matrices.  It would have been interesting to see whether the same effect was observable or whether our result was due to our two-phase training strategy.
