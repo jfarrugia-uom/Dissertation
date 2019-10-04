@@ -9,7 +9,7 @@ In the second set of experiments, we focused on our implementation of CRIM \cite
 \section{Analyses of Projection Learning Models}
 We split the evaluation in two, starting from an analysis of regularisation and cluster count on projection learning algorithms which are trained by minimising \ac{MSE}.  We also explore the effect of embeddings on projection learning, an analysis which, to our knowledge, has not been carried out by the research community.  In the second subsection, we focus on CRIM and Yamane, the models which leverage the dot-product to estimate the similarity between the predicted and actual hypernym, and which are trained to minimise the binary cross-entropy objective function.
 
-\subsection{MSE Hard-Clustering Models}
+\subsection{MSE Hard-Clustering Models}\label{Eval_MSE}
 We evaluate our results on the basis of five metrics, but we focus exclusively on \ac{MRR} and \ac{MAP} which provide two interesting facets of our discovered hypernyms: how highly the models ranks  the first correct hypernym; the average precision of our 15 generated hypernyms with respect to the gold standard.  We did not find \ac{MRR} and \ac{MAP} to be always correlated, according to Spearman's correlation test.
 
 Inspired by the $F_1$ score, we fused the two scores by calculating the harmonic mean of the two metrics.  The harmonic mean averages the respective rates to give us a balanced metric which considers both aspects of a model's performance in one number, which we henceforth refer to as $M_1$.  This also saved time by avoiding having to run the analyses twice, once per metric.  We analysed three factors, each having the following levels:
@@ -50,7 +50,7 @@ With \textbf{GloVe}, the combined interaction was not significant. However, the 
 
 Once again, the combined interaction was not significant for models trained on fastText vectors.  However, the negative sample count, and projection factor both had a significant, independent effect on $M_1$.  The negative count was significant, $F(2,40)=11.23$, $p < 0.05$, $\omega^2 = 0.212$; projections are significant, $F(2,40)=16.48$, $p < 0.05$, $\omega^2 = 0.321$.  Post-hoc analysis indicated that learning more than a single projection benefited fastText-trained models although going from 5 to 10 projections had an insignificant effect.  As far as negative samples are concerned, the cross-validated score increased significantly only when the model was trained on 10 negative samples.
 
-\subsubsection{Interaction Effect of Projections with Embeddings on CRIM}
+\subsubsection{Interaction Effect of Projections with Embeddings on CRIM}\label{Eval_CRIM_ProjEmb}
 Next, we studied the combined and independent effect of projections and embeddings.  We only considered results from models trained with 10 negative samples.  At worst, 10 negative samples were found to have an insignificant effect on our models, so eliminating the negative sample factor should not have any effect on our analysis.  For this exercise, we set aside our regularisation modification and analysed results returns by unregularised models (i.e. regularisation weight $\lambda=0$).
 
 The combination of embeddings and projections factors was significant, $F(4,36)=21.578$, $p \ll 0.05$, although the effect is very weak with $\omega^2=0.07$.  On the other hand, the independent effect of the embeddings is very strong with $\omega^2 = 0.88$.  We opted against exploring the embeddings independently since previous tests have shown projections to be often significant when examining embeddings spaces separately.  Instead we re-ran \ac{ANOVA} focusing on the simple effect of embeddings, by examining the three  projection levels separately.
@@ -71,7 +71,7 @@ We evaluated the combined and independent effect of projections and regularisati
 \subsubsection{Effect of Embeddings on Yamane}
 We fit Yamane models with features extracted from our three embeddings spaces.  To test if the choice of embeddings is significant on Yamane's result, we performed a 1-way \ac{ANOVA} on the embeddings factor.  The effect was strongly significant on $M_1$, $F(2,12)=33.28$, $p < 0.05$, $\omega^2=0.81$.  As we had noted in the Results chapter, Yamane levels the fastText and word2vec performance.  Post-hoc revealed there is no significant difference between the score obtained from models trained on fastText and word2vec.  However, the use of GloVe embeddings led to a significant 9.37 point deduction from the $M_1$ returned by word2vec.
 
-\subsection{Best Out of Three}
+\subsection{Best Out of Three}\label{Eval_BestOutOf3}
 We selected the best model out of our \ac{MSE}, CRIM and Yamane categories to find out whether the difference in the means of cross-validated scores was superficial or significant.  We fit a 1-way \ac{ANOVA} which tests for differences on the model factor, which we found significant, $F(2,12)=11.390$, $p < 0.05$, $\omega^2=0.581$.  Post-hoc analyses found that both Yamane and CRIM were significantly better than the top \ac{MSE} model, returning a mean of 4.01 and 3.50 points respectively more than \ac{MSE}.  No significant difference was detected among CRIM and Yamane results.
 
 \subsection{Analyses of Lexical Memorisation Effect}
