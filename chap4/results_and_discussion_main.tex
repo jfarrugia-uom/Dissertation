@@ -132,7 +132,7 @@ According to our cross-validated experiments on randomly-split datasets, the reg
 \textit{25} & 0.204 & 0.019 && \textbf{0.293} & 0.009 && \textbf{0.293} & 0.020 && \textbf{0.292} & 0.012 \\
 \bottomrule
 \end{tabular}
-\caption{5-fold cross-validated \ac{MAP} results for \ac{MSE} model variants trained on three embeddings spaces.}\label{tab:map_mse}
+\caption{5-fold cross-validated MAP results for MSE model variants trained on three embeddings spaces.}\label{tab:map_mse}
 \end{table*}
 Our experiments' \ac{MAP} scores are reproduced in Table~\ref{tab:map_mse}.  In this table we are comparing the performance of the various regularised models against a non-na\"ive baseline, while also showing score variations based on three cluster sizes and embeddings.  For comparison, we also included two na\"ive baselines: MFH and Cosine similarity.  We marked the overall best \ac{MAP} results in bold.  The re-projected neighbour regularised model enjoyed the widest improvement margin, increasing the mean \ac{MAP} by around 11.5\% from 0.227 to 0.253 but this performance was isolated to the single-cluster model.  Improvement was either exceedingly subtle (e.g. GloVe, clusters=10) or altogether absent (e.g. fastText, clusters=1).  We evaluate these results statistically in \cref{Eval_MSE}.
 
@@ -156,7 +156,7 @@ We also note from Figures~\ref{fig:MRR_models_baselines},~\ref{fig:pat5_models_b
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/MAP_lexical_split_results_models_baseline_embeddings.png}
-  \caption{Lexical-split dataset \ac{MAP} results, by model, embeddings.}
+  \caption{Lexical-split dataset MAP results, by model, embeddings.}
   \label{fig:lexsplit_ustalov_map}
 \end{figure}
 In the lexically-split dataset, we ensured that a word in the hypernym slot of a word-pair either features in training set or the test set but not in both.  The \ac{MAP} results are reproduced in Figure~\ref{fig:lexsplit_ustalov_map}.  The results were much lower throughout compared to the results obtained by models trained on randomly-split data.  Nine configurations achieved scores that were very close to 0.  fastText features scored poor results with the single-cluster models, in stark contrast to what we observed in \cref{ustalov_embeddings}.  On the other hand, the single-cluster model with asymmetric regularisation trained on GloVe features, achieved the best \ac{MAP} result (0.029).  This score was tied with the 10-cluster word2vec model also including the asymmetric regularisation term.  Notwithstanding, there is a configuration which is discernibly better than the other.  Similar to other work \citep{shwartz2017siege}, the cosine unsupervised metric demonstrated robustness in the face of lexical split, returning results nominally worse than those returned in the random data split experiments.
@@ -200,7 +200,7 @@ We will juxtapose Yamane's scores as a counterpoint to CRIM since the latter is 
 \textit{MRR} & 0.529 && 0.528 & 0.007 && 0.528 & 0.012 && 0.526 & 0.007 \\
 \bottomrule
 \end{tabular}
-\caption{Regularisation effect on CRIM \ac{MAP} and \ac{MRR} results.}\label{tab:crim_regularised}
+\caption{Regularisation effect on CRIM MAP and MRR results.}\label{tab:crim_regularised}
 \end{table*}
 
 \begin{table*}\centering
@@ -212,7 +212,7 @@ We will juxtapose Yamane's scores as a counterpoint to CRIM since the latter is 
 \textit{fastText} & 10 & 10\\
 \bottomrule
 \end{tabular}
-\caption{Configuration leading to best CRIM harmonic mean of \ac{MAP}, \ac{MRR} results.}\label{tab:crim_best_parameter_combination}
+\caption{Configuration leading to best CRIM harmonic mean of MAP, MRR results.}\label{tab:crim_best_parameter_combination}
 \end{table*}
 
 We trained 27 CRIM models configured on all combinations of embeddings spaces (w2v, GloVE, fT); projections (1, 5, 10) and negative sample count (1, 5, 10), without regularisation.  Applying \citep{ustalov2017negative} to CRIM, we integrated two regularised variants ($lambda$ = 0.1, 1) of every model combination and recorded the results.  We then selected the best performing, non-regularised model in terms of the harmonic mean of \ac{MAP} and \ac{MRR}, segregated by embeddings space.  Given the winning combination, we found the results of the regularised equivalent and report the results in Table~\ref{tab:crim_regularised}.  The overall best \ac{MAP} and \ac{MRR} are also in bold.  The hyperparameter combination (according to our grid-search parameter ranges) according to which we selected the best model can be seen in Table~\ref{tab:crim_best_parameter_combination}.  We outline the results yielded by CRIM under various hyperparameters in more detail in \cref{hyper_effect_CRIM}.
@@ -223,13 +223,13 @@ Our results partially mirror our experiments with regularisation applied to the 
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/CRIM_MRR_score_projection_and_negative_sample.png}
-  \caption{CRIM \ac{MRR} score variations by embeddings, projections, and negative sample count.}
+  \caption{CRIM MRR score variations by embeddings, projections, and negative sample count.}
   \label{fig:crim_hyper_mrr}
 \end{figure}
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/CRIM_MAP_score_projection_and_negative_sample.png}
-  \caption{CRIM \ac{MAP} score variations by embeddings, projections, and negative sample count.}
+  \caption{CRIM MAP score variations by embeddings, projections, and negative sample count.}
   \label{fig:crim_hyper_map}
 \end{figure}
 Figures~\ref{fig:crim_hyper_mrr},\ref{fig:crim_hyper_map} illustrate plots of our 5-fold cross-validated \ac{MRR} and \ac{MAP} results respectively, generated by non-regularised models configured with different hyperparameter combinations, each trained on three distinct embeddings features.  Standard error bars were added to each plot.  
@@ -265,7 +265,7 @@ We captured training patterns in a matrix displayed in Figure~\ref{fig:yamane_tr
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/Comparison_of_best_performing_algorithms.png}
-  \caption{\ac{MRR}, \ac{MAP} scores of best-performing models in projection learning family.}
+  \caption{MRR, MAP scores of best-performing models in projection learning family.}
   \label{fig:part1_best_models}
 \end{figure}
 
@@ -315,7 +315,7 @@ We focused on the English, general-purpose task which was accompanied by the lar
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.\linewidth]{images/semeval_crim_proj_embed.png}
-  \caption{\ac{MRR}, \ac{MAP} and P$@1$ scores of CRIM, by embeddings spaces and projection layer count.}
+  \caption{MRR, MAP and P$@1$ scores of CRIM, by embeddings spaces and projection layer count.}
   \label{fig:semeval_crim_proj_embed}
 \end{figure}
 We present the \ac{MAP}, \ac{MRR} and P$@1$ results of models trained and validated on a combination of concepts and entities in Figure~\ref{fig:semeval_crim_proj_embed}.  fastText embeddings trained on 5  projection layers returned the best \ac{MAP} and \ac{MRR} scores, at 0.133 and 0.267 respectively.  The fastText, 10 projection layer model obtained the highest P$@1$ score at 0.211, a subtle improvement on the 0.208 result recorded by the 5 projection layer model.
@@ -362,7 +362,7 @@ We discovered that performance is influenced by the words with which we choose t
 \textit{GloVe} & Both & 0.125 & 0.059 && \textbf{0.402} & \textbf{0.193} && 0.207 & 0.099\\ 
 \bottomrule
 \end{tabular}
-\caption{Test results for best \ac{MTL} models.}\label{tab:semeval_mtl}
+\caption{Test results for best MTL models.}\label{tab:semeval_mtl}
 \end{table*}
 
 In general, the best performance is coaxed out a model when it is trained on a mix of concept and entities.  However, the fastText model trained on concepts exclusively is an exception: it still managed a comparatively decent 0.305 \ac{MRR} and 0.132 \ac{MAP}.  The reverse effect was not observed: training fastText on only entities, impaired the model's ability to generate hypernyms for concept terms.  We also noted that models trained and evaluated on entities yielded the best scores.  This is possibly due to the distribution of hypernyms within the entity category as observed in Figure~\ref{fig:shared_task_mfh}, where around 8\% of all entity tuples are instances of \textit{person}, \textit{city} or \textit{writer}.  GloVe embeddings were particularly adept at generating hypernyms for entity words, given that the model was trained exclusively on entities.  The GloVe Entity-Entity model scored the highest \ac{MRR} and \ac{MAP}.
@@ -375,7 +375,7 @@ Considering the additional complexity that went into the model's structure, trai
     \centering
     \subbottom[MRR]{\includegraphics[width=0.8\textwidth]{images/semeval_mrr_tuned.png} }\qquad
     \subbottom[MAP]{\includegraphics[width=0.8\textwidth]{images/semeval_map_tuned.png}}%
-    \caption{Boost on \ac{MRR} and \ac{MAP} due to embeddings tuning.}        
+    \caption{Boost on MRR and MAP due to embeddings tuning.}        
     \label{fig:embeddings_boost}
 \end{figure}
 Our transfer learning mechanism successfully boosted models' performance in all embeddings scenarios.  Figure~\ref{fig:embeddings_boost} displays the \ac{MRR} (top) and \ac{MAP} (bottom) scored by the base model, trained on frozen embeddings (light shading), and tuned model (dark shading) in which we trained the embeddings but froze the projections.  The plot shows the returned scores when the models were tested on concepts (left), entities (centre) and concept+entity (right).
