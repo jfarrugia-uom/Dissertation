@@ -260,29 +260,59 @@ Unsupervised methods consists of metrics grouped into four categories, each repr
 %% Table summarising the measures and grouping them by hypothesis needs to come here
 \renewcommand{\arraystretch}{1.2} 
 \begin{table*}\centering
-    \begin{tabular}{@{}ll@{}} \toprule
-    \textbf{Metric}              & \textbf{Source} \\ 
-    \cmidrule{1-2}
-    \multicolumn{2}{c}{Similarity Measures} \\ \cmidrule(lr){1-2}
-    $Cosine Similarity$   & \citep{salton1975vector} \\
-    $Lin Similarity$      & \citep{lin1998information} \\
-    $APSyn$               & \citep{santus2016unsupervised} \\
-    \cmidrule{1-2}
-    \multicolumn{2}{c}{Inclusional Measures} \\ \cmidrule(lr){1-2}
-    $Weeds Precision$     & \citep{weeds2003general} \\
-    $cosWeeds$            & \citep{lenci2012identifying} \\ 
-    $ClarkeDE$            & \citep{clarke2009context} \\
-    $balAPinc$            & \citep{kotlerman2010directional} \\
-    $invCL$               & \citep{lenci2012identifying} \\
-    \cmidrule{1-2}
-    \multicolumn{2}{c}{Informativeness Measures} \\ \cmidrule(lr){1-2}
-    $SLQS$                & \citep{santus2014chasing} \\
-    $SLQS_{Sub}$            & \citep{shwartz2017siege} \\
-    $SLQS_{Row}$            & \citep{shwartz2017siege} \\
-    \cmidrule{1-2}
-    \multicolumn{2}{c}{Reversed Inclusional Measures} \\ \cmidrule(lr){1-2}
-    $Reversed Weeds$      & \citep{shwartz2017siege} \\
-    $Reversed ClarkeDE$   & \citep{shwartz2017siege} \\
+    \begin{tabular}{@{}lcl@{}} \toprule
+    \textbf{Metric} & \textbf{Formula} & \textbf{Source} \\ 
+    \cmidrule{1-3}
+    \multicolumn{3}{c}{Similarity Measures} \\ \cmidrule{1-3}
+    $Cos$   & 
+    $\displaystyle\frac{\textbf{x} \cdot \textbf{y}}{\|\textbf{x}\| \cdot \|\textbf{y}\|}$ & \citep{salton1975vector} \\[2ex]
+    $Lin$      &
+    $\displaystyle\frac{\sum_{c \in \textbf{x} \cap \textbf{y} }\left[x_{c} + y_{c} \right]}{\sum_{c \in \textbf{x}}x_{c} + \sum_{c \in \textbf{y}}y_c}$ & 
+    \citep{lin1998information} \\[2ex]
+    $APSyn$               &
+    $\displaystyle\sum_{c \in N\left(\textbf{x}\right) \cap N\left(\textbf{y}\right)}2 \cdot \left[rank_{x}\left(c\right) + rank_{y}\left(c\right)\right]^{-1}$ & 
+    \citep{santus2016unsupervised} \\[2ex]
+    \cmidrule{1-3}
+    \multicolumn{3}{c}{Inclusional Measures} \\ \cmidrule{1-3}
+    $WeedsPrec$     &
+    $\displaystyle\frac{\sum_{c \in \textbf{x} \cap \textbf{y} }x_{c}}{\sum_{c \in \textbf{x}}x_{c}}$ & 
+    \citep{weeds2003general} \\[2ex]
+    $cosWeeds$            &
+    $\displaystyle\sqrt{Cos(x,y) \cdot WeedsPrec(x,y)}$ & 
+    \citep{lenci2012identifying} \\[2ex]
+    $CDE$            &
+    $\displaystyle\frac{\sum_{c \in \textbf{x} \cap \textbf{y} }min\left(x_c, y_c\right)}{\sum_{c \in \textbf{x}}x_c}$ & 
+    \citep{clarke2009context} \\[2ex]
+    $APinc$            &
+    $\displaystyle\frac{\sum_{r=1}^{N_y}\left[P\left(r\right) \cdot 
+    \begin{cases}
+    1-\frac{rank_y\left(c\right)}{N_y + 1},& \text{if } c\in \textbf{y}\\
+    0,              & \text{else}
+    \end{cases}\right]}{N_y}$ & 
+    \citep{kotlerman2010directional} \\[2ex]
+    $balAPinc$            &
+    $\displaystyle\sqrt{Lin(x,y) \cdot APInc(x,y)}$ & 
+    \citep{kotlerman2010directional} \\[2ex]
+    $invCL$               &
+    $\displaystyle\sqrt{CDE(x,y) \cdot \left(1 - CDE(x,y)\right)}$& 
+    \citep{lenci2012identifying} \\[2ex]
+    \cmidrule{1-3}
+    \multicolumn{3}{c}{Informativeness Measures} \\ \cmidrule{1-3}
+    $SLQS$                &
+    $1-\displaystyle\frac{median_{i=1}^{N}\left( H\left(x_{c_i} \right)\right)}{median_{i=1}^{N}\left( H\left(y_{c_i} \right)\right)}$ & 
+    \citep{santus2014chasing} \\[2ex]
+    $SLQS_{Sub}$            &
+    $med_{i=1}^{N}\left( H\left(y_{c_i} \right)\right) - med_{i=1}^{N}\left( H\left(x_{c_i} \right)\right)$ & 
+    \citep{shwartz2017siege} \\[2ex]
+    %$SLQS_{Row}$            && \citep{shwartz2017siege} \\[2ex]
+    \cmidrule{1-3}
+    \multicolumn{3}{c}{Reversed Inclusional Measures} \\ \cmidrule{1-3}
+    $Reversed Weeds$      &
+    $WeedsPrec(y,x)$& 
+    \citep{shwartz2017siege} \\[2ex]
+    $Reversed CDE$   &
+    $CDE(y,x)$& 
+    \citep{shwartz2017siege} \\[2ex]
     \bottomrule
     \end{tabular}
     \caption{Unsupervised Hypernymy Similarity Measures.}\label{tab:unsupervised_measures}
