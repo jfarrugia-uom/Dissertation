@@ -34,12 +34,12 @@ To determine whether the projection models were superior to na\"ive methods, we 
 \begin{table*}\centering
     \begin{tabular}{@{}llrrr@{}} \toprule
     & \textbf{Data} & \textbf{Dimension} & \textbf{Vocab Size} & \textbf{Tokens} \\ \cmidrule{2-5}
-    \textbf{word2vec} & Google News & 300 & $\approx$3M & 100B \\ \midrule
+    \textbf{word2vec} & Google News & 300 & $\approx$3.0M & 100B \\ \midrule
     \textbf{GloVe} & Common Crawl & 300 & $\approx$1.9M & 42B \\ \midrule
-    \textbf{fastText} & \shortstack[l]{Wikipedia 2017\\UMBC\\statmt.org News} & 300 & $\approx$1M & 6B \\
+    \textbf{fastText} & \shortstack[l]{Wikipedia 2017\\UMBC\\statmt.org News} & 300 & $\approx$1.0M & 6B \\
     \bottomrule
     \end{tabular}
-    \caption{Basic details of embeddings used in own experiments.}\label{tab:experiment_embeddings}
+    \caption{Basic details of pre-trained embeddings used in own experiments.}\label{tab:experiment_embeddings}
 \end{table*}
 
 \citeauthor{ustalov2017negative} reported results obtained using word2vec embeddings pre-trained on the Google News corpus \citep{mikolov2013efficient}.  Alongside the word2vec embeddings, we train and validate the models using feature vectors from GloVe \citep{pennington2014glove} and fastText \citep{bojanowski2017enriching} pre-trained on large corpora, which were available online.  The basic details of the pre-trained embeddings we used are illustrated in Table~\ref{tab:experiment_embeddings}.

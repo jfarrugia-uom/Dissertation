@@ -78,7 +78,9 @@ especially \textit{Facebook}} \\
     such $Y$ as $X$ & \say{such \textbf{sins} as \textit{envy}} \\
     \bottomrule
     \end{tabular}
-    \caption{Hearst patterns and example phrases.} \label{tab:hearst_pattern_phrase}
+    %\caption{Hearst patterns and example phrases.}
+    \caption[Hearst patterns and example phrases]{Hearst patterns and example phrases, with hypernym word annotated in bold.}
+    \label{tab:hearst_pattern_phrase}
 \end{table*}
 
 To harvest the patterns, Hearst first collected a list of word-pairs for which the hypernymy relation holds and recorded the textual environment in which the words featured.  High frequency environments were considered predictive of hypernymy and were converted to generalised patterns.  The new patterns were subsequently used to find new seed word-pairs which further fuelled the cycle of pattern discovery \citep{hearst1992automatic}.  Although Hearst focused on English, lexico-syntactic patterns were also induced in a wide variety of languages: Spanish, French, Italian, Dutch \citep{faralli2018misa}; Swedish \citep{rydin2002building}; Turkish \citep{sahin2016extraction}; and Chinese \citep{Fu2014}.
@@ -255,7 +257,11 @@ We briefly mentioned all the components needed to build a \ac{VSM} from pre-proc
 
 \section{Unsupervised Methods}
 \subsection{Metric Overview}
-Unsupervised methods consists of metrics grouped into four categories, each representative of a hypernymy inflected semantic hypothesis.  \citeauthor{shwartz2017siege} furnish us with an exhaustive survey of metrics across all categories which are listed below.  In all descriptions, $\textbf{x}$ and $\textbf{y}$ represent the term word (hyponym) and candidate hypernym feature vector respectively.  A summary of unsupervised measures which can be used to estimate hypernymy similarity can be seen in Table~\ref{tab:unsupervised_measures}.
+Unsupervised methods consists of metrics grouped into four categories, each representative of a hypernymy inflected semantic hypothesis.  \citet{shwartz2017siege} furnish us with an exhaustive survey of metrics across all categories which are listed below.  
+%In all descriptions, $\textbf{x}$ and $\textbf{y}$ represent the term word (hyponym) and candidate hypernym feature vector respectively.  
+A summary of unsupervised measures which can be used to estimate hypernymy similarity can be seen in Table~\ref{tab:unsupervised_measures}.  
+
+The notation employed in the formulae is slightly different from what is presented in \citet{shwartz2017siege}, and is intended to be consistent with the rest of the dissertation.  $x$ and $y$ represent the hyponym and hypernym words respectively; $\textbf{x}$, $\textbf{y}$ their vector equivalent.  $c$ is a particular word context feature represented by a vector index, and $x_c$ and $y_c$ are the scalar feature weights for the vectors $\textbf{x}$ and $\textbf{y}$ at the index pertaining to $c$.  In equations $APSyn$ and $APinc$, $rank_x(c)$ is the rank of context c in the sorted vector $\textbf{x}$.  $N(\textbf{x})$ referred to in $APSyn$ represents the set of $N$ (a hyperparameter) highest-ranked contexts of the sorted vector $\textbf{x}$, whereas $N_y$ ($APinc$) is the count of non-zero-valued contexts of $\textbf{y}$.  The $SLQS$ family depend on the entropy of a context $c$ in a word $x$, represented by the expression $H(x_c)$.
 
 %% Table summarising the measures and grouping them by hypothesis needs to come here
 \renewcommand{\arraystretch}{1.2} 
@@ -286,7 +292,7 @@ Unsupervised methods consists of metrics grouped into four categories, each repr
     $APinc$            &
     $\displaystyle\frac{\sum_{r=1}^{N_y}\left[P\left(r\right) \cdot 
     \begin{cases}
-    1-\frac{rank_y\left(c\right)}{N_y + 1},& \text{if } c\in \textbf{y}\\
+    1-\frac{rank_y\left(c_r\right)}{N_y + 1},& \text{if } c\in \textbf{y}\\
     0,              & \text{else}
     \end{cases}\right]}{N_y}$ & 
     \citep{kotlerman2010directional} \\[2ex]
@@ -299,10 +305,10 @@ Unsupervised methods consists of metrics grouped into four categories, each repr
     \cmidrule{1-3}
     \multicolumn{3}{c}{Informativeness Measures} \\ \cmidrule{1-3}
     $SLQS$                &
-    $1-\displaystyle\frac{median_{i=1}^{N}\left( H\left(x_{c_i} \right)\right)}{median_{i=1}^{N}\left( H\left(y_{c_i} \right)\right)}$ & 
+    $1-\displaystyle\frac{median_{i=1}^{N_x}\left( H\left(x_{c_i} \right)\right)}{median_{i=1}^{N_y}\left( H\left(y_{c_i} \right)\right)}$ & 
     \citep{santus2014chasing} \\[2ex]
     $SLQS_{Sub}$            &
-    $med_{i=1}^{N}\left( H\left(y_{c_i} \right)\right) - med_{i=1}^{N}\left( H\left(x_{c_i} \right)\right)$ & 
+    $med_{i=1}^{N_y}\left( H\left(y_{c_i} \right)\right) - med_{i=1}^{N_x}\left( H\left(x_{c_i} \right)\right)$ & 
     \citep{shwartz2017siege} \\[2ex]
     %$SLQS_{Row}$            && \citep{shwartz2017siege} \\[2ex]
     \cmidrule{1-3}
@@ -323,7 +329,7 @@ Unsupervised methods consists of metrics grouped into four categories, each repr
 Following the distributional hypothesis \citep{harris1954distributional}, similarity measures focus on the symmetric similarities between the hyponym and hypernym.  Cosine similarity is the inner product of the unit-normalised vectors $\textbf{x}$ and $\textbf{y}$, thus placing the onus of similarity on the angle between the vectors.   The cosine metric measures word similarity by the angle between the vectors $\textbf{x}$ and $\textbf{y}$ where acute angles indicate higher similarity.  The Lin measure is the ratio between common contexts and separate contexts of $\textbf{x}$ and $\textbf{y}$.  $APSyn$ is a symmetric measure that computes the extent of intersection among the $N$ most related contexts of two words, weighted according to the rank of the shared contexts ($N$ is a hyper-parameter) \citep{santus2016unsupervised}.
 
 \subsubsection{Distributional Inclusional Measures}
-A common criticism of the measures based on the distribution hypothesis is that they are not able to discern among various semantic relations \citep{roller2014inclusive}.  A term word’s nearest neighbours will bear some semantic relationship to it but is not guaranteed to be its hypernym. Moreover, the distributional hypothesis fails to acknowledge the asymmetric nature of hypernymy.  Instead, this is better captured by the distributional inclusional hypothesis \citep{geffet2005distributional} which states that the main contexts of the hyponym term are absorbed in the contexts of its hypernym.  According to this hypothesis, plugging in the generic term instead of the specific term in a sentence would not warp the sentence’s meaning.  $Weeds Precision$ \citep{weeds2003general} is an example of an asymmetric metric that computes the weighted inclusion of the contexts of $\textbf{x}$ within the contexts of $\textbf{y}$.  
+A common criticism of the measures based on the distribution hypothesis is that they are not able to discern among various semantic relations \citep{roller2014inclusive}.  A term word’s nearest neighbours will bear some semantic relationship to it but is not guaranteed to be its hypernym. Moreover, the distributional hypothesis fails to acknowledge the asymmetric nature of hypernymy.  Instead, this is better captured by the distributional inclusional hypothesis \citep{geffet2005distributional} which states that the main contexts of the hyponym term are absorbed in the contexts of its hypernym.  According to this hypothesis, plugging in the generic term instead of the specific term in a sentence would not warp the sentence’s meaning.  $WeedsPrec$ \citep{weeds2003general} is an example of an asymmetric metric that computes the weighted inclusion of the contexts of $\textbf{x}$ within the contexts of $\textbf{y}$.  
 
 $invCL$ \citep{lenci2012identifying} is another example of an inclusional metric which is calculated as the geometric mean of the degree of inclusion of the hyponym’s contexts in the hypernym’s contexts  and the non-inclusion of the hypernym’s contexts into the hyponym’s contexts.  Details of the other measures may be found in their respective papers.
 
@@ -334,7 +340,7 @@ $invCL$ \citep{lenci2012identifying} is another example of an inclusional metric
 The distributional informativeness hypothesis is derived from this principal.  $SLQS$ \citep{santus2014chasing} employs entropy to quantify informativeness.  Lower entropy values imply less uncertainty about the outcome of an event.  Hence, the more general the contexts, the lower the probability we can guess the “topic” of reference and the higher the entropy value.  $SLQS$ calculates the reciprocal difference of the median entropy of the top $N$ contexts of hyponym and hypernym vectors.  $SLQS$ is also an asymmetric measure and if $SLQS(x, y)$ yields a positive value, then $\textbf{y}$ is found to be more general than $\textbf{x}$ which is an indicator of hypernymy.  Three further variants of $SLQS$ were first proposed in \citep{shwartz2017siege}.  $SLQS_{Sub}$ is a weakly symmetric version of $SLQS$ evaluated by subtracting the median entropy of a hyponym's top $N$ contexts from the median entropy of its hypernym's top $N$ contexts.  $SLQS_{Row}$ exploits the fact that the context and target word entropies are not highly correlated, thus repositioning $SLQS$ in terms of target word entropy \citep{shwartz2017siege}.  Finally, $SLQS_{Row, Sub}$ uses the same subtraction expression as $SLQS_{Sub}$ on $SLQS_{Row}$.
 
 \subsubsection{Reversed Inclusional Measures}
-The distributional inclusional hypothesis is directly challenged by the reversed inclusional measures.  The basis of these measures is the hypernym cannot always replace the hyponym in its contexts due to the high specificity of the latter.  \textit{The mammal climbed into the car} would not be a reasonable alternative for \textit{the man climbed into car} despite the fact that a man is a mammal.  \citep{shwartz2017siege} propose a simple variant of Weeds Precision and ClarkeDE to model this property, consisting of switching the original function parameters around.  Thus $WeedsPrec(x,y)$ becomes $ReversedWeedsPrec(y, x)$ and the same principle applies to ClarkeDE.
+The distributional inclusional hypothesis is directly challenged by the reversed inclusional measures.  The basis of these measures is the hypernym cannot always replace the hyponym in its contexts due to the high specificity of the latter.  \textit{The mammal climbed into the car} would not be a reasonable alternative for \textit{the man climbed into car} despite the fact that a man is a mammal.  \citep{shwartz2017siege} propose a simple variant of Weeds Precision ($WeedsPrec$) and ClarkeDE ($CDE$) to model this property, consisting of switching the original function parameters around.  Thus $WeedsPrec(x,y)$ becomes $ReversedWeedsPrec(y, x)$ and the same principle applies to ClarkeDE.
 
 \subsection{Application of Unsupervised Metrics in Selected Literature} \label{shwartz_unsupervised}
 In \citep{santus2014chasing},  a 2.7-billion word corpus was constructed by concatenating the ukWaC \citep{ferraresi2007building} and WaCkypedia corpora in English \citep{baroni2009wacky}.  Word context was provided by a two-word window on either side of the target word and \ac{LMI} was used to weight the features.  The BLESS dataset \citep{Baroni2011} was recruited as an evaluation dataset.  Besides providing hypernyms for 200 English concepts, BLESS also features several negative examples of hypernymy which include other semantic relations such meronym, co-hyponymy and randomly unrelated words.
@@ -348,10 +354,13 @@ In \citep{santus2014chasing},  a 2.7-billion word corpus was constructed by conc
     \textit{Baseline}   & $0.40$ & $0.51$ & $0.38$ & $0.17$ \\
     \textit{Cosine}   & $0.48$ & $0.46$ & $0.31$ & $0.21$ \\
     \textit{WeedsPrec}   & $0.50$ & $0.35$ & $0.39$ & $0.21$ \\
-    \textit{SLQS $\times$ Cosine}   & $\textbf{0.59}$ & $\textbf{0.27}$ & $\textbf{0.35}$ & $\textbf{0.24}$ \\
+    %\textit{SLQS $\times$ Cosine}   & $\textbf{0.59}$ & $\textbf{0.27}$ & $\textbf{0.35}$ & $\textbf{0.24}$ \\
+    \textit{SLQS $\times$ Cosine}   & $0.59$ & $0.27$ & $0.35$ & $0.24$ \\
     \bottomrule
     \end{tabular}
-    \caption{Average precision of two unsupervised metrics when discriminating semantic relations.}\label{tab:santus_comparison}
+    %\caption{Average precision of two unsupervised metrics when discriminating semantic relations.}
+    \caption[Average precision of two unsupervised metrics when discriminating semantic relations]{Average precision of $WeedsPrec$ and $SLQS \times Cosine$ unsupervised metrics when discriminating semantic relations.}
+    \label{tab:santus_comparison}
 \end{table*}
 
 $WeedsPrec$ does not beat the baseline in the first task, scoring a precision of $0.6304$ (compared to a $0.6609$ baseline) while $SLQS$ does better, yielding a precision score of $0.87$.  Distributional similarity is leveraged in the second task by assuming that a hypernym observes two rules: the hyponym must be distributionally similar to the hypernym; the hypernym must be more general than the hyponym.  To merge the two, the product of cosine similarity and positive $SLQS$ is computed.  Precision is replaced by \ac{AP} as evaluation metric where \ac{AP} evaluates the ranking of the predicted hypernymy word-pairs against false positives pertaining to other relations.  The results are reproduced in Table~\ref{tab:santus_comparison} from \citet{santus2014chasing}.
@@ -519,14 +528,16 @@ Moreover, to show that there is no bias to a particular dataset, they evaluate t
     \multirow{2}{*}{\textbf{Dataset}} & \multicolumn{2}{c}{\textbf{Random Split}} & \phantom{ab} & \multicolumn{3}{c}{\textbf{Lexical Split}} \\ 
     \cmidrule{2-3} \cmidrule{5-7} 
     & \textit{Lexical only} & \shortstack[r]{\textit{Lexical} +\\\textit{Contextual}} && \shortstack[r]{\textit{Best}\\\textit{Supervised}} & \textit{Only $y$} & \shortstack[r]{\textit{Best}\\\textit{Cosine}} \\ \midrule
-    Kotlerman, 2010 & 0.346 & \textbf{0.437} && 0.408 & 0.375 & \textbf{0.461} \\
+    Kotlerman, 2010 & 0.346 & 0.437 && 0.408 & 0.375 & \textbf{0.461} \\
     BLESS, 2011 & 0.960 & 0.960 && \textbf{0.665} & 0.637 & 0.197 \\
-    Baroni, 2012 & 0.638 & \textbf{0.802}  && 0.774 & 0.663 & \textbf{0.788} \\
-    Turney, 2014 & 0.644 & \textbf{0.747} && \textbf{0.696} & 0.649 & 0.642 \\
-    Levy, 2014 & 0.302 & \textbf{0.370} && \textbf{0.324} & \textbf{0.324} & 0.231 \\
+    Baroni, 2012 & 0.638 & 0.802  && 0.774 & 0.663 & \textbf{0.788} \\
+    Turney, 2014 & 0.644 & 0.747 && \textbf{0.696} & 0.649 & 0.642 \\
+    Levy, 2014 & 0.302 & 0.370 && \textbf{0.324} & \textbf{0.324} & 0.231 \\
     \bottomrule
     \end{tabular}
-    \caption[Supervised learning results suggesting lexical memorisation.]{Supervised learning results suggesting lexical memorisation in \citep{levy2015supervised}.}\label{tab:levy_lexical_memo}
+    %\caption[Supervised learning results suggesting lexical memorisation.]{Supervised learning results suggesting lexical memorisation in \citep{levy2015supervised}.}
+    \caption[Supervised learning $F_1$ results suggesting lexical memorisation.]{Supervised learning $F_1$ results suggesting lexical memorisation in \citep{levy2015supervised} exhibited on 5 diverse datasets. The results obtained when training a classifier on randomly-split data using lexical only and a combination of lexical and contextual features are shown on the left-hand side of the table.  On the right, we are displaying the scores obtained when training a supervised classifier on a lexical-split dataset.  The results obtained when training the classifier on hypernym-only features and a Cosine unsupervised baseline were added for the sake of comparison.  The $F_1$ score emitted by the best-performing model fitted on lexical-split data is annotated in bold.}
+    \label{tab:levy_lexical_memo}
 % CB: I suggest using short captioning so that in the list of tables you don't get the citations showing    \caption{Supervised learning results suggesting lexical memorisation in \citep{levy2015supervised}.}\label{tab:levy_lexical_memo}
 \end{table*}
 
@@ -736,10 +747,11 @@ Unlike \citeauthor{Fu2014, espinosa2016supervised}, the test terms are not alrea
     \cmidrule{2-5} \cmidrule{7-10}
     & \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} && \textit{Pipeline} & \textit{Joint} & \textit{Pipeline} & \textit{Joint} \\ \midrule
     \# Clusters & 1 & 1 & 1 & 1 && 5 & 19 & 1 & 2 \\
-    \ac{MRR} & 0.215 & \textbf{0.279} & 0.321 & \textbf{0.343} && 0.193 & \textbf{0.349} & 0.280 & \textbf{0.339} \\
+    %\ac{MRR} & 0.215 & \textbf{0.279} & 0.321 & \textbf{0.343} && 0.193 & \textbf{0.349} & 0.280 & \textbf{0.339} \\
+    MRR & 0.215 & 0.279 & 0.321 & 0.343 && 0.193 & 0.349 & 0.280 & 0.339 \\
     \bottomrule
     \end{tabular}
-    \caption{MRR comparison between pipeline and joint models and cluster size \citep{yamane2016distributional}.}\label{tab:yamane_results}
+    \caption{MRR comparison between pipeline and joint models and cluster size in \citep{yamane2016distributional}.}\label{tab:yamane_results}
 \end{table*}
 
 The authors focused on the joint-learning model’s ability to generate highly-ranked, correct hypernyms and opted for \ac{MRR} as evaluation metric.  We merge the results reported in the authors' paper in a single table, Table~\ref{tab:yamane_results} from \citet{yamane2016distributional}.
@@ -781,7 +793,9 @@ The largest performance boost in the CRIM model was observed when the embeddings
     Augmented Dataset & 0.345 & 0.190 & 0.283 & \textit{N/A} && \textbf{0.361} & \textbf{0.198} & \textbf{0.297} & \textbf{0.190} \\
     \bottomrule
     \end{tabular}
-    \caption{CRIM results achieved using projection learning only and hybrid results on the general-purpose English dataset \citep{bernier2018crim}.}\label{tab:CRIM_results}
+    %\caption{CRIM results achieved using projection learning only and hybrid results on the general-purpose English dataset \citep{bernier2018crim}.}
+    \caption[Original CRIM results achieved using projection learning only and hybrid results on the general-purpose English dataset]{Original CRIM results achieved using projection learning only and hybrid results on the general-purpose English dataset in \citep{bernier2018crim}.  The best results, annotated in bold, were achieved by a supervised/Hearst-pattern hybrid model trained on an augmented dataset.}
+    \label{tab:CRIM_results}
 \end{table*}
 
 As mandated by the shared task's  set objective \citep{camacho2018semeval}, \citet{bernier2018crim} created a model able to discover hypernyms rather than merely identify hypernymy.  To find the most likely hypernyms for a given query term $q$, the trained model's prediction function was invoked for every word in the vocabulary, and the 15 top-ranked words were emitted as likely hypernym candidates.
@@ -855,7 +869,7 @@ As can be seen from Table~\ref{tab:semeval_english_dataset_metrics}, term words 
 
 Not included in Table~\ref{tab:semeval_english_dataset_metrics}, is a small validation set made up of 200 word-pairs (50 terms) which was also provided by the organisers in addition to the training and test sets.  To constrain the hypernym search space, a 218,753 $n$-gram ($n \leq 3$) vocabulary of possible hypernym terms was supplied.  
 
-\subsection{Evaluation Metrics}
+\subsection{Evaluation Metrics} \label{meth_eval_metrics}
 Similar to other work \citep{espinosa2016supervised, ustalov2017negative} focused on hypernym discovery, the shared task organisers borrowed a set of metrics normally used to evaluate information retrieval solutions \citep{bian2008finding}.  For the top 15 hypernyms extracted for each input concept in the relevant subtask, the
 following information retrieval measures were utilised:
 \begin{enumerate}
